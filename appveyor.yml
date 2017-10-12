@@ -1,0 +1,51 @@
+version: 1.1.3.{build}
+
+environment:
+  matrix:
+  - APPVEYOR_BUILD_WORKER_IMAGE: WMF 5
+    PowerShellEdition: Desktop
+  - APPVEYOR_BUILD_WORKER_IMAGE: WMF 5
+    PowerShellEdition: Core
+
+configuration: Release
+platform: Any CPU
+
+# clone directory
+clone_folder: c:\projects\ships
+
+init:
+  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+
+
+# Install Pester
+install: 
+    - cinst -y pester
+
+# to run your custom scripts instead of automatic MSBuild
+build_script:
+
+- git submodule update --init
+- ps: cd .\src; .\bootstrap.ps1; .\build.ps1 -framework "net46" Release;.\build.ps1 -framework "netcoreapp2.0" Release
+
+
+
+# Run Pester tests and store the results
+test_script:
+    - ps: |
+        Import-Module c:\projects\ships\tools\setup.psm1
+        Invoke-SHiPSTest
+
+
+# Upload the project along with TestResults as a zip archive
+on_finish:
+    - ps: |
+        
+        @(
+            # You can add other artifacts here
+            "C:\projects\ships\src\out\SHiPS.fullclr.zip"
+            "C:\projects\ships\src\out\SHiPS.coreclr.zip"
+        ) | % { Push-AppveyorArtifact $_ }
+
+        Get-ChildItem -Path c:\projects\ships\test\ -Filter 'TestResults*.xml' -File | ForEach-Object {
+            (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", "$($_.FullName)")
+        }

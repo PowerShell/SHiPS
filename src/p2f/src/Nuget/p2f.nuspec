@@ -1,0 +1,19 @@
+﻿<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>P2F</id>
+    <version>$id$</version>
+    <authors>Code Owls LLC</authors>
+    <owners>Code Owls LLC</owners>
+    <licenseUrl>https://github.com/beefarino/p2f/blob/master/LICENSE.md</licenseUrl>
+    <projectUrl>https://github.com/beefarino/p2f</projectUrl>
+    <iconUrl>https://avatars1.githubusercontent.com/u/325790?s=140</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Framework for implementing PowerShell Providers.</description>
+    <releaseNotes><![CDATA[
+        $relnotes$
+        ]]></releaseNotes>
+    <copyright>Copyright (c) 2014 Code Owls LLC, All Rights Reserved</copyright>
+    <tags>PowerShell Providers</tags>
+  </metadata>
+</package>

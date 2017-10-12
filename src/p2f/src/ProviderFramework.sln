@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2F_Sample1_NullProvider", "Samples\P2F_Sample1_NullProvider\P2F_Sample1_NullProvider.csproj", "{E9CBC2B9-98B3-48AE-A5B5-7CBD9A154E78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeOwls.PowerShell.Paths", "CodeOwls.PowerShell\CodeOwls.PowerShell.Paths\CodeOwls.PowerShell.Paths.csproj", "{ED0453C7-C25A-4354-AC7A-046846D5E7FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeOwls.PowerShell.Provider", "CodeOwls.PowerShell\CodeOwls.PowerShell.Provider\CodeOwls.PowerShell.Provider.csproj", "{B352375B-7C58-4943-95C0-14871E17A208}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "P2F", "P2F", "{D500C55E-4C77-4B0C-8BB3-6998366D909D}"
+	ProjectSection(SolutionItems) = preProject
+		CodeOwls.AssemblyInfo.cs = CodeOwls.AssemblyInfo.cs
+		CodeOwls.PowerShell.AssemblyInfo.cs = CodeOwls.PowerShell.AssemblyInfo.cs
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2F_Sample2_TypeProvider", "Samples\P2F_Sample2_TypeProvider\P2F_Sample2_TypeProvider.csproj", "{85439FAE-BEC1-4547-BBC0-F7D726830EAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2F_Sample3_TypeProvider", "Samples\P2F_Sample3_TypeProvider\P2F_Sample3_TypeProvider.csproj", "{96A2EE47-84F0-4315-858F-6003A099A135}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E9CBC2B9-98B3-48AE-A5B5-7CBD9A154E78}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{E9CBC2B9-98B3-48AE-A5B5-7CBD9A154E78}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{E9CBC2B9-98B3-48AE-A5B5-7CBD9A154E78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E9CBC2B9-98B3-48AE-A5B5-7CBD9A154E78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED0453C7-C25A-4354-AC7A-046846D5E7FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED0453C7-C25A-4354-AC7A-046846D5E7FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED0453C7-C25A-4354-AC7A-046846D5E7FF}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED0453C7-C25A-4354-AC7A-046846D5E7FF}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{B352375B-7C58-4943-95C0-14871E17A208}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B352375B-7C58-4943-95C0-14871E17A208}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B352375B-7C58-4943-95C0-14871E17A208}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{B352375B-7C58-4943-95C0-14871E17A208}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{85439FAE-BEC1-4547-BBC0-F7D726830EAA}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{85439FAE-BEC1-4547-BBC0-F7D726830EAA}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{85439FAE-BEC1-4547-BBC0-F7D726830EAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85439FAE-BEC1-4547-BBC0-F7D726830EAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96A2EE47-84F0-4315-858F-6003A099A135}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{96A2EE47-84F0-4315-858F-6003A099A135}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{96A2EE47-84F0-4315-858F-6003A099A135}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96A2EE47-84F0-4315-858F-6003A099A135}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ED0453C7-C25A-4354-AC7A-046846D5E7FF} = {D500C55E-4C77-4B0C-8BB3-6998366D909D}
+		{B352375B-7C58-4943-95C0-14871E17A208} = {D500C55E-4C77-4B0C-8BB3-6998366D909D}
+	EndGlobalSection
+EndGlobal

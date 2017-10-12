@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Configuration>
+    <Controls>
+        <Control>
+            <Name>SHiPS-GroupingFormat</Name>
+                    <CustomControl>
+                        <CustomEntries>
+                            <CustomEntry>
+                                <CustomItem>
+                                    <Frame>
+                                        <LeftIndent>4</LeftIndent>
+                                        <CustomItem>
+                                            <Text>Container: </Text>
+                                            <ExpressionBinding>
+                                                <PropertyName>PSParentPath</PropertyName>
+                                            </ExpressionBinding>
+                                          <NewLine/>
+                                        </CustomItem>
+                                    </Frame>
+                                </CustomItem>
+                            </CustomEntry>
+                        </CustomEntries>
+            </CustomControl>
+        </Control>
+    </Controls>
+    
+    <ViewDefinitions>
+        <View>
+            <Name>CollectionChildren</Name>
+            <ViewSelectedBy>
+                <TypeName>Microsoft.PowerShell.SHiPS.SHiPSDirectory</TypeName>
+                <TypeName>Microsoft.PowerShell.SHiPS.SHiPSLeaf</TypeName>
+            </ViewSelectedBy>
+            <GroupBy>
+                <PropertyName>PSParentPath</PropertyName>
+                <CustomControlName>SHiPS-GroupingFormat</CustomControlName>
+            </GroupBy>
+            <TableControl>
+                <TableHeaders>
+                  <TableColumnHeader>
+                    <Width>5</Width>
+                    <Label>Mode</Label>
+                    <Alignment>Left</Alignment>
+                  </TableColumnHeader>
+                  <TableColumnHeader>
+                    <Width>40</Width>
+			              <Label>Name</Label>
+                    <Alignment>Left</Alignment>
+                  </TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                  <TableRowEntry>
+                        <TableColumnItems>
+                          <TableColumnItem>
+                            <PropertyName>SSItemMode</PropertyName>
+                          </TableColumnItem>
+                          <TableColumnItem>
+                            <PropertyName>PSChildName</PropertyName>
+                          </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+    </ViewDefinitions>
+</Configuration>
