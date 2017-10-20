@@ -23,7 +23,7 @@ Actual behavior
 Environment data
 ----------------
 
-<!-- If running outside of CLOUD SHELL, provide the output of $PSVersionTable -->
+<!-- If running outside of CLOUD SHELL, provide the output of the following -->
 
 ```powershell
 $PSVersionTable
@@ -36,5 +36,5 @@ Get-Module SHiPS
 $env:ACC_VERSION
 $env:ACC_LOCATION
 Get-Module SHiPS
-Get-Module SHiPS.AzureRM
+Get-Module AzurePSDrive
 ```
