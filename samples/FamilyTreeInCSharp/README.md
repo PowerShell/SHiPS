@@ -1,24 +1,21 @@
-
-# Sample - FamilyTree Written in C# #
-
+# Sample Provider - FamilyTree Written in C# #
 
 As you may have tried the [FamilyTree][ft] written in PowerShell class.
 It seems to be straight forward. And in some cases, you may want to write a class in C#.
 Following example shows you how to build a C# class library and to be loaded into SHiPS.
 
-
 ## Step 1 - Get SHiPS
+
 - Follow the instruction [here][readme] to compile SHiPS.
   - if you build the SHiPS code from Visual Studio,  `Microsoft.PowerShell.SHiPS.dll` will be generated under SHiPS\test\ folder
   - if you using dotnet cli build, the `Microsoft.PowerShell.SHiPS.dll` can be found under SHiPS\src\out\SHiPS
   - future: you can `Install-Module SHiPS` to install the latest version of SHiPS.
 
 ## Step 2 - Create FamilyTreeInCSharp Assembly
-- Open your Visual Studio or your favorite editor, copy the following code,
-save it as FamilyTreeInCSharp.cs
+
+- Open your Visual Studio or your favorite editor, copy the following code, save it as FamilyTreeInCSharp.cs
 - Add a reference to Microsoft.PowerShell.SHiPS.dll
 - Compile it. An assembly, FamilyTreeInCSharp.dll, will be generated.
-
 
 ``` C#
 using System.Collections.Generic;
@@ -91,22 +88,22 @@ namespace FamilyTreeInCSharp
 
 ## Step 3 - Create A PowerShell Module
 
-``` PowerShell
+```powershell
 New-ModuleManifest -path .\FamilyTreeInCSharp.psd1
-
 ```
 
 Open the FamilyTreeInCSharp.psd1 in your favorite editor, edit the following line in the FamilyTreeInCSharp.psd1.
 Since the business logic is implemented in FamilyTreeInCSharp.dll, set RootModule to FamilyTreeInCSharp.dll.
 
-``` PowerShell
+```powershell
 RootModule = 'FamilyTreeInCSharp.dll'
 ```
 
 Save the file.
 
 ## Step 4 - Import Module
-- If you build the code using dotnet CLi
+
+- If you build the code using dotnet Cli
   - cd to your git clone folder
   - cd SHiPS\src\out
   -  Import-Module SHiPS
@@ -117,27 +114,24 @@ Save the file.
 
 - If you installed the module from PowerShellGallery, simply Import-Module SHiPS
 
-
-
->`Note`
+>NOTE:
 If you build the assembly, you may need to ignore strong name signing on Windows.
 
 ## Step 5 - Create a PowerShell Drive
 
-``` PowerShell
+```powershell
 Import-Module  .\FamilyTreeInCSharp.psd1
 new-psdrive -name ft -psprovider SHiPS -root 'FamilyTreeInCSharp#FamilyTreeInCSharp.Root'
 
 cd ft:
 dir
-
- ```
+```
 
 Output:
 
-``` PowerShell
+```powershell
 
-PS C:\>new-psdrive -name ft -psprovider SHiPS -root 'FamilyTreeInCSharp#FamilyTreeInCSharp.Root'
+PS C:\> new-psdrive -name ft -psprovider SHiPS -root 'FamilyTreeInCSharp#FamilyTreeInCSharp.Root'
 
 Name           Used (GB)     Free (GB) Provider      Root
 ----           ---------     --------- --------      ----
@@ -164,8 +158,5 @@ Hello I am Mike.
 
 ```
 
-For the entire sample code, see [samples][samples] folder.
-
-[ft]: ../samples/FamilyTree.psm1
-[readme]:../README.md
-[samples]: ../samples
+[ft]: ..\FamilyTree
+[readme]:../../README.md

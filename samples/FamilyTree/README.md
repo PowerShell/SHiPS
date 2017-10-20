@@ -1,18 +1,19 @@
-# SHiPS-based Sample Provider - FamilyTree
+# Sample Provider - FamilyTree
 
 ## Step 1- Install SHiPS
 
-Follow the instructions in [the front page][readme] to download and install the SHiPS.
+Follow the instructions [in here][readme] to download and install the SHiPS.
 
 ## Step 2 - Review the sample code
+
 See the [FamilyTree module][fm].
 
 ## Step 3 - Try it out
 
-  ``` PowerShell
+  ```powershell
   cd <yourclonefolder>\SHiPS
-  Import-Module  SHiPS                         
-  Import-Module  .\samples\FamilyTree.psm1
+  Import-Module  SHiPS
+  Import-Module  .\samples\FamilyTree
 
   new-psdrive -name Austin -psprovider SHiPS -root 'FamilyTree#Austin'
   cd Austin:
@@ -41,7 +42,6 @@ See the [FamilyTree module][fm].
   .     Chris
   .     Cathy
 
-
   PS Austin:\Ben>dir | %{$_.Data}
 
   Name  DOB  Gender
@@ -58,6 +58,5 @@ See the [FamilyTree module][fm].
   - In the type Chris and Cathy, we exposed $Data field as a node's property
   - When a user `dir` under Ben, it will show two child nodes, Chris and Cathy. But if you do `dir | fl *`, you will see a `Data` property which contains more data about the node.
 
-
-[readme]: ../README.md#Installing-SHiPS
-[fm]: ../samples/FamilyTree.psm1
+[readme]: ../../README.md#Installing-SHiPS
+[fm]: FamilyTree.psm1
