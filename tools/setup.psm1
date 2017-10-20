@@ -157,12 +157,20 @@ function Invoke-SHiPSTest {
     #
 
     $PowerShellHome = Install-SHiPS -TestModule
-    Write-Host "PowerShellHome is $PowerShellHome"
+    Write-Host "PowerShellHome is $PowerShellHome IsWindows=$script:IsWindows script:IsCoreCLR=$script:IsCoreCLR IsCoreCLR=$IsCoreCLR PowerShellEdition=$script:PowerShellEdition"
      
     if($script:IsWindows){
         $PowerShellExePath = Join-Path -Path $PowerShellHome -ChildPath 'PowerShell.exe'
+
+        if($script:PowerShellEdition -eq 'Core')
+        {
+            # On Windows tests run agaist the pscore from its checkin build
+            $PowerShellExePath = Join-Path -Path $PowerShellHome -ChildPath 'pwsh.exe'
+            Write-Verbose "PowerShellExePath=$PowerShellExePath"
+        }
     } else {
-        $PowerShellExePath = 'powershell'
+            # On Linux tests run against the pscore from its official release package          
+            $PowerShellExePath = 'powershell'
     }
 
 

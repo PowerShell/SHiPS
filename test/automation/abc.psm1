@@ -10,7 +10,7 @@
 #>
 
 using namespace Microsoft.PowerShell.SHiPS
-
+$script:PowerShellProcessName = if($IsCoreCLR) {'pwsh'} else{ 'PowerShell'}
 
 class ABC : SHiPSDirectory
 {
@@ -35,7 +35,7 @@ class ABC : SHiPSDirectory
 
 
         $bits= Get-Service BITS
-        $ps=get-process powershell
+        $ps=get-process $script:PowerShellProcessName
 
         Write-warning "hello2 Warning!!"
 
@@ -44,7 +44,7 @@ class ABC : SHiPSDirectory
         Write-debug "hello2 debuggggggggggggggggggggg!!"
 
         $obj += [ABCLeaf]::new($ps.Name, $ps);
-        $obj += get-process powershell
+        $obj += get-process $script:PowerShellProcessName
 
         
         Write-verbose "hello2 you have used -verbose!!"

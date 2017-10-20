@@ -7,6 +7,9 @@ Import-Module  $testpath\abc.psm1
 Import-Module  $testpath\test.psm1
 Import-Module  $testpath\sampleRecursion.psm1
 Import-Module  $testpath\ctor.psm1
+$script:PowerShellProcessName = if($IsCoreCLR) {'pwsh'} else{ 'PowerShell'}
+
+
 
 Describe "Basic Navigation" -Tags "Feature" {
 
@@ -62,7 +65,7 @@ AfterEach{
        
        cd jj:
        $e=dir
-       $e[0].Name | Should Be "PowerShell"
+       $e[0].Name | Should Be $script:PowerShellProcessName
        
     }
 
@@ -116,7 +119,7 @@ AfterEach{
        $c=dir
 
        $c.Count | Should Be 3
-       $c[0].Name | Should Be "powershell"
+       $c[0].Name | Should Be $script:PowerShellProcessName
     }
 
     It "Navigating down and up" {
@@ -233,14 +236,14 @@ AfterEach{
        $a.Name | Should Be "jj"
 
        cd jj:
-       $b=dir pow*
+       $b=dir p*
        $b | Should BeNullOrEmpty
 
-       $c=dir pow* -Recurse
+       $c=dir p* -Recurse
 
        $c | Should Not BeNullOrEmpty
        $c.Count | Should be 1
-       $c.Name | Should be "powershell"
+       $c.Name | Should be $script:PowerShellProcessName
           
     }
     
@@ -252,12 +255,12 @@ AfterEach{
        cd jj:
        $b = dir -Recurse
 
-       $c=dir -Include pow* -Recurse
+       $c=dir -Include p* -Recurse
        $c | Should Not BeNullOrEmpty
        $c.Count | Should be 1
-       $c.Name | Should be "powershell"
+       $c.Name | Should be $script:PowerShellProcessName
                
-       $d=dir -Exclude pow* -Recurse      
+       $d=dir -Exclude p* -Recurse      
        $d.Count | Should be ($b.Count - $c.Count)
     }
     
@@ -341,7 +344,7 @@ AfterEach{
         cd jj:
        
         $b=dir
-        $b[0].Name | Should be "powershell"
+        $b[0].Name | Should be $script:PowerShellProcessName
         $b[1].Name | Should be "SHiPSTest"
      }
           
@@ -676,8 +679,8 @@ AfterEach{
        $c= get-item .\b*
        $c.Name | should be "Bill"
 
-       $d= get-item .\bill\* -filter po*
-       $d.Name | should be "Powershell"
+       $d= get-item .\bill\* -filter p*
+       $d.Name | should be $script:PowerShellProcessName
 
        }
 
