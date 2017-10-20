@@ -158,5 +158,5 @@ Hello I am Mike.
 
 ```
 
-[ft]: ..\FamilyTree
+[ft]: ../FamilyTree
 [readme]:../../README.md

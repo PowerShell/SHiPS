@@ -85,7 +85,7 @@
 
 ## Step 3 - Use MyProvider.psm1
 
-- Import-Module SHiPS (See [`Installing SHiPS`][readme] for details)
+- Import-Module SHiPS (See [Installing SHiPS][readme] for details)
 - Create a PSDrive
 
   ```powershell

@@ -103,7 +103,7 @@ The following properties are exposed to SHiPS' derived classes as protected memb
     $this.ProviderContext.DynamicParameters
     ```
 
-    For more usages, see [dynamic parameters  example][ds].
+    For more usages, see [dynamic parameters example][ds].
 
   - `Filter`
   Gets the filter property that was supplied by a user.
@@ -126,4 +126,4 @@ The following properties are exposed to SHiPS' derived classes as protected memb
     if(-not $this.ProviderContext.Force)
     ```
 
-[ds]:./DynamicParameters.md
+[ds]:../samples/DynamicParameter
