@@ -12,7 +12,8 @@ See the [FileSystem module][fs].
 
 ```powershell
 Import-Module  SHiPS
-Import-Module  .\samples\FileSystem.psm1  new-psdrive -name FS -psprovider SHiPS -root FileSystem#C
+Import-Module .\samples\FileSystem
+new-psdrive -name FS -psprovider SHiPS -root FileSystem#C
 cd FS:
 dir
 ```

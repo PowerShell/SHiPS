@@ -12,7 +12,7 @@ See the [ShowProgress module][sp].
 
 ```powershell
 Import-Module  SHiPS
-Import-Module  .\samples\ShowProgress.psm1
+Import-Module  .\samples\ShowProgress
 new-psdrive -name n -psprovider SHiPS -root ShowProgress#NoBuiltinProgress
 
 cd n:
@@ -23,8 +23,7 @@ dir -verbose
 ## Key takeaways from this example
 
 - By default SHiPS is not caching data returned from Get-ChildItem
-- Sometimes it can be slow when you accessing data store especially through the Internet, you may want to cache the data for better user experience.
-To do so, you can add an attribute to your class, e.g.,
+- Sometimes it can be slow when you accessing data store especially through the Internet, you may want to cache the data for better user experience. To do so, you can add an attribute to your class, e.g.,
 
   ```powershell
   [SHiPSProvider(UseCache=$true)]

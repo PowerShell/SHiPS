@@ -30,7 +30,7 @@ See the [DynamicParameterSample module][ds].
 
 ```powershell
    Import-Module  SHiPS
-   Import-Module  .\samples\DynamicParameterSample.psm1
+   Import-Module  .\samples\DynamicParameterSample
 
    new-psdrive -name n -psprovider SHiPS -root DynamicParameterSample#Nature
    cd n:
@@ -41,7 +41,6 @@ See the [DynamicParameterSample module][ds].
    dir -Type Creature
 
    dir -Filter p* -recurse
-
 
 <#
 The output looks like the following.
