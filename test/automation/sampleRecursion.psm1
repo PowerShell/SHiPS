@@ -32,7 +32,7 @@ $b | %{$_.Name}
 
 
 using namespace Microsoft.PowerShell.SHiPS
-
+$script:PowerShellProcessName = if($IsCoreCLR) {'pwsh'} else{ 'PowerShell'}
 
 class DataHolder
 {
@@ -59,7 +59,7 @@ class root: SHiPSDirectory
 
     [object[]] GetChildItem()
     {
-        return [Austin]::new("Austin", [DataHolder]::new("Process", "PowerShell", 1));     
+        return [Austin]::new("Austin", [DataHolder]::new("Process", $script:PowerShellProcessName, 1));     
     }
 }
 
@@ -98,11 +98,11 @@ class Austin : SHiPSDirectory
         
             switch ($this.data.Number)
             {
-             "1"  {  $next.ProcessName="powershell"; $next.Name ="explorer1"; $next.Number =2; break}
-             "2"  {  $next.ProcessName=@("powershell"); $next.Name ="explorer2"; $next.Number =3;  break}
-             "3"  {  $next.ProcessName=@("powershell"); $next.Name ="explorer3"; $next.Number =4;  break}
-             "4"  {  $next.ProcessName=@("powershell"); $next.Name ="explorer4"; $next.Number =5; break}
-             "5"  {  $next.ProcessName=@("powershell"); $next.Name ="explorer5"; $next.Number =6; break}
+             "1"  {  $next.ProcessName=$script:PowerShellProcessName; $next.Name ="explorer1"; $next.Number =2; break}
+             "2"  {  $next.ProcessName=@($script:PowerShellProcessName); $next.Name ="explorer2"; $next.Number =3;  break}
+             "3"  {  $next.ProcessName=@($script:PowerShellProcessName); $next.Name ="explorer3"; $next.Number =4;  break}
+             "4"  {  $next.ProcessName=@($script:PowerShellProcessName); $next.Name ="explorer4"; $next.Number =5; break}
+             "5"  {  $next.ProcessName=@($script:PowerShellProcessName); $next.Name ="explorer5"; $next.Number =6; break}
             }
 
             $n=$next.Number

@@ -11,6 +11,7 @@
 #>
 
 using namespace Microsoft.PowerShell.SHiPS
+$script:PowerShellProcessName = if($IsCoreCLR) {'pwsh'} else{ 'PowerShell'}
 
 
 
@@ -29,7 +30,7 @@ class Root : SHiPSDirectory
     [object[]] GetChildItem()
     {     
         $obj = @()
-        $obj += [Austin]::new("Bill", "PowerShell");     
+        $obj += [Austin]::new("Bill", $script:PowerShellProcessName);     
         $obj += [Chris]::new("William");
         return $obj     
     }
@@ -170,7 +171,7 @@ class Slash : SHiPSDirectory
     [object[]] GetChildItem()
     {     
         $obj = @()
-        $obj += [Austin]::new("Bill",  "PowerShell");     
+        $obj += [Austin]::new("Bill",  $script:PowerShellProcessName);     
         $obj += [Chris]::new("Will/iam", $null);
         return $obj     
     }

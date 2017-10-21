@@ -13,6 +13,7 @@
 #>
 
 using namespace Microsoft.PowerShell.SHiPS
+$script:PowerShellProcessName = if($IsCoreCLR) {'pwsh'} else{ 'PowerShell'}
 
 
 # colision with .Net - should work
@@ -147,7 +148,7 @@ class ChildClassWithNullName : ClassWithNullName
     [object[]] GetChildItem()
     { 
         write-Warning("hello world")   
-        return get-process powershell
+        return get-process $script:PowerShellProcessName
     }
 }
 
@@ -200,7 +201,7 @@ class Belly :Austin
     [object[]] GetChildItem()
     { 
         write-Warninggg("hello world")   
-        return get-process powershell
+        return get-process $script:PowerShellProcessName
     }
 }
 
