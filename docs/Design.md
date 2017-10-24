@@ -69,7 +69,7 @@ class Root : SHiPSDirectory
 }
 ```
 
-When a user type dir, the following output will appear.
+When a user types dir, the following output will appear.
 
 ```powershell
 PS az:\> dir
