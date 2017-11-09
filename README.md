@@ -7,15 +7,28 @@ To be more precise it's a provider utility that simplifies developing PowerShell
 
 ## Build Status
 
+### Development branch
+
+| AppVeyor (Windows)       | Travis CI (Linux / macOS) |
+|--------------------------|--------------------------|
+| [![av-image-dev][]][av-site-dev] | [![tv-image-dev][]][tv-site-dev] |
+
+
+### Master branch
 | AppVeyor (Windows)       | Travis CI (Linux / macOS) |
 |--------------------------|--------------------------|
 | [![av-image-master][]][av-site-master] | [![tv-image-master][]][tv-site-master] |
 
-[av-image-master]: https://ci.appveyor.com/api/projects/status/4n9486v38x2tw2su/branch/master?svg=true
+[av-image-master]: https://ci.appveyor.com/api/projects/status/5l52pip0e792m6xo/branch/master?svg=true
 [av-site-master]: https://ci.appveyor.com/project/PowerShell/SHiPS/branch/master
+[tv-image-master]: https://travis-ci.org/PowerShell/SHiPS.svg?branch=master
+[tv-site-master]: https://travis-ci.org/PowerShell/SHiPS/branches
 
-[tv-image-master]: https://api.travis-ci.com/PowerShell/SHiPS.svg?token=mtYTwKyARGmyq9Xsqq7h&branch=master
-[tv-site-master]: https://travis-ci.com/PowerShell/SHiPS/builds
+[av-image-dev]:https://ci.appveyor.com/api/projects/status/5l52pip0e792m6xo/branch/development?svg=true
+[av-site-dev]: https://ci.appveyor.com/project/PowerShell/SHiPS/branch/development
+[tv-image-dev]: https://travis-ci.org/PowerShell/SHiPS.svg?branch=development
+[tv-site-dev]: https://travis-ci.org/PowerShell/SHiPS/branches
+
 
 ## Supported Platform
 
