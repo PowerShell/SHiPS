@@ -22,6 +22,7 @@ addons:
     paths: $(ls ./../SHiPS.coreclr.zip | tr "\n" ":")
 
 install:
+  - export PATH=~/.dotnet:$PATH 
   # Default 2.0.0 Ruby is buggy
   # Default bundler version is buggy
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then

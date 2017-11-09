@@ -29,6 +29,16 @@ To be more precise it's a provider utility that simplifies developing PowerShell
 [tv-image-dev]: https://travis-ci.org/PowerShell/SHiPS.svg?branch=development
 [tv-site-dev]: https://travis-ci.org/PowerShell/SHiPS/branches
 
+### Nightly run Master branch
+
+
+| AppVeyor (Windows)       
+|--------------------------
+| [![av-image-master-n][]][av-site-master-n] 
+
+[av-image-master-n]: https://ci.appveyor.com/api/projects/status/t5t7lgy1spfrf1ai/branch/master?svg=true
+[av-site-master-n]: https://ci.appveyor.com/project/PowerShell/SHiPS/branch/master
+
 
 ## Supported Platform
 
