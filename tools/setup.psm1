@@ -170,7 +170,7 @@ function Invoke-SHiPSTest {
         }
     } else {
             # On Linux tests run against the pscore from its official release package          
-            $PowerShellExePath = 'powershell'
+            $PowerShellExePath = 'pwsh'
     }
 
 
