@@ -19,13 +19,13 @@ To be more precise it's a provider utility that simplifies developing PowerShell
 |--------------------------|--------------------------|
 | [![av-image-master][]][av-site-master] | [![tv-image-master][]][tv-site-master] |
 
-[av-image-master]: https://ci.appveyor.com/api/projects/status/5l52pip0e792m6xo/branch/master?svg=true
-[av-site-master]: https://ci.appveyor.com/project/PowerShell/SHiPS/branch/master
+[av-image-master]: https://ci.appveyor.com/api/projects/status/jjy56evq75bxn5w4/branch/master?svg=true
+[av-site-master]: https://ci.appveyor.com/project/PowerShell/SHiPS/history/branch/master
 [tv-image-master]: https://travis-ci.org/PowerShell/SHiPS.svg?branch=master
 [tv-site-master]: https://travis-ci.org/PowerShell/SHiPS/branches
 
-[av-image-dev]:https://ci.appveyor.com/api/projects/status/5l52pip0e792m6xo/branch/development?svg=true
-[av-site-dev]: https://ci.appveyor.com/project/PowerShell/SHiPS/branch/development
+[av-image-dev]:https://ci.appveyor.com/api/projects/status/jjy56evq75bxn5w4/branch/development?svg=true
+[av-site-dev]: https://ci.appveyor.com/project/PowerShell/SHiPS/history/branch/development
 [tv-image-dev]: https://travis-ci.org/PowerShell/SHiPS.svg?branch=development
 [tv-site-dev]: https://travis-ci.org/PowerShell/SHiPS/branches
 
@@ -36,8 +36,8 @@ To be more precise it's a provider utility that simplifies developing PowerShell
 |--------------------------
 | [![av-image-master-n][]][av-site-master-n] 
 
-[av-image-master-n]: https://ci.appveyor.com/api/projects/status/t5t7lgy1spfrf1ai/branch/master?svg=true
-[av-site-master-n]: https://ci.appveyor.com/project/PowerShell/SHiPS/branch/master
+[av-image-master-n]: https://ci.appveyor.com/api/projects/status/od48qs1sf6xo3ro0/branch/master?svg=true
+[av-site-master-n]: https://ci.appveyor.com/project/PowerShell/SHiPS/history/branch/master
 
 
 ## Supported Platform
