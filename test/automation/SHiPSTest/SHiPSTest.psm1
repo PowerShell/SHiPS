@@ -10,6 +10,7 @@
 #>
 
 using namespace Microsoft.PowerShell.SHiPS
+$script:PowerShellProcessName = if($IsCoreCLR) {'pwsh'} else{ 'PowerShell'}
 
 
 class SHiPSTest : SHiPSDirectory
@@ -26,7 +27,7 @@ class SHiPSTest : SHiPSDirectory
         
         Write-verbose "You should see this verbose message without -verbose!!" -Verbose          
 
-        $ps = get-process powershell
+        $ps = get-process $script:PowerShellProcessName
         $obj += [SHiPSTestLeaf]::new($ps[0].Name);
 
         Write-debug "hello debuggggggggggggggggggggg!!"
