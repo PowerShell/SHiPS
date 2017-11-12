@@ -1,14 +1,14 @@
 try {
     $IsWindows = (-not (Get-Variable -Name IsWindows -ErrorAction Ignore)) -or $IsWindows
     $IsLinux = (Get-Variable -Name IsLinux -ErrorAction Ignore) -and $IsLinux
-    $IsOSX = (Get-Variable -Name IsOSX -ErrorAction Ignore) -and $IsOSX
+    $IsMacOS = (Get-Variable -Name IsMacOS -ErrorAction Ignore) -and $IsMacOS
     $IsCoreCLR = (Get-Variable -Name IsCoreCLR -ErrorAction Ignore) -and $IsCoreCLR  
 }
 catch {
     # on linux error from PowerShell: "Cannot overwrite variable IsLinux because it is read-only". 
 }
 
-Write-Verbose -Message  "IsWindows=$IsWindows; IsLinux=$IsLinux; IsOSX=$IsOSX; IsCoreCLR=$IsCoreCLR" -Verbose
+Write-Verbose -Message  "IsWindows=$IsWindows; IsLinux=$IsLinux; IsMacOS=$IsMacOS; IsCoreCLR=$IsCoreCLR" -Verbose
 
 if ($IsLinux) {
     $LinuxInfo = Get-Content /etc/os-release | ConvertFrom-StringData
@@ -49,7 +49,7 @@ function Start-DotnetBootstrap
 
         # Install dependencies
         sudo yum install -y -q $Deps
-    } elseif ($IsOSX) {
+    } elseif ($IsMacOS) {
 
         # Build tools
         $Deps += "curl", "cmake"
@@ -64,11 +64,11 @@ function Start-DotnetBootstrap
     $obtainUrl = "https://raw.githubusercontent.com/dotnet/cli/master/scripts/obtain"
 
     # Install for Linux and OS X
-    if ($IsLinux -or $IsOSX) {
+    if ($IsLinux -or $IsMacOS) {
         # Uninstall all previous dotnet packages
         $uninstallScript = if ($IsUbuntu) {
             "dotnet-uninstall-debian-packages.sh"
-        } elseif ($IsOSX) {
+        } elseif ($IsMacOS) {
             "dotnet-uninstall-pkgs.sh"
         }
 
@@ -87,7 +87,7 @@ function Start-DotnetBootstrap
         bash ./$installScript -c $Channel -v $Version
 
         # .NET Core's crypto library needs brew's OpenSSL libraries added to its rpath
-        if ($IsOSX) {
+        if ($IsMacOS) {
             # This is the library shipped with .NET Core
             # This is allowed to fail as the user may have installed other versions of dotnet
             Write-Warning '.NET Core links the incorrect OpenSSL, correcting .NET CLI libraries...'
