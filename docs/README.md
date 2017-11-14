@@ -141,6 +141,7 @@ Wanna try more samples? Review the following:
 - [Dynamic Parameters Example][ds]
 - [C# Based Class][csharp]
 - [Navigate Azure Resources][az]
+- [Navigate CIM Classes and Namespaces][cim]
 
 [vscode]: https://github.com/PowerShell/PowerShell/blob/master/docs/learning-powershell/using-vscode.md#editing-with-vs-code
 [readme]: ../README.md#Installing-SHiPS
@@ -152,3 +153,4 @@ Wanna try more samples? Review the following:
 [az]: https://github.com/PowerShell/AzurePSDrive
 [design]: ./Design.md
 [api]: ./PublicAPIsAndMore.md
+[cim]: https://github.com/PowerShell/CimPSDrive
