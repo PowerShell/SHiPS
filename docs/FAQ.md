@@ -2,7 +2,7 @@
 
 ## General
 
-#### What provider cmdlets supported in SHiPS?
+#### Which provider cmdlets are supported in SHiPS?
 
 - Get-Item
 - Get-ChildItem
@@ -13,9 +13,9 @@
 
   - The syntax below is to create a PowerShell drive:
 
-  ```powershell
+```powershell
     new-psdrive -name yourdrivename -psprovider SHiPS -root `yourmodule#yourtype`
-  ```
+```
   - The module and type exists.
   - Open the module, make sure the constructor with one name  parameter is define and set properly.
   - Run `Get-Module` to ensure no module name collision.
@@ -28,15 +28,16 @@
 
 #### I noticed my provider is caching data from Get-ChildItem, How can I refresh data?
 
-    try:
+  try:
 
-    ```powershell
-    dir -force
-    ```
+``` PowerShell
+      dir -force
+
+```
 
 #### Why am I asked constantly to login to Azure even right after I just did it for your sample Azure provider?
 
-    It is possibly caused by some of the Azure modules versions mismatch.
+  - It is possibly caused by some of the Azure modules versions mismatch.
     You can remove all Azure modules and reinstall them on your machine via `Uninstall-Module` and `Install-Module`.
 
 
@@ -55,7 +56,7 @@
 
 #### Can node name contains slash?
 
-    No. `slash` is considered as path delimiter in the PowerShell provider scope.
+  -  No. `slash` is considered as path delimiter in the PowerShell provider scope.
     However, in some cases ,like Azure service, name may contains slashes.
     In that case, it's recommended that an author should consider split the name by slash and make them as its child items.
 
