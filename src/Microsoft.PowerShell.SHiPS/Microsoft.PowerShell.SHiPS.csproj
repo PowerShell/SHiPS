@@ -8,8 +8,7 @@
     <AssemblyOriginatorKeyFile>../signing/35MSSharedLib1024.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
     <PackageId>Microsoft.PowerShell.SHiPS</PackageId>
-    <RuntimeIdentifiers>win7-x64;win81-x64;win10-x64</RuntimeIdentifiers>
-    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+    <RuntimeIdentifiers>win7-x64;win81-x64;win10-x64</RuntimeIdentifiers>	
     <NetStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">2.0.0</NetStandardImplicitPackageVersion>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
