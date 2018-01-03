@@ -24,7 +24,7 @@ function Start-DotnetBootstrap
     [CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact='High')]
     param(
         [string]$Channel = 'preview',
-        [string]$Version = '2.0.0-preview2-006388'              
+        [string]$Version = '2.1.3'              
     )
 
     # Install ours and .NET's dependencies

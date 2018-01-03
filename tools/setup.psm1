@@ -182,8 +182,13 @@ function Invoke-SHiPSTest {
         Push-Location $script:TestHome
 
         $TestResultsFile = Microsoft.PowerShell.Management\Join-Path -Path $script:TestHome -ChildPath "TestResults.xml"
-        & $PowerShellExePath -Command "`$env:PSModulePath ; `$PSVersionTable; `$ProgressPreference = 'SilentlyContinue'; Invoke-Pester -Script $script:TestHome -OutputFormat NUnitXml -OutputFile $TestResultsFile"
-
+        if($script:PowerShellEdition -eq 'Core')
+        {
+            & $PowerShellExePath -Command "`$env:PSModulePath ; `$PSVersionTable; `$ProgressPreference = 'SilentlyContinue';Install-Module Pester -force; Import-Module Pester; Invoke-Pester -Script $script:TestHome -OutputFormat NUnitXml -OutputFile $TestResultsFile"
+        }
+        else {
+            & $PowerShellExePath -Command "`$env:PSModulePath ; `$PSVersionTable; `$ProgressPreference = 'SilentlyContinue'; Invoke-Pester -Script $script:TestHome -OutputFormat NUnitXml -OutputFile $TestResultsFile"
+        }
         $TestResults += [xml](Get-Content -Raw -Path $TestResultsFile)
     }
     finally {
