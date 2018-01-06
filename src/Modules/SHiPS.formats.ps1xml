@@ -3,27 +3,27 @@
     <Controls>
         <Control>
             <Name>SHiPS-GroupingFormat</Name>
-                    <CustomControl>
+                <CustomControl>
                         <CustomEntries>
                             <CustomEntry>
                                 <CustomItem>
                                     <Frame>
                                         <LeftIndent>4</LeftIndent>
                                         <CustomItem>
-                                            <Text>Container: </Text>
+                                            <Text>Directory: </Text>
                                             <ExpressionBinding>
-                                                <PropertyName>PSParentPath</PropertyName>
+                                                <ScriptBlock>$drv = $_.PSDRIVE; $_.PSPARENTPATH -replace ".*#" -replace "^.[^\\/]*","${drv}:"</ScriptBlock>
                                             </ExpressionBinding>
-                                          <NewLine/>
+                                            <NewLine/>
                                         </CustomItem>
                                     </Frame>
                                 </CustomItem>
                             </CustomEntry>
                         </CustomEntries>
-            </CustomControl>
+                </CustomControl>
         </Control>
     </Controls>
-    
+
     <ViewDefinitions>
         <View>
             <Name>CollectionChildren</Name>
