@@ -24,7 +24,8 @@
             "Push-Location",
             "Get-ChildItem",
             "Resolve-Path",
-            "Get-Item"
+            "Get-Item",
+            "Test-Path"
         };
     }
 }
