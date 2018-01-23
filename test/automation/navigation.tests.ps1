@@ -965,6 +965,43 @@ AfterEach{
         dir -Filter William* -Recurse | Should be "William*Recurse"      
 
        }
+
+    It "Test-Path - expect succeed" {
+
+        $a= new-psdrive -name kk -psprovider SHiPS -root Test#Root
+        $a.Name | Should Be "kk"
+
+        # with drive
+        Test-Path kk:\ | Should be $True
+        Test-Path kk:\ -Type Container | Should be $True
+        Test-Path kk:\ -Type Leaf | Should be $False
+
+        Test-Path kk:\Bill\  | Should be $True
+        Test-Path kk:\Bill\ -Type Container | Should be $True
+        Test-Path kk:\Bill\ -Type Leaf  | Should be $False
+
+        Test-Path -Path kk:\Bill\BITS | Should be $True
+        Test-Path -Path kk:\Bill\BITS -Type Container | Should be $False
+        Test-Path -Path  kk:\Bill\BITS -Type Leaf | Should be $True
+
+        Test-Path -LiteralPath kk:\Bill\ | Should be $True
+        Test-Path -LiteralPath kk:\ | Should be $True
+
+        # without drive
+        cd kk:
+
+        test-path .\ | Should be $True
+        test-path .\ -Type Container | Should be $True
+        test-path .\ -Type Leaf | Should be $False
+
+        test-path .\Bill\  | Should be $True
+        test-path .\Bill\ -Type Container | Should be $True
+        test-path .\Bill\ -Type Leaf  | Should be $False
+
+        test-path .\Bill\BITS | Should be $True
+        test-path .\Bill\BITS -Type Container | Should be $False
+        test-path .\Bill\BITS -Type Leaf | Should be $True
+    }
        
  }
   
