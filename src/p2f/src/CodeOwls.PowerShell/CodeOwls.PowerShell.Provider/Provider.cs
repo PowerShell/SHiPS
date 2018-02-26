@@ -43,6 +43,8 @@ using CodeOwls.PowerShell.Paths.Processors;
 using CodeOwls.PowerShell.Provider.Attributes;
 using CodeOwls.PowerShell.Provider.PathNodeProcessors;
 using CodeOwls.PowerShell.Provider.PathNodes;
+using System.Runtime.InteropServices;
+
 
 namespace CodeOwls.PowerShell.Provider
 {
@@ -54,6 +56,34 @@ namespace CodeOwls.PowerShell.Provider
         IContentCmdletProvider
     {
         private static readonly Dictionary<string, Regex> FilterRegexMap = new Dictionary<string, Regex>(StringComparer.OrdinalIgnoreCase);
+        private static readonly string StringSeperator = (IsWindows) ? "\\" : "/";
+        private static readonly char CharSeperator = (IsWindows) ? '\\' : '/';
+        private static bool? _isWindows = null;
+
+        /// <summary>
+        /// True if the current platform is Windows.
+        /// </summary>
+        public static bool IsWindows
+        {
+            get
+            {
+                if (_isWindows.HasValue) { return _isWindows.Value; }
+
+#if CORECLR
+                try
+                {
+                    _isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+                }
+                catch
+                {
+                    _isWindows = false;
+                }
+#else
+                _isWindows = true;
+#endif
+                return _isWindows.Value;
+            }
+        }
 
         internal Drive DefaultDrive
         {
@@ -110,7 +140,9 @@ namespace CodeOwls.PowerShell.Provider
                 return PSDriveInfo.Root + NormalizeWhacks(sub);
             }
 
-            return path.Replace("/", "\\");
+            // Comment out so the path works well on linux too.
+            // return path.Replace("/", "\\");
+            return path;
         }
 
         protected string EnsurePathIsRooted(string path)
@@ -119,7 +151,8 @@ namespace CodeOwls.PowerShell.Provider
             if (null != PSDriveInfo &&
                 !String.IsNullOrEmpty(PSDriveInfo.Root))
             {
-                var separator = PSDriveInfo.Root.EndsWith("\\") ? String.Empty : "\\";
+                var separator = PSDriveInfo.Root.EndsWith(StringSeperator) ? String.Empty : StringSeperator;
+
                 if (!path.StartsWith(PSDriveInfo.Root))
                 {
                     path = PSDriveInfo.Root + separator + path;
@@ -534,7 +567,7 @@ namespace CodeOwls.PowerShell.Provider
             //trim the end slash for the consistent experience to other built-in providers such as FileSystem.
             //Show: drive:\A\B\C>
             //Not:  drive:\A\B\C\>
-            var newChild = child.TrimEnd('\\');
+            var newChild = child.TrimEnd('/', '\\');
             var newPath = NormalizeWhacks(base.MakePath(parent, newChild));
             return newPath;
         }
@@ -572,7 +605,7 @@ namespace CodeOwls.PowerShell.Provider
         private string DoGetChildName(string path)
         {
             path = NormalizeWhacks(path);
-            return path.Split('\\').Last();
+            return path.Split(CharSeperator).Last();
         }
 
         protected void GetItem( string path, IPathNode factory )
@@ -999,7 +1032,8 @@ namespace CodeOwls.PowerShell.Provider
                 {
                     return;
                 }
-                WriteItemObject(i.Name, path + "\\" + i.Name, i.IsCollection);
+
+                WriteItemObject(i.Name, path + StringSeperator + i.Name, i.IsCollection);
             }
         }
 
@@ -1201,7 +1235,7 @@ namespace CodeOwls.PowerShell.Provider
             PSObject pso = PSObject.AsPSObject(value.Item);
             pso.Properties.Add(new PSNoteProperty(ItemModePropertyName, factory.ItemMode));
             // PowerShell issue? we need to trim backslash here to make get-item .\foo\ and get-item .\foo to work 
-            WriteItemObject(pso, nodeContainerPath.TrimEnd('\\'), value.IsCollection);
+            WriteItemObject(pso, nodeContainerPath?.TrimEnd('/', '\\'), value.IsCollection);
         }
 
         private void WritePathNode(string nodeContainerPath, IPathValue value)
