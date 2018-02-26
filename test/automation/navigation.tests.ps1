@@ -8,7 +8,7 @@ Import-Module  $testpath\test.psm1
 Import-Module  $testpath\sampleRecursion.psm1
 Import-Module  $testpath\ctor.psm1
 $script:PowerShellProcessName = if($IsCoreCLR) {'pwsh'} else{ 'PowerShell'}
-$script:IsWindows = (-not (Get-Variable -Name IsWindows -ErrorAction Ignore)) -or $IsWindows
+$script:OnWindows = (-not (Get-Variable -Name IsWindows -ErrorAction Ignore)) -or $IsWindows
 
 
 Describe "Basic Navigation" -Tags "Feature" {
@@ -69,7 +69,7 @@ AfterEach{
        
     }
 
-    It "cd to root" -Skip:($IsCoreCLR -and (-not $script:IsWindows)){
+    It "cd to root" -Skip:($IsCoreCLR -and (-not $script:OnWindows)){
         
        $a= new-psdrive -name jj -psprovider SHiPS -root sampleRecursion#Root
        $a.Name | Should Be "jj"
@@ -104,7 +104,7 @@ AfterEach{
        $h[0].Name | Should Be "Bill"
     }
 
-    It "cd to root for non-Windows" -Skip:($script:IsWindows){
+    It "cd to root for non-Windows" -Skip:($script:OnWindows){
         
        $a= new-psdrive -name jj -psprovider SHiPS -root sampleRecursion#Root
        $a.Name | Should Be "jj"
@@ -384,7 +384,7 @@ AfterEach{
         $b[1].Name | Should be "SHiPSTest"
      }
           
-    It "Get-, Set-, Push-, Pop-Location, Resolve-Path" -Skip:($IsCoreCLR -and (-not $script:IsWindows)) {
+    It "Get-, Set-, Push-, Pop-Location, Resolve-Path" -Skip:($IsCoreCLR -and (-not $script:OnWindows)) {
         
        $a= new-psdrive -name jj -psprovider SHiPS -root sampleRecursion#Root
        $a.Name | Should Be "jj"

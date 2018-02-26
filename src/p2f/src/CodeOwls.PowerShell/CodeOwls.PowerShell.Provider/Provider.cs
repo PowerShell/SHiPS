@@ -55,8 +55,6 @@ namespace CodeOwls.PowerShell.Provider
         IContentCmdletProvider
     {
         private static readonly Dictionary<string, Regex> FilterRegexMap = new Dictionary<string, Regex>(StringComparer.OrdinalIgnoreCase);
-        private static readonly char CharSeparator = Path.DirectorySeparatorChar;
-        private static readonly string StringSeparator = CharSeparator.ToString();
 
         internal Drive DefaultDrive
         {
@@ -103,33 +101,14 @@ namespace CodeOwls.PowerShell.Provider
             return pathResolver != null ? pathResolver.ResolvePath(CreateContext(path), path) : Enumerable.Empty<IPathNode>();
         }
 
-        string NormalizeWhacks( string path )
-        {
-            //The following logic is no longer needed as no platform-specific handling in the code now
-
-            //if( null != PSDriveInfo && 
-            //    !String.IsNullOrEmpty( PSDriveInfo.Root) && 
-            //    path.StartsWith( PSDriveInfo.Root ) )
-            //{
-            //    var sub = path.Substring(PSDriveInfo.Root.Length);
-            //    return PSDriveInfo.Root + NormalizeWhacks(sub);
-            //}
-
-            // return path.Replace("/", "\\"); 
-            return path;
-        }
-
         protected string EnsurePathIsRooted(string path)
         {
-            path = NormalizeWhacks(path);
             if (null != PSDriveInfo &&
                 !String.IsNullOrEmpty(PSDriveInfo.Root))
             {
-                var separator = PSDriveInfo.Root.EndsWith(StringSeparator) ? String.Empty : StringSeparator;
-
                 if (!path.StartsWith(PSDriveInfo.Root))
                 {
-                    path = PSDriveInfo.Root + separator + path;
+                    path = Path.Combine(PSDriveInfo.Root, path);
                 }
             }
 
@@ -541,8 +520,8 @@ namespace CodeOwls.PowerShell.Provider
             //trim the end slash for the consistent experience to other built-in providers such as FileSystem.
             //Show: drive:\A\B\C>
             //Not:  drive:\A\B\C\>
-            var newChild = child.TrimEnd('/', '\\');
-            var newPath = NormalizeWhacks(base.MakePath(parent, newChild));
+            var newChild = child.TrimEnd('/', '\\');     
+            var newPath = base.MakePath(parent, newChild);
             return newPath;
         }
 
@@ -559,14 +538,14 @@ namespace CodeOwls.PowerShell.Provider
                 return path;
             }
 
-            path = NormalizeWhacks(base.GetParentPath(path, root));
+            path = base.GetParentPath(path, root);
             return path;
         }
 
         protected override string NormalizeRelativePath(string path, string basePath)
         {
 
-            Func<string> a = () => NormalizeWhacks(base.NormalizeRelativePath(path, basePath));
+            Func<string> a = () => base.NormalizeRelativePath(path, basePath);
             return ExecuteAndLog(a, "NormalizeRelativePath", path, basePath);
         }
 
@@ -578,8 +557,7 @@ namespace CodeOwls.PowerShell.Provider
 
         private string DoGetChildName(string path)
         {
-            path = NormalizeWhacks(path);
-            return path.Split(CharSeparator).Last();
+            return path.Split(Path.DirectorySeparatorChar).Last();
         }
 
         protected void GetItem( string path, IPathNode factory )
@@ -1007,7 +985,7 @@ namespace CodeOwls.PowerShell.Provider
                     return;
                 }
 
-                WriteItemObject(i.Name, path + StringSeparator+ i.Name, i.IsCollection);
+                WriteItemObject(i.Name, Path.Combine(path, i.Name), i.IsCollection);
             }
         }
 
