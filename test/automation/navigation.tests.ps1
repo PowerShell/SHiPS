@@ -104,6 +104,42 @@ AfterEach{
        $h[0].Name | Should Be "Bill"
     }
 
+    It "cd to root for non-Windows" -Skip:($IsWindows){
+        
+       $a= new-psdrive -name jj -psprovider SHiPS -root sampleRecursion#Root
+       $a.Name | Should Be "jj"
+
+       Set-Location jj:
+       $pwd.Path | Should be "jj:/"
+
+       cd jj:/austin/explorer1/explorer2/explorer3
+       $b=dir
+       $b.Name | Should be "explorer4"
+
+       cd jj:/
+       $c=dir
+       $c[0].Name | Should be "Austin"
+           
+       cd Austin
+       $d=dir
+       $d[0].Name | Should be "explorer1"
+      
+       $e= new-psdrive -name kk -psprovider SHiPS -root Test#Root        
+       $e.Name | Should Be "kk" 
+
+       cd kk:/William
+       $f=dir
+       $f[0].Name | Should Be "Chris Jr."
+
+       cd jj:/
+       $g=dir
+       $g[0].Name | Should be "Austin"
+
+       cd kk:/
+       $h=dir
+       $h[0].Name | Should Be "Bill"
+    }
+
     It "new-psdrive, cd into it and dir" {
         
        $a= new-psdrive -name jj -psprovider SHiPS -root Test#Root        

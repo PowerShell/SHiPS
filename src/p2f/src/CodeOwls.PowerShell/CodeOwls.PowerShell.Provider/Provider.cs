@@ -56,8 +56,8 @@ namespace CodeOwls.PowerShell.Provider
         IContentCmdletProvider
     {
         private static readonly Dictionary<string, Regex> FilterRegexMap = new Dictionary<string, Regex>(StringComparer.OrdinalIgnoreCase);
-        private static readonly string StringSeperator = (IsWindows) ? "\\" : "/";
-        private static readonly char CharSeperator = (IsWindows) ? '\\' : '/';
+        private static readonly string StringSeparator = (IsWindows) ? "\\" : "/";
+        private static readonly char CharSeparator = (IsWindows) ? '\\' : '/';
         private static bool? _isWindows = null;
 
         /// <summary>
@@ -151,7 +151,7 @@ namespace CodeOwls.PowerShell.Provider
             if (null != PSDriveInfo &&
                 !String.IsNullOrEmpty(PSDriveInfo.Root))
             {
-                var separator = PSDriveInfo.Root.EndsWith(StringSeperator) ? String.Empty : StringSeperator;
+                var separator = PSDriveInfo.Root.EndsWith(StringSeparator) ? String.Empty : StringSeparator;
 
                 if (!path.StartsWith(PSDriveInfo.Root))
                 {
@@ -605,7 +605,7 @@ namespace CodeOwls.PowerShell.Provider
         private string DoGetChildName(string path)
         {
             path = NormalizeWhacks(path);
-            return path.Split(CharSeperator).Last();
+            return path.Split(CharSeparator).Last();
         }
 
         protected void GetItem( string path, IPathNode factory )
@@ -1033,7 +1033,7 @@ namespace CodeOwls.PowerShell.Provider
                     return;
                 }
 
-                WriteItemObject(i.Name, path + StringSeperator + i.Name, i.IsCollection);
+                WriteItemObject(i.Name, path + StringSeparator+ i.Name, i.IsCollection);
             }
         }
 
