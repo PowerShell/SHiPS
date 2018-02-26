@@ -43,7 +43,6 @@ using CodeOwls.PowerShell.Paths.Processors;
 using CodeOwls.PowerShell.Provider.Attributes;
 using CodeOwls.PowerShell.Provider.PathNodeProcessors;
 using CodeOwls.PowerShell.Provider.PathNodes;
-using System.Runtime.InteropServices;
 
 
 namespace CodeOwls.PowerShell.Provider
@@ -56,34 +55,8 @@ namespace CodeOwls.PowerShell.Provider
         IContentCmdletProvider
     {
         private static readonly Dictionary<string, Regex> FilterRegexMap = new Dictionary<string, Regex>(StringComparer.OrdinalIgnoreCase);
-        private static readonly string StringSeparator = (IsWindows) ? "\\" : "/";
-        private static readonly char CharSeparator = (IsWindows) ? '\\' : '/';
-        private static bool? _isWindows = null;
-
-        /// <summary>
-        /// True if the current platform is Windows.
-        /// </summary>
-        public static bool IsWindows
-        {
-            get
-            {
-                if (_isWindows.HasValue) { return _isWindows.Value; }
-
-#if CORECLR
-                try
-                {
-                    _isWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
-                }
-                catch
-                {
-                    _isWindows = false;
-                }
-#else
-                _isWindows = true;
-#endif
-                return _isWindows.Value;
-            }
-        }
+        private static readonly char CharSeparator = Path.DirectorySeparatorChar;
+        private static readonly string StringSeparator = CharSeparator.ToString();
 
         internal Drive DefaultDrive
         {
@@ -132,16 +105,17 @@ namespace CodeOwls.PowerShell.Provider
 
         string NormalizeWhacks( string path )
         {
-            if( null != PSDriveInfo && 
-                !String.IsNullOrEmpty( PSDriveInfo.Root) && 
-                path.StartsWith( PSDriveInfo.Root ) )
-            {
-                var sub = path.Substring(PSDriveInfo.Root.Length);
-                return PSDriveInfo.Root + NormalizeWhacks(sub);
-            }
+            //The following logic is no longer needed as no platform-specific handling in the code now
 
-            // Comment out so the path works well on linux too.
-            // return path.Replace("/", "\\");
+            //if( null != PSDriveInfo && 
+            //    !String.IsNullOrEmpty( PSDriveInfo.Root) && 
+            //    path.StartsWith( PSDriveInfo.Root ) )
+            //{
+            //    var sub = path.Substring(PSDriveInfo.Root.Length);
+            //    return PSDriveInfo.Root + NormalizeWhacks(sub);
+            //}
+
+            // return path.Replace("/", "\\"); 
             return path;
         }
 
