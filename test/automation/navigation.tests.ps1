@@ -8,7 +8,7 @@ Import-Module  $testpath\test.psm1
 Import-Module  $testpath\sampleRecursion.psm1
 Import-Module  $testpath\ctor.psm1
 $script:PowerShellProcessName = if($IsCoreCLR) {'pwsh'} else{ 'PowerShell'}
-
+$script:OnWindows = (-not (Get-Variable -Name IsWindows -ErrorAction Ignore)) -or $IsWindows
 
 
 Describe "Basic Navigation" -Tags "Feature" {
@@ -69,7 +69,7 @@ AfterEach{
        
     }
 
-    It "cd to root" -Skip:($IsCoreCLR -and (-not $IsWindows)){
+    It "cd to root" -Skip:($IsCoreCLR -and (-not $script:OnWindows)){
         
        $a= new-psdrive -name jj -psprovider SHiPS -root sampleRecursion#Root
        $a.Name | Should Be "jj"
@@ -100,6 +100,42 @@ AfterEach{
 
        cd kk:
        cd \
+       $h=dir
+       $h[0].Name | Should Be "Bill"
+    }
+
+    It "cd to root for non-Windows" -Skip:($script:OnWindows){
+        
+       $a= new-psdrive -name jj -psprovider SHiPS -root sampleRecursion#Root
+       $a.Name | Should Be "jj"
+
+       Set-Location jj:
+       $pwd.Path | Should be "jj:/"
+
+       cd jj:/austin/explorer1/explorer2/explorer3
+       $b=dir
+       $b.Name | Should be "explorer4"
+
+       cd jj:/
+       $c=dir
+       $c[0].Name | Should be "Austin"
+           
+       cd Austin
+       $d=dir
+       $d[0].Name | Should be "explorer1"
+      
+       $e= new-psdrive -name kk -psprovider SHiPS -root Test#Root        
+       $e.Name | Should Be "kk" 
+
+       cd kk:/William
+       $f=dir
+       $f[0].Name | Should Be "Chris Jr."
+
+       cd jj:/
+       $g=dir
+       $g[0].Name | Should be "Austin"
+
+       cd kk:/
        $h=dir
        $h[0].Name | Should Be "Bill"
     }
@@ -348,7 +384,7 @@ AfterEach{
         $b[1].Name | Should be "SHiPSTest"
      }
           
-    It "Get-, Set-, Push-, Pop-Location, Resolve-Path" -Skip:($IsCoreCLR -and (-not $IsWindows)) {
+    It "Get-, Set-, Push-, Pop-Location, Resolve-Path" -Skip:($IsCoreCLR -and (-not $script:OnWindows)) {
         
        $a= new-psdrive -name jj -psprovider SHiPS -root sampleRecursion#Root
        $a.Name | Should Be "jj"

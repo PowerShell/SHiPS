@@ -44,6 +44,7 @@ using CodeOwls.PowerShell.Provider.Attributes;
 using CodeOwls.PowerShell.Provider.PathNodeProcessors;
 using CodeOwls.PowerShell.Provider.PathNodes;
 
+
 namespace CodeOwls.PowerShell.Provider
 {
     //[CmdletProvider("YourProviderName", ProviderCapabilities.ShouldProcess)]
@@ -100,29 +101,14 @@ namespace CodeOwls.PowerShell.Provider
             return pathResolver != null ? pathResolver.ResolvePath(CreateContext(path), path) : Enumerable.Empty<IPathNode>();
         }
 
-        string NormalizeWhacks( string path )
-        {
-            if( null != PSDriveInfo && 
-                !String.IsNullOrEmpty( PSDriveInfo.Root) && 
-                path.StartsWith( PSDriveInfo.Root ) )
-            {
-                var sub = path.Substring(PSDriveInfo.Root.Length);
-                return PSDriveInfo.Root + NormalizeWhacks(sub);
-            }
-
-            return path.Replace("/", "\\");
-        }
-
         protected string EnsurePathIsRooted(string path)
         {
-            path = NormalizeWhacks(path);
             if (null != PSDriveInfo &&
                 !String.IsNullOrEmpty(PSDriveInfo.Root))
             {
-                var separator = PSDriveInfo.Root.EndsWith("\\") ? String.Empty : "\\";
                 if (!path.StartsWith(PSDriveInfo.Root))
                 {
-                    path = PSDriveInfo.Root + separator + path;
+                    path = Path.Combine(PSDriveInfo.Root, path);
                 }
             }
 
@@ -534,8 +520,8 @@ namespace CodeOwls.PowerShell.Provider
             //trim the end slash for the consistent experience to other built-in providers such as FileSystem.
             //Show: drive:\A\B\C>
             //Not:  drive:\A\B\C\>
-            var newChild = child.TrimEnd('\\');
-            var newPath = NormalizeWhacks(base.MakePath(parent, newChild));
+            var newChild = child.TrimEnd('/', '\\');     
+            var newPath = base.MakePath(parent, newChild);
             return newPath;
         }
 
@@ -552,14 +538,14 @@ namespace CodeOwls.PowerShell.Provider
                 return path;
             }
 
-            path = NormalizeWhacks(base.GetParentPath(path, root));
+            path = base.GetParentPath(path, root);
             return path;
         }
 
         protected override string NormalizeRelativePath(string path, string basePath)
         {
 
-            Func<string> a = () => NormalizeWhacks(base.NormalizeRelativePath(path, basePath));
+            Func<string> a = () => base.NormalizeRelativePath(path, basePath);
             return ExecuteAndLog(a, "NormalizeRelativePath", path, basePath);
         }
 
@@ -571,8 +557,7 @@ namespace CodeOwls.PowerShell.Provider
 
         private string DoGetChildName(string path)
         {
-            path = NormalizeWhacks(path);
-            return path.Split('\\').Last();
+            return path.Split(Path.DirectorySeparatorChar).Last();
         }
 
         protected void GetItem( string path, IPathNode factory )
@@ -999,7 +984,8 @@ namespace CodeOwls.PowerShell.Provider
                 {
                     return;
                 }
-                WriteItemObject(i.Name, path + "\\" + i.Name, i.IsCollection);
+
+                WriteItemObject(i.Name, Path.Combine(path, i.Name), i.IsCollection);
             }
         }
 
@@ -1201,7 +1187,7 @@ namespace CodeOwls.PowerShell.Provider
             PSObject pso = PSObject.AsPSObject(value.Item);
             pso.Properties.Add(new PSNoteProperty(ItemModePropertyName, factory.ItemMode));
             // PowerShell issue? we need to trim backslash here to make get-item .\foo\ and get-item .\foo to work 
-            WriteItemObject(pso, nodeContainerPath.TrimEnd('\\'), value.IsCollection);
+            WriteItemObject(pso, nodeContainerPath?.TrimEnd('/', '\\'), value.IsCollection);
         }
 
         private void WritePathNode(string nodeContainerPath, IPathValue value)
