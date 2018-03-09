@@ -55,39 +55,36 @@ function Install-Dependencies {
     }
 }
 
+
 function Get-PSHome {
     $PowerShellHome = $PSHOME
 
-    # Install PowerShell Core MSI on Windows.
+    # Install PowerShell Core on Windows.
     if(($script:PowerShellEdition -eq 'Core') -and $script:IsWindows)
     {
-        $PowerShellMsiPath = Get-PowerShellCoreBuild -AppVeyorProjectName 'PowerShell'
-        $PowerShellInstallPath = "$env:SystemDrive\PowerShellCore"
-        <#
-        $PowerShellMsiUrl = 'https://github.com/PowerShell/PowerShell/releases/download/v6.0.0-alpha.11/PowerShell_6.0.0.11-alpha.11-win81-x64.msi'
-        $PowerShellMsiName = 'PowerShell_6.0.0.11-alpha.11-win81-x64.msi'
-        $PowerShellMsiPath = Microsoft.PowerShell.Management\Join-Path -Path $PSScriptRoot -ChildPath $PowerShellMsiName
-        Microsoft.PowerShell.Utility\Invoke-WebRequest -Uri $PowerShellMsiUrl -OutFile $PowerShellMsiPath
-        #>
-        Start-Process -FilePath "$env:SystemRoot\System32\msiexec.exe" -ArgumentList "/qb INSTALLFOLDER=$PowerShellInstallPath /i $PowerShellMsiPath" -Wait
-        
-        $PowerShellVersionPath = Get-ChildItem -Path $PowerShellInstallPath -Attributes Directory | Select-Object -First 1 -ErrorAction Ignore
-        $PowerShellHome = $null
-        if ($PowerShellVersionPath) {
-            $PowerShellHome = $PowerShellVersionPath.FullName
-        }
-        
+        # install-powershell.ps1 depends on NuGet provider. Let's install it first.
+        $null=Install-PackageProvider -Name NuGet -Force        
+
+        ## need to specify TLS version 1.2 since GitHub API requires it
+        [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
+      
+        $InstallPSCoreUrl = 'https://aka.ms/install-pscore'
+        $InstallPSCorePath = Microsoft.PowerShell.Management\Join-Path -Path $PSScriptRoot -ChildPath 'install-powershell.ps1'
+        $null=Microsoft.PowerShell.Utility\Invoke-RestMethod -Uri $InstallPSCoreUrl -OutFile $InstallPSCorePath
+
+        $PowerShellHome = "$env:SystemDrive\PowerShellCore"
+        $null=& $InstallPSCorePath -Destination $PowerShellHome -Daily -AddToPath
+
         if(-not $PowerShellHome -or -not (Microsoft.PowerShell.Management\Test-Path -Path $PowerShellHome -PathType Container))
         {
             Throw "$PowerShellHome path is not available."  
         }
 
-        Write-Host ("PowerShell Home Path '{0}'" -f $PowerShellHome)
+        Write-Host ("PowerShell Home Path: '{0}'" -f $PowerShellHome)
     }
 
     return $PowerShellHome
 }
-
 
 function Install-SHiPS 
 {    
@@ -105,7 +102,8 @@ function Install-SHiPS
 
     # Install PowerShell it does not exist
     $PowerShellHome = Get-PSHome
-
+    Write-Verbose ("PowerShell Home: '{0}'" -f $PowerShellHome)
+    
     #
     # Setup Test Environment
     #  
@@ -116,6 +114,8 @@ function Install-SHiPS
     {
         $SHiPSModulesPath = Microsoft.PowerShell.Management\Join-Path -Path $PowerShellHome -ChildPath 'Modules'
     }
+    Write-Verbose ("SHiPSModulesPath: '{0}'" -f $SHiPSModulesPath)
+    
 
     # Copy SHiPS module to PSHOME    
    
@@ -128,7 +128,7 @@ function Install-SHiPS
 
     # Copy binaries to coreclr and fullclr folder. $testframework is coreclr or fullclr
  
-    Write-Host "Copied latest SHiPS to $InstallLocation"
+    Write-Verbose "Copied latest SHiPS to $InstallLocation"
     Microsoft.PowerShell.Management\Copy-Item "$OutputBin\*" -Destination $InstallLocation\ -Recurse -Force -verbose
    
 
@@ -159,20 +159,13 @@ function Invoke-SHiPSTest {
     $PowerShellHome = Install-SHiPS -TestModule
     Write-Host "PowerShellHome is $PowerShellHome IsWindows=$script:IsWindows script:IsCoreCLR=$script:IsCoreCLR IsCoreCLR=$IsCoreCLR PowerShellEdition=$script:PowerShellEdition"
      
-    if($script:IsWindows){
-        $PowerShellExePath = Join-Path -Path $PowerShellHome -ChildPath 'PowerShell.exe'
-
-        if($script:PowerShellEdition -eq 'Core')
-        {
-            # On Windows tests run agaist the pscore from its checkin build
-            $PowerShellExePath = Join-Path -Path $PowerShellHome -ChildPath 'pwsh.exe'
-            Write-Verbose "PowerShellExePath=$PowerShellExePath"
-        }
-    } else {
-            # On Linux tests run against the pscore from its official release package          
-            $PowerShellExePath = 'pwsh'
+    if($script:PowerShellEdition -eq 'Core')
+    {
+        $PowerShellExePath = 'pwsh'
     }
-
+    else {
+        $PowerShellExePath = Join-Path -Path $PowerShellHome -ChildPath 'PowerShell.exe'       
+    }
 
     #
     # Invoke test
@@ -228,135 +221,6 @@ function Test-DailyBuild
 
     return $false
 }
-
-function Get-PowerShellCoreBuild {
-    [CmdletBinding()]
-    param(
-        [Parameter()]
-        [string]
-        $AppVeyorProjectName = 'powershell-f975h',
-
-        [Parameter()]
-        [string]
-        $GitHubBranchName = 'master',
-
-        [Parameter()]
-        [string]
-        $Destination = 'C:\projects'
-    )
-
-    $appVeyorConstants =  @{ 
-        AccountName = 'powershell'
-        ApiUrl = 'https://ci.appveyor.com/api'
-    }
-
-    $foundGood = $false
-    $records = 20
-    $lastBuildId = $null
-    $project = $null
-
-    while(!$foundGood)
-    {
-        $startBuildIdString = [string]::Empty
-        if($lastBuildId)
-        {
-            $startBuildIdString = "&startBuildId=$lastBuildId"
-        }
-
-
-        $project = Invoke-RestMethod -Method Get -Uri "$($appVeyorConstants.ApiUrl)/projects/$($appVeyorConstants.AccountName)/$AppVeyorProjectName/history?recordsNumber=$records$startBuildIdString&branch=$GitHubBranchName"
-
-        foreach($build in $project.builds)
-        {
-            $version = $build.version
-            $status = $build.status
-            if($status -ieq 'success')
-            {
-                Write-Verbose "Using PowerShell Version: $version"
-
-                $foundGood = $true
-
-                Write-Host "Uri = $($appVeyorConstants.ApiUrl)/projects/$($appVeyorConstants.AccountName)/$AppVeyorProjectName/build/$version"
-                $project = Invoke-RestMethod -Method Get -Uri "$($appVeyorConstants.ApiUrl)/projects/$($appVeyorConstants.AccountName)/$AppVeyorProjectName/build/$version" 
-                break
-            }
-            else 
-            {
-                Write-Warning "There is a newer PowerShell build, $version, which is in status: $status"
-            }
-        }
-    }
-
-    # get project with last build details
-    if (-not $project) {
-
-        throw "Cannot find a good build for $GitHubBranchName"
-    }
-
-    # we assume here that build has a single job
-    # get this job id
-
-    $jobId = $project.build.jobs[0].jobId
-    Write-Verbose "jobId=$jobId"
-    
-    Write-Verbose "$project.build.jobs[0]"
-
-    $artifactsUrl = "$($appVeyorConstants.ApiUrl)/buildjobs/$jobId/artifacts"
-
-    Write-Verbose "Uri=$artifactsUrl"
-    $artifacts = Invoke-RestMethod -Method Get -Uri $artifactsUrl 
-
-    if (-not $artifacts) {
-        throw "Cannot find artifacts in $artifactsUrl"
-    }
-
-    # Get PowerShellCore.msi artifacts for Windows
-    $artifacts = $artifacts | where-object { $_.filename -like '*powershell*.msi'}
-    $returnArtifactsLocation = @{}
-
-    #download artifacts to a temp location
-    foreach($artifact in $artifacts)
-    {
-        $artifactPath = $artifact[0].fileName
-        $artifactFileName = Split-Path -Path $artifactPath -Leaf
-
-        # artifact will be downloaded as 
-        $tempLocalArtifactPath = "$Destination\Temp-$artifactFileName-$jobId.msi"
-        $localArtifactPath = "$Destination\$artifactFileName-$jobId.msi"
-        if(!(Test-Path $localArtifactPath))
-        {
-            # download artifact
-            # -OutFile - is local file name where artifact will be downloaded into
-
-            try 
-            {
-                Write-Host "PowerShell MSI URL: $($appVeyorConstants.ApiUrl)/buildjobs/$jobId/artifacts/$artifactPath"
-                $ProgressPreference = 'SilentlyContinue'
-                Invoke-WebRequest -Method Get -Uri "$($appVeyorConstants.ApiUrl)/buildjobs/$jobId/artifacts/$artifactPath" `
-                    -OutFile $tempLocalArtifactPath  -UseBasicParsing -DisableKeepAlive
-
-                Move-Item -Path $tempLocalArtifactPath -Destination $localArtifactPath   
-            } 
-            finally
-            {
-                $ProgressPreference = 'Continue'
-                if(test-path $tempLocalArtifactPath)
-                {
-                    remove-item $tempLocalArtifactPath
-                }
-            } 
-        }
-    }
-
-    if(-not $localArtifactPath)
-    {
-        throw "Cannot find PowerShell.msi from PowerShell artifacts."
-    }
-
-    Write-Verbose $localArtifactPath
-    return $localArtifactPath
-}
-
 function Use-IgnoreStrongName
 {
     if($script:IsWindows)
