@@ -12,6 +12,7 @@ using System.Reflection;
 using CodeOwls.PowerShell.Provider;
 using System.Text.RegularExpressions;
 using CodeOwls.PowerShell.Provider.PathNodes;
+using System.Runtime.InteropServices;
 
 namespace Microsoft.PowerShell.SHiPS
 {
@@ -32,12 +33,12 @@ namespace Microsoft.PowerShell.SHiPS
         //Support pattern: Module#Type
         private static readonly Regex ModuleAndTypeRegex = new Regex(@"^(.[^#]+)#(.[^\\]*)\\*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
-
         internal SHiPSDrive(PSDriveInfo driveInfo, string rootInfo, SHiPSProvider provider)
             : base(driveInfo)
         {
             _rootInfo = rootInfo;
             _provider = provider;
+            Provider.Home = HomePath;
             DriveTrimRegex = new Regex("^*?(" + Regex.Escape(Root) + ")(.*)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
             InitializeRoot();
         }
@@ -134,7 +135,7 @@ namespace Microsoft.PowerShell.SHiPS
 
             RootNode = node;
              
-            RootPathNode = new ContainerNodeService(this, node); 
+            RootPathNode = new ContainerNodeService(this, node);
 
             // Getting the Get-ChildItem default parameters before running any commands. It will be used for checking
             // whether a user is passing in any dynamic parameters.
@@ -273,6 +274,16 @@ namespace Microsoft.PowerShell.SHiPS
             var match = ModuleAndTypeRegex.Match(leaf);
             return match.Success ? match : null;
         }
+
+        internal static string HomePath
+        {
+            get
+            {
+                var path =  RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "USERPROFILE" : "HOME";
+                return Environment.GetEnvironmentVariable(path);
+            }
+        }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
