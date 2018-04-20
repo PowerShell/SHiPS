@@ -20,10 +20,11 @@ namespace Microsoft.PowerShell.SHiPS
         private readonly SHiPSDirectory _container;
         private static readonly string _directory = "+";
 
-        internal ContainerNodeService(SHiPSDrive drive, object container)
+        internal ContainerNodeService(SHiPSDrive drive, object container, SHiPSDirectory parent)
         {
             _drive = drive;
             _container = container as SHiPSDirectory;
+            if (_container != null) { _container.Parent = parent; }
         }
 
         internal SHiPSDirectory ContainerNode

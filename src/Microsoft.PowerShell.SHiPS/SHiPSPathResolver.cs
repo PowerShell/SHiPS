@@ -102,9 +102,14 @@ namespace Microsoft.PowerShell.SHiPS
             }
 
             IPathNode child = null;
+            // Filter out any empty or null elements. Note: 'Where' statement preserves the original order.
+            // https://stackoverflow.com/questions/204505/preserving-order-with-linq
+            var partsExcludeNullOrEmpty = parts.Where(each => !string.IsNullOrWhiteSpace(each)).ToList();
+
+            var pwdParts = _drive.CurrentLocation.Split('/', '\\').Where(each => !string.IsNullOrWhiteSpace(each)).ToList();
 
             // Travel through the path to ensure each node from the root to leaf all exists
-            foreach (var part in parts.Where(each => !string.IsNullOrWhiteSpace(each)))
+            for (var i = 0; i < partsExcludeNullOrEmpty.Count; i++)
             {
                 // Making sure to obey the StopProcessing.
                 if (context.Stopping)
@@ -112,16 +117,22 @@ namespace Microsoft.PowerShell.SHiPS
                     return null;
                 }
 
-                child = GetNodeObjectFromPath(context, item, part, force);
+                // We do not need to refresh the entire path while resolving the path. Refresh the last node only.
+                // Cases:
+                // dir -force                    GetChildItems() will refresh the data. ItemExists() will not go out fetch data.
+                // dir .\leaf.ps1 -force         GetItem() refreshes the last node under the current path.
+                // dir .\foo\bar\leaf.ps1 -force GetItem() refreshes the last node under the current path, i.e., Node 'bar' folder in this example.
+
+                child = GetNodeObjectFromPath(context, item, partsExcludeNullOrEmpty[i], force && (i > pwdParts.Count - 1));
 
                 if (child == null)
                 {
                     //the node on the path does not exist
                     break;
                 }
-                
+
                 // is a shipsdirectory?
-                item = child as ContainerNodeService;               
+                item = child as ContainerNodeService;
             }
 
             // Save the info for the node just visited

@@ -86,8 +86,14 @@ namespace Microsoft.PowerShell.SHiPS
 
                 if (errors.Count > 0)
                 {
+                    //remove the cached child nodes for the failed node
+                    node.Children?.Clear();
+
+                    //remove the node from its parent's children list so that it won't show again when a user types dir -force
+                    node.Parent?.Children.RemoveSafe(node.Name);
+
                     // report the error if there are any
-                    ReportErrors(context, errors);
+                    ReportErrors(node.Name, context, errors);
                     //do not yield break here as we need to display the rest of outputs
                 }
 
@@ -323,14 +329,12 @@ namespace Microsoft.PowerShell.SHiPS
             }
         }
 
-        private static void ReportErrors(IProviderContext context, IEnumerable<ErrorRecord> errors)
+        private static void ReportErrors(string item, IProviderContext context, IEnumerable<ErrorRecord> errors)
         {
             foreach (var error in errors)
             {
-                context.ReportError(error.FullyQualifiedErrorId,
-                    error.ErrorDetails == null ? error.Exception.Message : error.ErrorDetails.Message,
-                    error.CategoryInfo.Category,
-                    "SHiPS");
+                var msg = Resource.MaybeItemNotExist.StringFormat(item, error.ErrorDetails == null ? error.Exception.Message : error.ErrorDetails.Message);
+                context.ReportError(error.FullyQualifiedErrorId, msg, error.CategoryInfo.Category, "SHiPS");
 
                 if (!string.IsNullOrWhiteSpace(error.Exception.StackTrace))
                 {

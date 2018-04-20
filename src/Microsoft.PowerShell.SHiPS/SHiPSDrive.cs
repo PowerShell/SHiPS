@@ -135,7 +135,7 @@ namespace Microsoft.PowerShell.SHiPS
 
             RootNode = node;
              
-            RootPathNode = new ContainerNodeService(this, node);
+            RootPathNode = new ContainerNodeService(this, node, null);
 
             // Getting the Get-ChildItem default parameters before running any commands. It will be used for checking
             // whether a user is passing in any dynamic parameters.
