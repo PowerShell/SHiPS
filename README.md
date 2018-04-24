@@ -60,7 +60,7 @@ cd <yourclonefolder>\SHiPS\src\
 .\bootstrap.ps1
 
 # build SHiPS fullclr
-.\build.ps1 net471
+.\build.ps1 net46
 
 # or build SHiPS on .Net CoreCLR
 .\build.ps1 netcoreapp2.0

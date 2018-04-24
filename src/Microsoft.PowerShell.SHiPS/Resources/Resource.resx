@@ -168,7 +168,7 @@
     <value>Trying '{0}'.</value>
   </data>
   <data name="MaybeItemNotExist" xml:space="preserve">
-    <value>The item '{0}' may no longer exists. Details: {1}.</value>
+    <value>Item '{0}' may no longer exists. Details: {1}.</value>
     <comment>0 - item path 1- detail error message</comment>
   </data>
 </root>

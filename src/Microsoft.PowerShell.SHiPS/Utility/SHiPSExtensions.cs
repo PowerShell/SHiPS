@@ -137,6 +137,15 @@ namespace Microsoft.PowerShell.SHiPS
 
             return path1.TrimEnd('\\', '/');
         }
+
+        internal static object HomePath(this string name, SHiPSProvider provider)
+        {
+            if(string.IsNullOrWhiteSpace(name) || provider == null) { return null;}
+
+            var command = "Get-Variable {0}".StringFormat(name);
+            var varObject = provider.SessionState.InvokeCommand.InvokeScript(command, null).FirstOrDefault();
+            return (varObject?.BaseObject as PSVariable)?.Value;
+        }
     }
 
     internal static class CollectionExtensions

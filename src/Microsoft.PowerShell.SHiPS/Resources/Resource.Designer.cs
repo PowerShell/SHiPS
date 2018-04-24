@@ -142,7 +142,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The item &apos;{0}&apos; may no longer exists. Details: {1}..
+        ///   Looks up a localized string similar to Item &apos;{0}&apos; may no longer exists. Details: {1}..
         /// </summary>
         internal static string MaybeItemNotExist {
             get {

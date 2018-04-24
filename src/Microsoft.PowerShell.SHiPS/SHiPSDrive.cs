@@ -12,7 +12,6 @@ using System.Reflection;
 using CodeOwls.PowerShell.Provider;
 using System.Text.RegularExpressions;
 using CodeOwls.PowerShell.Provider.PathNodes;
-using System.Runtime.InteropServices;
 
 namespace Microsoft.PowerShell.SHiPS
 {
@@ -32,13 +31,14 @@ namespace Microsoft.PowerShell.SHiPS
         private Runspace _runspace;
         //Support pattern: Module#Type
         private static readonly Regex ModuleAndTypeRegex = new Regex(@"^(.[^#]+)#(.[^\\]*)\\*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        internal const string _homePath = "HOME";
 
         internal SHiPSDrive(PSDriveInfo driveInfo, string rootInfo, SHiPSProvider provider)
             : base(driveInfo)
         {
             _rootInfo = rootInfo;
             _provider = provider;
-            Provider.Home = HomePath;
+            Provider.Home = _homePath.HomePath(provider) as string;
             DriveTrimRegex = new Regex("^*?(" + Regex.Escape(Root) + ")(.*)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
             InitializeRoot();
         }
@@ -273,15 +273,6 @@ namespace Microsoft.PowerShell.SHiPS
 
             var match = ModuleAndTypeRegex.Match(leaf);
             return match.Success ? match : null;
-        }
-
-        internal static string HomePath
-        {
-            get
-            {
-                var path =  RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "USERPROFILE" : "HOME";
-                return Environment.GetEnvironmentVariable(path);
-            }
         }
 
         protected virtual void Dispose(bool disposing)

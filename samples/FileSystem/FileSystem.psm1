@@ -1,12 +1,12 @@
 ﻿<#
-    Modeling the Windows FileSystem
+    Modeling the FileSystem
 
     Try it:
         Assuming you have done git clone and run build.ps1, cd to your git clone folder and try the following.
 
         Import-Module  SHiPS
         Import-Module  .\samples\FileSystem.psm1
-        new-psdrive -name FS -psprovider SHiPS -root FileSystem#C
+        new-psdrive -name FS -psprovider SHiPS -root FileSystem#Home
         cd FS:
         dir
 
@@ -16,15 +16,15 @@ using namespace Microsoft.PowerShell.SHiPS
 
 
 [SHiPSProvider(BuiltinProgress=$false)]
-class C : SHiPSDirectory
+class Home : SHiPSDirectory
 {
     Hidden [object]$data = $null
 
-    C([string]$name): base($name)
+    Home([string]$name): base($name)
     {
     }
 
-    C ([string]$name, [object]$data) : base ($name)
+    Home ([string]$name, [object]$data) : base ($name)
     {
         $this.data = $data
     }
@@ -35,12 +35,12 @@ class C : SHiPSDirectory
        $obj =  @()
 
        Write-Verbose $data
-
-       dir $data -force | ForEach-Object {
+       
+       dir $data | ForEach-Object {
 
                 if($_.PSIsContainer)
                 {
-                    $obj+=[C]::new($_.Name, $_.FullName)
+                    $obj+=[Home]::new($_.Name, $_.FullName)
                 }
                 else
                 {
@@ -66,7 +66,7 @@ class C : SHiPSDirectory
               $driveName = $this.GetType().Name
               Write-Verbose "Operating on $driveName"
 
-              return $this.GetChildItemImpl("Microsoft.PowerShell.Core\FileSystem::$($driveName):\")
+              return $this.GetChildItemImpl("~")
         }
 
         return $obj;
@@ -77,17 +77,5 @@ class CLeaf : SHiPSLeaf
 {
     CLeaf([string]$name): base($name)
     {
-    }
-}
-
-class E : C
-{
-    E([string]$name): base($name)
-    {
-    }
-
-     [object[]] GetChildItem()
-     {
-        return ([C]$this).GetChildItem()
     }
 }

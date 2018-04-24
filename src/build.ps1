@@ -1,5 +1,5 @@
 ﻿param(
-    [ValidateSet('net471', 'netcoreapp2.0')]
+    [ValidateSet('net46', 'netcoreapp2.0')]
     [string]$Framework = 'netcoreapp2.0',
 
     [ValidateSet('Debug', 'Release')]
