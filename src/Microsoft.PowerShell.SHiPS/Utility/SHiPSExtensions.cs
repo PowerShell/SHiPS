@@ -142,6 +142,8 @@ namespace Microsoft.PowerShell.SHiPS
         {
             if(string.IsNullOrWhiteSpace(name) || provider == null) { return null;}
 
+            //TODO: We should change the following to RuntimeInformation.IsOSPlatform to optimize the operation
+            // when we move to .netstandard build (netcoreapp 2.0 and .net 4.7.1)
             var command = "Get-Variable {0}".StringFormat(name);
             var varObject = provider.SessionState.InvokeCommand.InvokeScript(command, null).FirstOrDefault();
             return (varObject?.BaseObject as PSVariable)?.Value;

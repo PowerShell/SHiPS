@@ -82,19 +82,24 @@ AfterEach{
 
         ### Remove a file
         cd FS:\Test\Test1
-        $e = dir '.\test1file_b'
-        $e.Name | should be 'test1file_b' 
+        $e1 = dir '.\test1file_b'
+        $e1.Name | should be 'test1file_b' 
 
         cd $script:homePath
         cd .\Test1
         Remove-Item -Path '.\test1file_b' -Force
 
         cd FS:  # should be under FS:\Test\Test1
-        $e = dir '.\test1file_b'
-        $e.Name | should be 'test1file_b'  # cached
+        $e2 = dir '.\test1file_b'
+        $e2.Name | should be 'test1file_b'  # cached
 
         # refresh it
-        $e = dir '.\test1file_b' -force -ErrorAction SilentlyContinue -ErrorVariable eve
+        $e3 = dir '.\test1file_b' -force -ErrorAction SilentlyContinue -ErrorVariable eve
+        $eve.FullyQualifiedErrorId | Should Be "PathNotFound,Microsoft.PowerShell.Commands.GetChildItemCommand"
+
+        # dir without -force should not find test1file_b as it gets deleted already
+        $Error.Clear
+        $e4 = dir '.\test1file_b' -force -ErrorAction SilentlyContinue -ErrorVariable eve
         $eve.FullyQualifiedErrorId | Should Be "PathNotFound,Microsoft.PowerShell.Commands.GetChildItemCommand"
 
         ### Delete a folder
@@ -112,6 +117,11 @@ AfterEach{
         # test dir file -force
         $Error.Clear()
         $g = dir '.\test2file' -force -ErrorAction SilentlyContinue -ErrorVariable evg
+        $evg.FullyQualifiedErrorId -contains "PathNotFound"
+
+        # dir without -force should not find the directory
+        $Error.Clear()
+        $g2 = dir '.\test2file' -force -ErrorAction SilentlyContinue -ErrorVariable evg
         $evg.FullyQualifiedErrorId -contains "PathNotFound"
 
         # go to FS:\Test\Test1

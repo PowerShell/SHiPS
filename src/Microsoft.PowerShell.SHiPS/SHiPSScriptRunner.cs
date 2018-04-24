@@ -110,6 +110,8 @@ namespace Microsoft.PowerShell.SHiPS
                         node.ItemNavigated = true;
                     }
 
+                    //clear the child node list as the current node has null or empty children (results)
+                    node.Children?.Clear();
                     return Enumerable.Empty<IPathNode>();
                 }
 
