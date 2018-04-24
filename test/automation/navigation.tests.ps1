@@ -9,7 +9,7 @@ Import-Module  $testpath\sampleRecursion.psm1
 Import-Module  $testpath\ctor.psm1
 $script:PowerShellProcessName = if($IsCoreCLR) {'pwsh'} else{ 'PowerShell'}
 $script:OnWindows = (-not (Get-Variable -Name IsWindows -ErrorAction Ignore)) -or $IsWindows
-
+$script:homePath = [System.IO.Path]::Combine('~', 'Test')
 
 Describe "Basic Navigation" -Tags "Feature" {
 
@@ -24,9 +24,118 @@ AfterEach{
         cd $home
         $a=Get-PSDrive -PSProvider SHiPS
         $a | % {remove-psdrive $_.Name -ErrorAction Ignore}
+
+        If(Test-Path $script:homePath) {Remove-Item -Path $script:homePath -force -Recurse -ErrorAction Ignore}
+        
         cd $testpath
        }
         
+
+    It "dir -force and dir ~ home dir under SHiPS drive" {
+        
+        If(Test-Path $script:homePath) {Remove-Item -path $script:homePath -force -Recurse -ErrorAction Ignore}
+
+        $a= new-psdrive -name FS -psprovider SHiPS -root Test#Home
+        $a.Name | Should Be "FS"
+
+
+        cd FS:
+        $b=dir
+        $b.Count | should not BeNullOrEmpty
+
+        $c=dir ~
+        $c.Count | should be  $b.Count
+
+                 
+        # create 6 folders/files for testing
+        # ~
+        #   Test
+        #     Test1
+        #        Test2
+        #            test2file
+        #        test1file_a
+        #        test1file_b
+        #     testfile
+
+        cd ~
+        New-Item -Path .\ -Name Test -ItemType Directory -Force
+
+        cd .\Test
+        New-Item -Path .\ -Name Test1 -ItemType Directory -Force
+        New-Item -Path .\ -Name testfile -ItemType File
+       
+        cd .\Test1
+        New-Item -Path .\ -Name Test2 -ItemType Directory -Force
+        New-Item -Path .\ -Name test1file_a -ItemType File
+        New-Item -Path .\ -Name test1file_b -ItemType File
+
+        cd .\Test2
+        New-Item -Path .\ -Name test2file -ItemType file
+        
+      
+        cd FS:\Test -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId | Should Be "PathNotFound,Microsoft.PowerShell.Commands.SetLocationCommand"
+
+        cd FS:
+        $d=dir -force
+        $d.Count | should be  ($c.Count + 1)   # +1 is Test filder
+
+        ### Remove a file
+        cd FS:\Test\Test1
+        $e = dir '.\test1file_b'
+        $e.Name | should be 'test1file_b' 
+
+        cd $script:homePath
+        cd .\Test1
+        Remove-Item -Path '.\test1file_b' -Force
+
+        cd FS:  # should be under FS:\Test\Test1
+        $e = dir '.\test1file_b'
+        $e.Name | should be 'test1file_b'  # cached
+
+        # refresh it
+        $e = dir '.\test1file_b' -force -ErrorAction SilentlyContinue -ErrorVariable eve
+        $eve.FullyQualifiedErrorId | Should Be "PathNotFound,Microsoft.PowerShell.Commands.GetChildItemCommand"
+
+        ### Delete a folder
+        cd FS:\Test\Test1\Test2
+        $f = dir '.\test2file'
+        $f.Name | should be 'test2file'
+
+        cd ~\Test\Test1\
+        Remove-Item -Path '.\Test2' -Force -Recurse
+        
+        cd FS:
+        $f = dir '.\test2file'
+        $f.Name | should be 'test2file'  # cached
+
+        # test dir file -force
+        $Error.Clear()
+        $g = dir '.\test2file' -force -ErrorAction SilentlyContinue -ErrorVariable evg
+        $evg.FullyQualifiedErrorId -contains "PathNotFound"
+
+        # go to FS:\Test\Test1
+        cd ..\
+        $h = dir
+        $h.Name | should be 'test1file_a'  
+
+        #Create a new folder
+        cd ~\Test\Test1
+        New-Item -Path .\ -Name Test2New -ItemType Directory -Force
+
+        cd FS:
+        $j = dir
+        $j.Name -contains 'Test2New' | Should be $false
+
+        # go to \test folder and test dir folder -force
+        cd ..\
+        
+        $k = dir .\Test1\ -force
+        $k.Name -contains   'Test2New' | should be $true
+        $k.Name -contains   'test1file_a' | should be $true
+      
+     }
+    
     It "New-PSdrive, expect success." {
         
        $a= new-psdrive -name abc -psprovider SHiPS -root abc#abc
