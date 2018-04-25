@@ -142,6 +142,15 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Item &apos;{0}&apos; may no longer exists. Details: {1}..
+        /// </summary>
+        internal static string MaybeItemNotExist {
+            get {
+                return ResourceManager.GetString("MaybeItemNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Found a child node of &apos;{0}&apos; has name with null or empty string. Make sure name is set properly in the constructors..
         /// </summary>
         internal static string NameWithNullOrEmpty {

@@ -31,13 +31,14 @@ namespace Microsoft.PowerShell.SHiPS
         private Runspace _runspace;
         //Support pattern: Module#Type
         private static readonly Regex ModuleAndTypeRegex = new Regex(@"^(.[^#]+)#(.[^\\]*)\\*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
-
+        internal const string _homePath = "HOME";
 
         internal SHiPSDrive(PSDriveInfo driveInfo, string rootInfo, SHiPSProvider provider)
             : base(driveInfo)
         {
             _rootInfo = rootInfo;
             _provider = provider;
+            Provider.Home = _homePath.HomePath(provider) as string;
             DriveTrimRegex = new Regex("^*?(" + Regex.Escape(Root) + ")(.*)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
             InitializeRoot();
         }
@@ -134,7 +135,7 @@ namespace Microsoft.PowerShell.SHiPS
 
             RootNode = node;
              
-            RootPathNode = new ContainerNodeService(this, node); 
+            RootPathNode = new ContainerNodeService(this, node, null);
 
             // Getting the Get-ChildItem default parameters before running any commands. It will be used for checking
             // whether a user is passing in any dynamic parameters.
@@ -273,6 +274,7 @@ namespace Microsoft.PowerShell.SHiPS
             var match = ModuleAndTypeRegex.Match(leaf);
             return match.Success ? match : null;
         }
+
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)

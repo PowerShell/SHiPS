@@ -137,6 +137,17 @@ namespace Microsoft.PowerShell.SHiPS
 
             return path1.TrimEnd('\\', '/');
         }
+
+        internal static object HomePath(this string name, SHiPSProvider provider)
+        {
+            if(string.IsNullOrWhiteSpace(name) || provider == null) { return null;}
+
+            //TODO: We should change the following to RuntimeInformation.IsOSPlatform to optimize the operation
+            // when we move to .netstandard build (netcoreapp 2.0 and .net 4.7.1)
+            var command = "Get-Variable {0}".StringFormat(name);
+            var varObject = provider.SessionState.InvokeCommand.InvokeScript(command, null).FirstOrDefault();
+            return (varObject?.BaseObject as PSVariable)?.Value;
+        }
     }
 
     internal static class CollectionExtensions
@@ -274,7 +285,7 @@ namespace Microsoft.PowerShell.SHiPS
         {
             if (child == null || parent == null) return null;
 
-            var pNode = child.ToPathNode(drive);
+            var pNode = child.ToPathNode(drive, parent);
             if (pNode != null)
             {
                 if (string.IsNullOrWhiteSpace(pNode.Name))
@@ -433,7 +444,7 @@ namespace Microsoft.PowerShell.SHiPS
         }
 
 
-        internal static IPathNode ToPathNode(this object input, SHiPSDrive drive)
+        internal static IPathNode ToPathNode(this object input, SHiPSDrive drive, SHiPSDirectory parent)
         {
             if (input == null)
             {
@@ -441,7 +452,7 @@ namespace Microsoft.PowerShell.SHiPS
             }
             if (input is SHiPSDirectory)
             {
-                return new ContainerNodeService(drive, input);
+                return new ContainerNodeService(drive, input, parent);
             }
 
             if (input is SHiPSLeaf)
@@ -455,7 +466,7 @@ namespace Microsoft.PowerShell.SHiPS
 
             if (psobject.ImmediateBaseObject is SHiPSDirectory)
             {
-                return new ContainerNodeService(drive, psobject.ImmediateBaseObject);
+                return new ContainerNodeService(drive, psobject.ImmediateBaseObject, parent);
             }
 
             if (psobject.ImmediateBaseObject is SHiPSLeaf)

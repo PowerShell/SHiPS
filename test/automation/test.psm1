@@ -581,3 +581,68 @@ class Birch : SHiPSLeaf
     {
     }
 }
+
+[SHiPSProvider(UseCache=$true)]
+class Home : SHiPSDirectory
+{
+    Hidden [object]$data = $null
+
+    Home([string]$name): base($name)
+    {
+    }
+
+    Home ([string]$name, [object]$data) : base ($name)
+    {
+        $this.data = $data
+    }
+
+
+    [object[]] GetChildItemImpl([string] $data)
+    {
+       $obj =  @()
+
+       Write-Verbose $data
+       
+       dir $data | ForEach-Object {
+
+                if($_.PSIsContainer)
+                {
+                    $obj+=[Home]::new($_.Name, $_.FullName)
+                }
+                else
+                {
+                    $obj+=[CLeaf]::new($_.Name)
+                }
+
+        }
+
+        return $obj
+     }
+
+    [object[]] GetChildItem()
+    {
+
+        $obj =  @()
+
+        if($this.data)
+        {
+               return $this.GetChildItemImpl($this.data)
+        }
+        else
+        {
+              $driveName = $this.GetType().Name
+              Write-Verbose "Operating on $driveName"
+
+              return $this.GetChildItemImpl("~")
+        }
+
+        return $obj;
+    }
+}
+
+class CLeaf : SHiPSLeaf
+{
+    CLeaf([string]$name): base($name)
+    {
+    }
+}
