@@ -646,3 +646,53 @@ class CLeaf : SHiPSLeaf
     {
     }
 }
+
+
+[SHiPSProvider(UseCache=$true)]
+class ErrorCaseWriteError : SHiPSDirectory
+{
+
+    ErrorCaseWriteError([string]$name): base($name)
+    {
+    }
+    
+    [object[]] GetChildItem()
+    {     
+       Write-Error "Hi there this is an expected error!"
+       return $null
+        #throw "Hi there this is an expected error!"
+    }
+}
+
+[SHiPSProvider(UseCache=$true)]
+class ErrorCaseThrow : SHiPSDirectory
+{
+
+    ErrorCaseThrow([string]$name): base($name)
+    {
+    }
+    
+    [object[]] GetChildItem()
+    {     
+       Write-Error "Hi there this is an expected error!"
+       return $null
+        #throw "Hi there this is an expected error!"
+    }
+}
+[SHiPSProvider(UseCache=$true)]
+class ErrorCase : SHiPSDirectory
+{
+
+    ErrorCase([string]$name): base($name)
+    {
+    }
+    
+    [object[]] GetChildItem()
+    {     
+        $obj = @()
+        $obj += [ErrorCaseWriteError]::new('WriteError')
+        $obj += [ErrorCaseThrow]::new('ErrorThrow')
+        $obj += [SHiPSLeafTest]::new('SHiPSLeafTest')
+        return $obj
+    }
+}
