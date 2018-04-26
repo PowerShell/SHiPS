@@ -146,6 +146,59 @@ AfterEach{
       
      }
     
+     It "dir -force error cases" {
+        
+        $a=New-PSDrive -Name t2 -PSProvider SHiPS -Root Test#ErrorCase
+        $a.Name | Should Be "t2"
+
+        cd t2:\
+        $a1= dir
+        $a1.Count | should be 3
+
+        cd .\ErrorThrow
+        $Error.Clear()
+        $b = dir -ErrorAction SilentlyContinue -ErrorVariable evb
+        $evb.FullyQualifiedErrorId | should be "Microsoft.PowerShell.Commands.WriteErrorException,Microsoft.PowerShell.Commands.GetChildItemCommand"
+        
+        # None items should get deleted
+        cd t2:\
+        $c=dir
+        $c.Count | should be $a1.Count
+
+        $Error.Clear()
+        dir .\WriteError -ErrorAction SilentlyContinue -ErrorVariable evc
+        $evc.FullyQualifiedErrorId | should be "Microsoft.PowerShell.Commands.WriteErrorException,Microsoft.PowerShell.Commands.GetChildItemCommand"
+    
+        # None items should get deleted
+        cd t2:\
+        $d=dir
+        $d.Count | should be $a1.Count
+      
+        $Error.Clear()
+        $g = dir .\ErrorThrow -force -ErrorAction SilentlyContinue -ErrorVariable evg
+        $evg.FullyQualifiedErrorId | should be "Microsoft.PowerShell.Commands.WriteErrorException,Microsoft.PowerShell.Commands.GetChildItemCommand"
+    
+        $Error.Clear()
+        $h = dir .\ErrorThrow -ErrorAction SilentlyContinue -ErrorVariable evh
+        $evh.FullyQualifiedErrorId | should be "PathNotFound,Microsoft.PowerShell.Commands.GetChildItemCommand"
+    
+        cd t2:\
+        $j=dir
+        $j.Count | should be ($a1.Count -1)
+        $j.Name -contains "ErrorThrow" | should be $false
+
+        cd .\WriteError
+        $Error.Clear()
+        $k = dir -force -ErrorAction SilentlyContinue -ErrorVariable evk
+        $evk.FullyQualifiedErrorId | should be "Microsoft.PowerShell.Commands.WriteErrorException,Microsoft.PowerShell.Commands.GetChildItemCommand"
+    
+        # WriteError item gets deleted
+        cd t2:\
+        $m=dir
+        $m.Count | should be ($a1.Count -2)
+        $m.Name -contains "WriteError" | should be $false
+    }
+
     It "New-PSdrive, expect success." {
         
        $a= new-psdrive -name abc -psprovider SHiPS -root abc#abc

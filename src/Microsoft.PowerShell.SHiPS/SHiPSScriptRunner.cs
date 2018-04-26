@@ -86,11 +86,15 @@ namespace Microsoft.PowerShell.SHiPS
 
                 if (errors.Count > 0)
                 {
-                    //remove the cached child nodes for the failed node
-                    node.Children?.Clear();
+                    // Cleanup child items only if the user type '-force'.
+                    if (context.Force)
+                    {
+                        //remove the cached child nodes for the failed node
+                        node.Children?.Clear();
 
-                    //remove the node from its parent's children list so that it won't show again when a user types dir -force
-                    node.Parent?.Children.RemoveSafe(node.Name);
+                        //remove the node from its parent's children list so that it won't show again when a user types dir -force
+                        node.Parent?.Children.RemoveSafe(node.Name);
+                    }
 
                     // report the error if there are any
                     ReportErrors(node.Name, context, errors);
@@ -111,7 +115,7 @@ namespace Microsoft.PowerShell.SHiPS
                     }
 
                     //clear the child node list as the current node has null or empty children (results)
-                    node.Children?.Clear();
+                    if (context.Force) { node.Children?.Clear();}
                     return Enumerable.Empty<IPathNode>();
                 }
 
