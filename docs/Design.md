@@ -329,7 +329,7 @@ Container Bill @{
   ```
 
   `Option1`: Using alias. Mapping New-Item directly to New-AzureRmVM.
-    The drawback is a user has to navigate to a particular folder be able to use New-Item-Item.
+    The drawback is a user has to navigate to a particular folder be able to use New-Item.
 
   `Options2`:Dynamic Parameters
 
