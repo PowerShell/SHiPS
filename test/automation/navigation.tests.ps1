@@ -1174,7 +1174,7 @@ AfterEach{
 
        }
 
-    It "Test-Path - expect succeed" {
+     It "Test-Path - expect succeed" {
 
         $a= new-psdrive -name kk -psprovider SHiPS -root Test#Root
         $a.Name | Should Be "kk"
@@ -1209,7 +1209,132 @@ AfterEach{
         test-path .\Bill\BITS | Should be $True
         test-path .\Bill\BITS -Type Container | Should be $False
         test-path .\Bill\BITS -Type Leaf | Should be $True
-    }
+     }
        
  }
+
+Describe "Not Supported Commands test" -Tags "Feature"{
+BeforeEach{
+        cd $home
+        $a=Get-PSDrive -PSProvider SHiPS
+        $a | % {remove-psdrive $_.Name -ErrorAction Ignore}
+
+        $a = new-psdrive -name ss -psprovider SHiPS -root test#Root
+        $a.Name | Should Be "ss"
+
+        cd $testpath
+       }
+
+AfterEach{
+        cd $home
+        $a=Get-PSDrive -PSProvider SHiPS
+        $a | % {remove-psdrive $_.Name -ErrorAction Ignore}
+
+        If(Test-Path $script:homePath) {Remove-Item -Path $script:homePath -force -Recurse -ErrorAction Ignore}
+        
+        cd $testpath
+       }
+ 
+    It "ClearItem throws NotSupported" {
+        cd ss:\William;
+        $null = dir
+        Clear-Item -Path .\Chrisylin -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.ClearItemCommand" | Should Be $true
+       }
+
+    It "SetItem throws NotSupported" {
+        cd ss:\William
+        $null = dir
+        Set-Item -Path .\Chrisylin -Value "what" -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.SetItemCommand" | Should Be $true
+
+       }
+
+    It "MoveItem throws NotSupported" {
+           cd ss:
+           $b = dir ss:\William\Chrisylin
+           $b.GetType().Name -match "ChrisLeaf" | should be $true
+
+           $c = dir ss:\Bill
+           $c.Count -gt 1 | Should be $true
+
+           cd ss:\William
+           $null = dir
+           Move-Item -Path ss:\William\Chrisylin -Destination ss:\Bill -ErrorAction SilentlyContinue -ErrorVariable ev
+           $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.MoveItemCommand" | Should Be $true
+        }
+
+    It "CopyItem throws NotSupported" {
+        cd ss:
+        $b = dir ss:\William\Chrisylin
+        $b.GetType().Name -match "ChrisLeaf" | should be $true
+
+        $c = dir ss:\Bill
+        $c.Count -gt 1 | Should be $true
+
+        cd ss:\William
+        $null = dir
+        Copy-Item -Path ss:\William\Chrisylin -Destination ss:\Bill\ -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.CopyItemCommand" | Should Be $true
+       }
+
+    It "NewItem throws NotSupported" {
+        cd ss:\Bill
+        $null = dir
+        New-Item -Path .\newbie.txt -ItemType file -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.NewItemCommand" | Should Be $true
+       }
+
+    It "RemoveItem throws NotSupported" {
+        cd ss:
+        $b = dir ss:\William\Chrisylin
+        $b.GetType().Name -match "ChrisLeaf" | should be $true
+
+        cd ss:\William
+        $null = dir
+        Remove-Item -Path ss:\William\Chrisylin -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.RemoveItemCommand" | Should Be $true
+       }
+
+    It "RenameItem throws NotSupported" {
+        cd ss:
+        $b = dir ss:\William\Chrisylin
+        $b.GetType().Name -match "ChrisLeaf" | should be $true
+
+        cd ss:\William
+        $null = dir
+        Rename-Item -Path .\Chrisylin -NewName Christin -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.RenameItemCommand" | Should Be $true
+       }
+
+    It "Get-Content throws NotSupported" {
+        cd ss:\William
+        $b = dir .\Chrisylin
+        $b.Name | should be "Chrisylin"
+
+        $null = dir
+        Get-Content .\Chrisylin -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId | Should Be "NotSupported,Microsoft.PowerShell.Commands.GetContentCommand"
+       }
+
+    It "Set-Content throws NotSupported" {
+        cd ss:\William
+        $b = dir .\Chrisylin
+        $b.Name | should be "Chrisylin"
+
+        "blabla" | Set-Content .\Chrisylin -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId | Should Be "NotSupported,Microsoft.PowerShell.Commands.SetContentCommand"
+       }
+
+    It "Clear-Content throws NotSupported" {
+        cd ss:\William
+        $b = dir .\Chrisylin
+        $b.Name | should be "Chrisylin"
+
+        $null = dir
+        Clear-Content .\Chrisylin -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId | Should Be "NotSupported,Microsoft.PowerShell.Commands.ClearContentCommand"
+    }
+}
+
   
