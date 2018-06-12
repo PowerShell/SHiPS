@@ -15,7 +15,8 @@ namespace Microsoft.PowerShell.SHiPS
     /// allows for stateless namespace navigation of a system you are modeling.
     /// </summary>
     [CmdletProvider(SHiPSProvider.ProviderName, ProviderCapabilities.Filter | ProviderCapabilities.ShouldProcess)]
-    public class SHiPSProvider : CodeOwls.PowerShell.Provider.Provider
+    public class SHiPSProvider : CodeOwls.PowerShell.Provider.Provider,
+        IContentCmdletProvider
     {
         public const string ProviderName = "SHiPS";
         //internal static Regex PathRegex = new Regex(@"^([^:\\/]*?):[\\/](.*)$", RegexOptions.IgnoreCase);
@@ -24,11 +25,26 @@ namespace Microsoft.PowerShell.SHiPS
         //Support pattern: Module#Type:\\foobar
         internal static Regex ModuleRegex = new Regex(@"^(.[^#]+\s*#[^:\\/]+)[:\\/]*(.*)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
+        private string driveNameWithColon;
+
         internal SHiPSDrive Drive
         {
             get
             {
                 return PSDriveInfo as SHiPSDrive;
+            }
+        }
+
+        internal string DriveNameWithColon
+        {
+            get
+            {
+                if(string.IsNullOrEmpty(driveNameWithColon))
+                {
+                    driveNameWithColon = Drive.Name + ":";
+                }
+
+                return driveNameWithColon;
             }
         }
 
@@ -84,6 +100,12 @@ namespace Microsoft.PowerShell.SHiPS
             return new SHiPSDrive(drive, drive.Root, this);
         }
 
+        /// <summary>
+        /// Throw terminating error for InvalidOperation.
+        /// </summary>
+        /// <param name="errorMessage">Error Message.</param>
+        /// <param name="errorId">Error Id.</param>
+        /// <param name="targetObject">Target Object</param>
         internal void ThrowError(string errorMessage, string errorId, object targetObject = null)
         {
             InvalidOperationException ex = new InvalidOperationException(errorMessage);
@@ -211,6 +233,224 @@ namespace Microsoft.PowerShell.SHiPS
             return shipsPathResolver.ResolvePath(context, path, context.Force);
         }
 
+        #endregion
+
+        #region NotSupportedCommands
+
+        // Implement IContentCmdletProvider. 
+        // As these methods are not virtual in base class and we don't want to change base class, I use New and call the interface to enforce the polymorphism.
+        // More Explain: https://stackoverflow.com/questions/12314990/override-method-implementation-declared-in-an-interface
+        #region IContentCmdletProvider - Get/Set/Clear-Content
+
+        public new void ClearContent(string path)
+        {
+            var errorMsg = GetNotSupportedMessage("Clear-Content", path);
+            WriteErrorNotImplemented(errorMsg);
+        }
+
+        public new object ClearContentDynamicParameters(string path)
+        {
+            ClearContent(path);
+            return null;
+        }
+
+        void IContentCmdletProvider.ClearContent(string path)
+        {
+            ClearContent(path);
+        }
+
+        object IContentCmdletProvider.ClearContentDynamicParameters(string path)
+        {
+            return ClearContentDynamicParameters(path);
+        }
+
+        public new IContentReader GetContentReader(string path)
+        {
+            var errorMsg = GetNotSupportedMessage("Get-Content", path);
+            WriteErrorNotImplemented(errorMsg);
+
+            return null;
+        }
+
+        public new object GetContentReaderDynamicParameters(string path)
+        {
+            return GetContentReader(path);
+        }
+
+        IContentReader IContentCmdletProvider.GetContentReader(string path)
+        {
+            return GetContentReader(path);
+        }
+
+        object IContentCmdletProvider.GetContentReaderDynamicParameters(string path)
+        {
+            return GetContentReaderDynamicParameters(path);
+        }
+
+        public new IContentWriter GetContentWriter(string path)
+        {
+            var errorMsg = GetNotSupportedMessage("Set-Content", path);
+            WriteErrorNotImplemented(errorMsg);
+
+            return null;
+        }
+
+        public new object GetContentWriterDynamicParameters(string path)
+        {
+            return GetContentWriter(path);
+        }
+
+        IContentWriter IContentCmdletProvider.GetContentWriter(string path)
+        {
+            return GetContentWriter(path);
+        }
+
+        object IContentCmdletProvider.GetContentWriterDynamicParameters(string path)
+        {
+            return GetContentWriterDynamicParameters(path);
+        }
+        #endregion
+
+        // Implement the abstract methods of NavigationCmdletProvider.
+        #region NavigationCmdletProvider - MoveItem
+
+        protected override void MoveItem(string path, string destination)
+        {
+            var errorMsg = GetNotSupportedMessage("Move-Item", path);
+            WriteErrorNotImplemented(errorMsg);
+        }
+
+        protected override object MoveItemDynamicParameters(string path, string destination)
+        {
+            MoveItem(path, destination);
+
+            return null;
+        }
+
+        #endregion
+
+        // Implement the abstract methods of ContainerCmdletProvider.
+        #region ContainerCmdletProvider - CopyItem, NewItem, RemoveItem, RenameItem
+        protected override void CopyItem(string path, string copyPath, bool recurse)
+        {
+            var errorMsg = GetNotSupportedMessage("Copy-Item", path);
+            WriteErrorNotImplemented(errorMsg);
+        }
+
+        protected override object CopyItemDynamicParameters(string path, string destination, bool recurse)
+        {
+            CopyItem(path, destination, recurse);
+
+            return null;
+        }
+
+        protected override void NewItem(string path, string itemTypeName, object newItemValue)
+        {
+            var errorMsg = GetNotSupportedMessage("New-Item", path);
+            WriteErrorNotImplemented(errorMsg);
+        }
+
+        protected override object NewItemDynamicParameters(string path, string itemTypeName, object newItemValue)
+        {
+            NewItem(path, itemTypeName, newItemValue);
+
+            return null;
+        }
+
+        protected override void RemoveItem(string path, bool recurse)
+        {
+            var errorMsg = GetNotSupportedMessage("Remove-Item", path);
+            WriteErrorNotImplemented(errorMsg);
+        }
+
+        protected override object RemoveItemDynamicParameters(string path, bool recurse)
+        {
+            RemoveItem(path, recurse);
+
+            return null;
+        }
+
+        protected override void RenameItem(string path, string newName)
+        {
+            var errorMsg = GetNotSupportedMessage("Rename-Item", path);
+            WriteErrorNotImplemented(errorMsg);
+        }
+
+        protected override object RenameItemDynamicParameters(string path, string newName)
+        {
+            RenameItem(path, newName);
+
+            return null;
+        }
+
+        #endregion
+
+        // Implement the abstract methods of ItemCmdletProvider.
+        #region ItemCmdletProvider - ClearItem, SetItem
+        protected override void ClearItem(string path)
+        {
+            var errorMsg = GetNotSupportedMessage("Clear-Item", path);
+            WriteErrorNotImplemented(errorMsg);
+
+            base.ClearItem(path);
+        }
+
+        protected override object ClearItemDynamicParameters(string path)
+        {
+            ClearItem(path);
+
+            return base.ClearItemDynamicParameters(path);
+        }
+
+        protected override void SetItem(string path, object value)
+        {
+            var errorMsg = GetNotSupportedMessage("Set-Item", path);
+            WriteErrorNotImplemented(errorMsg);
+        }
+
+        protected override object SetItemDynamicParameters(string path, object value)
+        {
+            SetItem(path, value);
+
+            return null;
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Compose the NotSupported Message.
+        /// </summary>
+        /// <param name="command">Command executed</param>
+        /// <param name="path">Path parameter of the command</param>
+        /// <returns>The Error Message</returns>
+        private string GetNotSupportedMessage(string command, string path)
+        {
+            return $"{command} is not supported in {DriveNameWithColon} drive. Current path: {ReplaceDriveRootWithName(path)}";
+        }
+
+        /// <summary>
+        /// Get user friendly path.
+        /// </summary>
+        /// <param name="path">Full path in SHiPSProvider, e.g. AzurePSDrive#Azure\AuthMethods_EDOG</param>
+        /// <returns>User friendly path, e.g. Azure:\AuthMethods_EDOG</returns>
+        private string ReplaceDriveRootWithName(string path)
+        {
+            return path?.Replace(Drive.Root, DriveNameWithColon);
+        }
+
+        /// <summary>
+        /// WriteError of NotSupported. This will allow the cmdlet to continue execution.
+        /// </summary>
+        /// <param name="errorMessage">Error Message</param>
+        /// <param name="targetObject">Target Object</param>
+        private void WriteErrorNotImplemented(string errorMessage, object targetObject = null)
+        {
+            var ex = new PSNotSupportedException(errorMessage);
+            ErrorRecord er = new ErrorRecord(ex, ErrorId.NotSupported, ErrorCategory.NotImplemented, targetObject);
+
+            // WriteError will not terminate right away, so we can get handling of -ErrorVariable, -ErrorAction.
+            WriteError(er);
+        }
         #endregion
     }
 }

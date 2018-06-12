@@ -16,7 +16,7 @@ using namespace Microsoft.PowerShell.SHiPS
 $script:PowerShellProcessName = if($IsCoreCLR) {'pwsh'} else{ 'PowerShell'}
 
 
-# colision with .Net - should work
+# collision with .Net - should work
 class Environment : SHiPSDirectory
 {
 

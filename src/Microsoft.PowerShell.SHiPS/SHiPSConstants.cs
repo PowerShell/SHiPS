@@ -8,7 +8,8 @@
         internal static readonly string RootNodeTypeMustBeContainer = "RootNodeTypeMustBeContainer";
         internal static readonly string NodeNameIsNullOrEmpty = "NodeNameIsNullOrEmpty";
         internal static readonly string NewDriveRootDoesNotExist = "NewDriveRootDoesNotExist";
-        internal static readonly string NotContainerNode = "NotContainerNode";      
+        internal static readonly string NotContainerNode = "NotContainerNode";
+        internal static readonly string NotSupported = "NotSupported";
     }
 
     internal static class Constants
