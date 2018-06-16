@@ -17,7 +17,7 @@
         internal static readonly string GetChildItemDynamicParameters = "GetChildItemDynamicParameters";
         internal static readonly string GetChildItem = "GetChildItem";
 
-        internal static string[] SupportedCommands = {
+        internal static string[] DefinedCommands = {
             "Set-Location",
             "Get-Location",
             "Pop-Location",
@@ -25,7 +25,18 @@
             "Get-ChildItem",
             "Resolve-Path",
             "Get-Item",
-            "Test-Path"
+            "Test-Path",
+            // Below are NotSupported commands, but we do handle their error messages.
+            "Get-Content",
+            "Set-Content",
+            "Clear-Content",
+            "Move-Item",
+            "Copy-Item",
+            "New-Item",
+            "Remove-Item",
+            "Rename-Item",
+            "Clear-Item",
+            "Set-Item"
         };
     }
 }
