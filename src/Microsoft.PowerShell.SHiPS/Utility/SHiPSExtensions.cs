@@ -220,10 +220,10 @@ namespace Microsoft.PowerShell.SHiPS
             return usingDynamicParameter || filter;
         }
 
-        internal static bool IsProviderSupportedCommand(this IProviderContext context)
+        internal static bool IsProviderDefinedCommand(this IProviderContext context)
         {
             var myInvocationInfo = GetMyInvocationInfo(context.CmdletProvider);
-            return myInvocationInfo?.MyCommand != null && Constants.SupportedCommands.ContainsIgnoreCase(myInvocationInfo.MyCommand.Name);
+            return myInvocationInfo?.MyCommand != null && Constants.DefinedCommands.ContainsIgnoreCase(myInvocationInfo.MyCommand.Name);
         }
 
         internal static SHiPSParameters GetSHiPSParameters(this IProviderContext context)

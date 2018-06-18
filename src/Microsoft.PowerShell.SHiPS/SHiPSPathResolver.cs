@@ -60,7 +60,7 @@ namespace Microsoft.PowerShell.SHiPS
             // In this case, our provider does not know these files as its child item, cache misses. So it calls GetChildItem(),
             // which triggers the engine to call us again. Cycling around, causing potential deadlock or significant delays.
             // Workaround: filter out all other cmdlets that SHiPS does not handle.
-            if (!context.IsProviderSupportedCommand())
+            if (!context.IsProviderDefinedCommand())
             {
                 yield break;
             }

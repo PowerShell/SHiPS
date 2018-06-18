@@ -146,6 +146,59 @@ AfterEach{
       
      }
     
+     It "dir -force error cases" {
+        
+        $a=New-PSDrive -Name t2 -PSProvider SHiPS -Root Test#ErrorCase
+        $a.Name | Should Be "t2"
+
+        cd t2:\
+        $a1= dir
+        $a1.Count | should be 3
+
+        cd .\ErrorThrow
+        $Error.Clear()
+        $b = dir -ErrorAction SilentlyContinue -ErrorVariable evb
+        $evb.FullyQualifiedErrorId | should be "Microsoft.PowerShell.Commands.WriteErrorException,Microsoft.PowerShell.Commands.GetChildItemCommand"
+        
+        # None items should get deleted
+        cd t2:\
+        $c=dir
+        $c.Count | should be $a1.Count
+
+        $Error.Clear()
+        dir .\WriteError -ErrorAction SilentlyContinue -ErrorVariable evc
+        $evc.FullyQualifiedErrorId | should be "Microsoft.PowerShell.Commands.WriteErrorException,Microsoft.PowerShell.Commands.GetChildItemCommand"
+    
+        # None items should get deleted
+        cd t2:\
+        $d=dir
+        $d.Count | should be $a1.Count
+      
+        $Error.Clear()
+        $g = dir .\ErrorThrow -force -ErrorAction SilentlyContinue -ErrorVariable evg
+        $evg.FullyQualifiedErrorId | should be "Microsoft.PowerShell.Commands.WriteErrorException,Microsoft.PowerShell.Commands.GetChildItemCommand"
+    
+        $Error.Clear()
+        $h = dir .\ErrorThrow -ErrorAction SilentlyContinue -ErrorVariable evh
+        $evh.FullyQualifiedErrorId | should be "PathNotFound,Microsoft.PowerShell.Commands.GetChildItemCommand"
+    
+        cd t2:\
+        $j=dir
+        $j.Count | should be ($a1.Count -1)
+        $j.Name -contains "ErrorThrow" | should be $false
+
+        cd .\WriteError
+        $Error.Clear()
+        $k = dir -force -ErrorAction SilentlyContinue -ErrorVariable evk
+        $evk.FullyQualifiedErrorId | should be "Microsoft.PowerShell.Commands.WriteErrorException,Microsoft.PowerShell.Commands.GetChildItemCommand"
+    
+        # WriteError item gets deleted
+        cd t2:\
+        $m=dir
+        $m.Count | should be ($a1.Count -2)
+        $m.Name -contains "WriteError" | should be $false
+    }
+
     It "New-PSdrive, expect success." {
         
        $a= new-psdrive -name abc -psprovider SHiPS -root abc#abc
@@ -1121,7 +1174,7 @@ AfterEach{
 
        }
 
-    It "Test-Path - expect succeed" {
+     It "Test-Path - expect succeed" {
 
         $a= new-psdrive -name kk -psprovider SHiPS -root Test#Root
         $a.Name | Should Be "kk"
@@ -1156,7 +1209,304 @@ AfterEach{
         test-path .\Bill\BITS | Should be $True
         test-path .\Bill\BITS -Type Container | Should be $False
         test-path .\Bill\BITS -Type Leaf | Should be $True
-    }
-       
+     }
  }
-  
+
+Describe "Not Supported Commands test" -Tags "Feature"{
+	BeforeEach{
+        cd $home
+        $a=Get-PSDrive -PSProvider SHiPS
+        $a | foreach {
+			Remove-PSDrive $_.Name -ErrorAction Ignore
+		}
+
+        $a = New-PSDrive -Name ss -PSProvider SHiPS -Root test#Root
+        $a.Name | Should Be "ss"
+
+        cd $testpath
+	}
+
+	AfterEach{
+        cd $home
+
+        $a=Get-PSDrive -PSProvider SHiPS
+        $a | foreach {
+			Remove-PSDrive $_.Name -ErrorAction Ignore
+		}
+
+        if(Test-Path $script:homePath)
+		{
+			Remove-Item -Path $script:homePath -force -Recurse -ErrorAction Ignore
+		}
+        
+        cd $testpath
+	}
+ 
+    It "ClearItem throws NotSupported" {
+        cd ss:\William;
+        $null = dir
+        Clear-Item -Path .\Chrisylin -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.ClearItemCommand" | Should Be $true
+	}
+
+    It "SetItem throws NotSupported" {
+        cd ss:\William
+        $null = dir
+        Set-Item -Path .\Chrisylin -Value "what" -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.SetItemCommand" | Should Be $true
+
+	}
+
+    It "MoveItem throws NotSupported" {
+           cd ss:
+           $b = dir ss:\William\Chrisylin
+           $b.GetType().Name -match "ChrisLeaf" | should be $true
+
+           $c = dir ss:\Bill
+           $c.Count -gt 1 | Should be $true
+
+           cd ss:\William
+           $null = dir
+           Move-Item -Path ss:\William\Chrisylin -Destination ss:\Bill -ErrorAction SilentlyContinue -ErrorVariable ev
+           $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.MoveItemCommand" | Should Be $true
+	}
+
+    It "CopyItem throws NotSupported" {
+        cd ss:
+        $b = dir ss:\William\Chrisylin
+        $b.GetType().Name -match "ChrisLeaf" | should be $true
+
+        $c = dir ss:\Bill
+        $c.Count -gt 1 | Should be $true
+
+        cd ss:\William
+        $null = dir
+        Copy-Item -Path ss:\William\Chrisylin -Destination ss:\Bill\ -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.CopyItemCommand" | Should Be $true
+    }
+
+    It "NewItem throws NotSupported" {
+        cd ss:\Bill
+        $null = dir
+        New-Item -Path .\newbie.txt -ItemType file -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.NewItemCommand" | Should Be $true
+	}
+
+    It "RemoveItem throws NotSupported" {
+        cd ss:
+        $b = dir ss:\William\Chrisylin
+        $b.GetType().Name -match "ChrisLeaf" | should be $true
+
+        cd ss:\William
+        $null = dir
+        Remove-Item -Path ss:\William\Chrisylin -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.RemoveItemCommand" | Should Be $true
+	}
+
+    It "RenameItem throws NotSupported" {
+        cd ss:
+        $b = dir ss:\William\Chrisylin
+        $b.GetType().Name -match "ChrisLeaf" | should be $true
+
+        cd ss:\William
+        $null = dir
+        Rename-Item -Path .\Chrisylin -NewName Christin -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.RenameItemCommand" | Should Be $true
+	}
+
+    It "GetContent throws NotSupported" {
+        cd ss:\William
+        $b = dir .\Chrisylin
+        $b.Name | should be "Chrisylin"
+
+        $null = dir
+        Get-Content .\Chrisylin -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.GetContentCommand" | Should be $true
+	}
+
+    It "SetContent throws NotSupported" {
+        cd ss:\William
+        $b = dir .\Chrisylin
+        $b.Name | should be "Chrisylin"
+
+		try{
+			"blabla" | Set-Content .\Chrisylin -ErrorAction SilentlyContinue -ErrorVariable ev
+		}catch{
+			$_.ToString() -match "does not support" | Should be $true
+		}
+    }
+
+    It "ClearContent throws NotSupported" {
+        cd ss:\William
+        $b = dir .\Chrisylin
+        $b.Name | should be "Chrisylin"
+
+        $null = dir
+        Clear-Content .\Chrisylin -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.ClearContentCommand" | Should be $true
+    }
+}
+
+Describe "Not Supported Commands work properly outside test" -Tags "Feature"{
+	BeforeEach{
+        cd $home
+        $a = Get-PSDrive -PSProvider SHiPS
+        $a | foreach {
+			Remove-PSDrive $_.Name -ErrorAction Ignore
+		}
+
+        $a = New-PSDrive -Name ss -PSProvider SHiPS -Root test#Root
+        $a.Name | Should Be "ss"
+
+        cd $testpath
+		Remove-Item -Path $testpath\TestDir -Recurse -ErrorAction SilentlyContinue
+		New-Item -Path $testpath\TestDir -Type Directory
+		New-Item -Path $testpath\TestDir\TestSubDir -Type Directory
+		New-Item -Path $testpath\TestDir\TestFile.txt -Type File
+	}
+
+	AfterEach{
+        cd $home
+        $a=Get-PSDrive -PSProvider SHiPS
+        $a | foreach {
+			Remove-PSDrive $_.Name -ErrorAction Ignore
+		}
+
+        if(Test-Path $script:homePath) 
+		{
+			Remove-Item -Path $script:homePath -force -Recurse -ErrorAction Ignore
+		}
+        
+        cd $testpath
+		Remove-Item -Path $testpath\TestDir -Recurse -ErrorAction SilentlyContinue
+		Clear-Item -Path Variable:aa -ErrorAction SilentlyContinue -ErrorVariable ev
+	}
+ 
+    It "ClearItem works properly outside" {
+        cd ss:\William;
+        $aa = "aa"
+
+        Clear-Item -Path Variable:aa -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.Count -eq 0 | Should Be $true
+
+        $aa -eq $null | Should Be $true
+    }
+
+    It "SetItem works properly outside" {
+        cd ss:\William;
+
+        Set-Item -Path Variable:aa -Value "bb" -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.Count -eq 0 | Should Be $true
+
+        $aa -eq "bb" | Should Be $true
+	}
+
+    It "MoveItem works properly outside" {
+        cd ss:\William;
+
+        $p = dir $testpath\TestDir\TestFile.txt
+        $p.GetType().Name -match "FileInfo" | should be $true
+
+        $d = dir $testpath\TestDir\TestSubDir*
+        $d.GetType().Name -match "DirectoryInfo" | Should be $true
+
+        Move-Item -Path "$($p.FullName)" -Destination "$($d.FullName)" -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.Count -eq 0 | Should Be $true
+
+        $d = dir "$($d.FullName)\$($p.Name)"
+        $d.GetType().Name -match "FileInfo" | should be $true
+	}
+
+    It "CopyItem works properly outside" {
+        cd ss:\William;
+        $p = dir $testpath\TestDir\TestFile.txt
+        $p.GetType().Name -match "FileInfo" | should be $true
+
+        $d = dir $testpath\TestDir\TestSubDir*
+        $d.GetType().Name -match "DirectoryInfo" | Should be $true
+
+        Copy-Item -Path "$($p.FullName)" -Destination "$($d.FullName)" -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.Count -eq 0 | Should Be $true
+
+        $v = dir "$($d.FullName)\$($p.Name)"
+        $v.GetType().Name -match "FileInfo" | should be $true
+	}
+
+    It "NewItem works properly outside" {
+        cd ss:\William;
+
+        $p = dir $testpath\TestDir*
+        $p.GetType().Name -match "DirectoryInfo" | Should be $true
+
+        New-Item -Path "$($p.FullName)\newbie.txt" -ItemType File -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.Count -eq 0 | Should Be $true
+
+        $v = dir "$($p.FullName)\newbie.txt"
+        $v.GetType().Name -match "FileInfo" | should be $true
+	}
+
+    It "RemoveItem works properly outside" {
+        cd ss:\William;
+
+        $p = dir $testpath\TestDir\TestFile.txt
+        $p.GetType().Name -match "FileInfo" | Should be $true
+
+        Remove-Item -Path "$($p.FullName)" -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.Count -eq 0 | Should Be $true
+
+        $v = dir "$($p.FullName)" -ErrorAction SilentlyContinue
+        $v -eq $null | should be $true
+	}
+
+    It "RenameItem works properly outside" {
+        cd ss:\William;
+
+        $p = dir $testpath\TestDir\TestFile.txt
+        $p.GetType().Name -match "FileInfo" | Should be $true
+
+        Rename-Item -Path "$($p.FullName)" -NewName NewTestFile.txt -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.Count -eq 0 | Should Be $true
+
+        $v = dir "$($p.Directory.FullName)\NewTestFile.txt" -ErrorAction SilentlyContinue
+        $v.GetType().Name -match "FileInfo" | should be $true
+	}
+
+    It "GetContent works properly outside" {
+        cd ss:\William;
+
+        $p = dir $testpath\TestDir\TestFile.txt
+        $p.GetType().Name -match "FileInfo" | Should be $true
+
+        "blabla" > $p.fullname
+        $v = Get-Content -Path "$($p.FullName)" -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.Count -eq 0 | Should Be $true
+
+		$v -match "blabla" | Should Be $true
+	}
+
+    It "SetContent works properly outside" {
+        cd ss:\William;
+
+        $p = dir $testpath\TestDir\TestFile.txt
+        $p.GetType().Name -match "FileInfo" | Should be $true
+
+		"baabaa black sheep" | Set-Content -Path "$($p.FullName)" -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.Count -eq 0 | Should Be $true
+
+		$v = Get-Content -Path "$($p.FullName)" -ErrorAction SilentlyContinue
+		$v -match "baabaa black sheep" | Should Be $true
+	}
+
+    It "ClearContent works properly outside" {
+        cd ss:\William;
+        $p = dir $testpath\TestDir\TestFile.txt
+        $p.GetType().Name -match "FileInfo" | Should be $true
+
+        "blabla" > $p.fullname
+		Clear-Content -Path "$($p.FullName)" -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.Count -eq 0 | Should Be $true
+
+        $v = Get-Content -Path "$($p.FullName)"
+		$v -eq $null | Should Be $true
+	}
+}

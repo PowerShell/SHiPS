@@ -319,7 +319,7 @@ Container Bill @{
 
 - New-Item
 
-  When a user type New-Item for example, the SHiPS will find the corresponding NewItem() methid defined in the PowerShell class in a module.
+  When a user type New-Item for example, the SHiPS will find the corresponding NewItem() method defined in the PowerShell class in a module.
 
   A expected New-Item experience:
 
@@ -329,7 +329,7 @@ Container Bill @{
   ```
 
   `Option1`: Using alias. Mapping New-Item directly to New-AzureRmVM.
-    The drawback is a user has to navigate to a particular folder be able to use New-Item-Item.
+    The drawback is a user has to navigate to a particular folder be able to use New-Item.
 
   `Options2`:Dynamic Parameters
 
