@@ -1481,7 +1481,7 @@ namespace CodeOwls.PowerShell.Provider
                 return null;
             }
 
-            return GetContentReader(path, factories.First(a => a is IGetItemContent));
+            return GetContentReader(path, factories.FirstOrDefault(a => a is IGetItemContent));
         }
 
         private IContentReader GetContentReader(string path, IPathNode pathNode)
@@ -1489,6 +1489,7 @@ namespace CodeOwls.PowerShell.Provider
             var getContentReader = pathNode as IGetItemContent;
             if( null == getContentReader )
             {
+                WriteCmdletNotSupportedAtNodeError(path, ProviderCmdlet.GetContent, GetContentNotSupportedErrorId);
                 return null;
             }
 
@@ -1541,7 +1542,7 @@ namespace CodeOwls.PowerShell.Provider
                 return null;
             }
 
-            return GetContentWriter(path, factories.First(a => a is ISetItemContent));
+            return GetContentWriter(path, factories.FirstOrDefault(a => a is ISetItemContent));
         }
 
         private IContentWriter GetContentWriter(string path, IPathNode pathNode)
@@ -1549,6 +1550,7 @@ namespace CodeOwls.PowerShell.Provider
             var getContentWriter = pathNode as ISetItemContent;
             if (null == getContentWriter)
             {
+                WriteCmdletNotSupportedAtNodeError(path, ProviderCmdlet.SetContent, SetContentNotSupportedErrorId);
                 return null;
             }
 
@@ -1589,6 +1591,7 @@ namespace CodeOwls.PowerShell.Provider
             var clear = GetFirstNodeFactoryFromPath(path) as IClearItemContent;
             if (null == clear)
             {
+                WriteCmdletNotSupportedAtNodeError(path, ProviderCmdlet.ClearContent, ClearContentNotSupportedErrorId);
                 return;
             }
 
@@ -1738,6 +1741,9 @@ namespace CodeOwls.PowerShell.Provider
         private const string MoveItemNotSupportedErrorID = "MoveItem.NotSupported";
         private const string MoveItemInvokeErrorID = "MoveItem.Invoke";
         private const string ShouldContinuePrompt = "Are you sure?";
-                
+        private const string GetContentNotSupportedErrorId = "GetContent.NotSupported";
+        private const string SetContentNotSupportedErrorId = "SetContent.NotSupported";
+        private const string ClearContentNotSupportedErrorId = "ClearContent.NotSupported";
+
     }
 }
