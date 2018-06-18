@@ -1,6 +1,6 @@
 @{
     RootModule= 'SHiPS.psm1'
-    ModuleVersion = '0.7.2'
+    ModuleVersion = '0.7.5'
     GUID = 'A5FE6B04-385F-470F-9347-66EB3645B422'
     Author = 'Microsoft Corporation'
     CompanyName = 'Microsoft Corporation'
