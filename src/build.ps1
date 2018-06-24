@@ -1,14 +1,13 @@
 ﻿param(
-    [ValidateSet('net46', 'netcoreapp2.0')]
-    [string]$Framework = 'netcoreapp2.0',
-
     [ValidateSet('Debug', 'Release')]
     [string]$Configuration = "Debug",
 
     [Switch]$Verbose
 )
 
-
+# No more multi-targeting
+$Framework = 'netstandard2.0'
+$packageFramework ='coreclr'
 #
 # Variables
 #
@@ -29,16 +28,6 @@ $solutionDir = $PSScriptRoot
 Write-Output "Solution directory: '$solutionDir'."
 
 
-
-if ($Framework -eq 'netcoreapp2.0')
-{
-    $packageFramework ='coreclr'
-}
-else
-{
-    $packageFramework ='fullclr'
-
-}
 
 #
 # Help functions
@@ -124,7 +113,7 @@ CopyToDestinationDir $SHiPSManifest $destinationDirBinaries
 CopyToDestinationDir $Binaries $destinationDirBinaries
 CopyToDestinationDir $Pdbs $destinationDirBinaries
 
-# we do not want to pack this sam dll
+# we do not want to pack this sma dll
 $sma= "$destinationDirBinaries\System.Management.Automation.dll"
 
 if(test-path $sma)
