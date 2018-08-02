@@ -1,4 +1,5 @@
-﻿using CodeOwls.PowerShell.Paths.Extensions;
+﻿using System.Management.Automation;
+using CodeOwls.PowerShell.Paths.Extensions;
 using CodeOwls.PowerShell.Provider.PathNodeProcessors;
 
 namespace Microsoft.PowerShell.SHiPS
@@ -9,6 +10,11 @@ namespace Microsoft.PowerShell.SHiPS
     /// </summary>
     public class ProviderContext
     {
+        /// <summary>
+        /// Gets the drive property.
+        /// </summary>
+        public PSDriveInfo Drive { get; internal set; }
+
         /// <summary>
         /// Gets the force property.
         /// </summary>
@@ -31,6 +37,7 @@ namespace Microsoft.PowerShell.SHiPS
 
         internal void Set(IProviderContext context)
         {
+            Drive = context.Drive;
             Force = context.Force;
             Recurse = context.Recurse;
             Filter = context.Filter;
@@ -39,6 +46,7 @@ namespace Microsoft.PowerShell.SHiPS
 
         internal void Clear()
         {
+            Drive = null;
             Force = false;
             Recurse = false;
             Filter = null;
