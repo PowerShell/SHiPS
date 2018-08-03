@@ -1,7 +1,7 @@
 ﻿param(
     [ValidateSet('Debug', 'Release')]
     [string]$Configuration = "Debug",
-    [ValidateSet('netstandard2.0')]   # Keep the Framework parameter in case we need to build agaist std 3.0 e.g. later
+    [ValidateSet('netstandard2.0')]   # Keep the Framework parameter in case we need to add a build against netstandard 3.0 e.g. later
     [string]$Framework = 'netstandard2.0',
     [Switch]$Verbose
 )

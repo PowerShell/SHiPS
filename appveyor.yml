@@ -25,7 +25,7 @@ install:
 build_script:
 
 - git submodule update --init
-- ps: cd .\src; .\bootstrap.ps1; .\build.ps1 -framework "net46" Release;.\build.ps1 -framework "netcoreapp2.0" Release
+- ps: cd .\src; .\bootstrap.ps1; .\build.ps1 Release
 
 
 
@@ -42,8 +42,7 @@ on_finish:
         
         @(
             # You can add other artifacts here
-            "C:\projects\ships\src\out\SHiPS.fullclr.zip"
-            "C:\projects\ships\src\out\SHiPS.coreclr.zip"
+            "C:\projects\ships\src\out\SHiPS.zip"
         ) | % { Push-AppveyorArtifact $_ }
 
         Get-ChildItem -Path c:\projects\ships\test\ -Filter 'TestResults*.xml' -File | ForEach-Object {
