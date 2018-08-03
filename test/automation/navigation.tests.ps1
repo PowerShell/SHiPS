@@ -1212,6 +1212,58 @@ AfterEach{
      }
  }
 
+Describe "Drive Credential test" -Tags "Feature"{
+    cd $home
+    $a=Get-PSDrive -PSProvider SHiPS
+    $a | % {remove-psdrive $_.Name -ErrorAction Ignore}
+    cd $testpath
+
+    Context "Get supplied credential" {
+        $userName = 'theusername'
+        $password = 'thepassword'
+        $securePassword = ConvertTo-SecureString $password -AsPlainText -Force
+        $credential = [System.Management.Automation.PSCredential]::new($userName, $securePassword)
+
+        $a = new-psdrive -name JJ -psprovider SHiPS -root Test#DriveCredentialTest -credential $credential
+        $a.Name | Should Be "jj"
+
+        $locations = @(
+            @{
+                Name = 'root'
+                Location = 'jj:'
+                ExpectedLocation = 'jj:\'
+            }
+            @{
+                Name = 'second level'
+                Location = 'child'
+                ExpectedLocation = 'jj:\child'
+            }
+            @{
+                Name = 'third level'
+                Location = 'child'
+                ExpectedLocation = 'jj:\child\child'
+            }
+        )
+
+        It "at <Name> node - expect succeed" -TestCases $locations {
+            param ($Name, $Location, $ExpectedLocation)
+
+            cd $Location
+
+            (pwd).Path | Should -Be $ExpectedLocation
+            $b = dir
+            $b | Should -HaveCount 3
+            $b[0] | should -BeExactly $userName
+            $b[1] | should -BeExactly $password
+        }
+    }
+
+    cd $home
+    $a=Get-PSDrive -PSProvider SHiPS
+    $a | % {remove-psdrive $_.Name -ErrorAction Ignore}
+    cd $testpath
+}
+
 Describe "Not Supported Commands test" -Tags "Feature"{
 	BeforeEach{
         cd $home
