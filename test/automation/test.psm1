@@ -535,6 +535,22 @@ class DynamicParameterKeyValuePairTraditional : SHiPSDirectory
 
 
 
+[SHiPSProvider(UseCache=$true)]
+class DriveCredentialTest : SHiPSDirectory
+{
+    DriveCredentialTest([string]$name): base($name)
+    {
+    }
+
+    [object[]] GetChildItem()
+    {
+        $credential = $this.ProviderContext.DriveCredential.GetNetworkCredential()
+        return @($credential.UserName, $credential.Password, [DriveCredentialTest]::new('child'))
+    }
+}
+
+
+
 class FilterTest : SHiPSDirectory
 {
 

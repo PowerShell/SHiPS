@@ -1,4 +1,5 @@
-﻿using CodeOwls.PowerShell.Paths.Extensions;
+﻿using System.Management.Automation;
+using CodeOwls.PowerShell.Paths.Extensions;
 using CodeOwls.PowerShell.Provider.PathNodeProcessors;
 
 namespace Microsoft.PowerShell.SHiPS
@@ -29,12 +30,19 @@ namespace Microsoft.PowerShell.SHiPS
         /// </summary>
         public object DynamicParameters { get; internal set; }
 
+        /// <summary>
+        /// Gets the drive credential property.
+        /// </summary>
+        public PSCredential DriveCredential { get; internal set; }
+
         internal void Set(IProviderContext context)
         {
             Force = context.Force;
             Recurse = context.Recurse;
             Filter = context.Filter;
             DynamicParameters = context.DynamicParameters;
+            PSDriveInfo drive = context.Drive;
+            DriveCredential = drive != null ? drive.Credential : PSCredential.Empty;
         }
 
         internal void Clear()
@@ -43,6 +51,7 @@ namespace Microsoft.PowerShell.SHiPS
             Recurse = false;
             Filter = null;
             DynamicParameters = null;
+            DriveCredential = null;
         }
     }
 }

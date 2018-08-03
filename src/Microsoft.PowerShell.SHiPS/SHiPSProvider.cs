@@ -14,7 +14,7 @@ namespace Microsoft.PowerShell.SHiPS
     /// Defines the implementation of a 'generic' PowerShell provider.  This provider
     /// allows for stateless namespace navigation of a system you are modeling.
     /// </summary>
-    [CmdletProvider(SHiPSProvider.ProviderName, ProviderCapabilities.Filter | ProviderCapabilities.ShouldProcess)]
+    [CmdletProvider(SHiPSProvider.ProviderName, ProviderCapabilities.Filter | ProviderCapabilities.ShouldProcess | ProviderCapabilities.Credentials)]
     public class SHiPSProvider : CodeOwls.PowerShell.Provider.Provider
     {
         public const string ProviderName = "SHiPS";
