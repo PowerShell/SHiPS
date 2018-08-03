@@ -48,3 +48,5 @@ on_finish:
         Get-ChildItem -Path c:\projects\ships\test\ -Filter 'TestResults*.xml' -File | ForEach-Object {
             (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", "$($_.FullName)")
         }
+        
+    - ps: $blockRdp = $true

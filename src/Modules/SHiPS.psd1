@@ -1,5 +1,5 @@
 @{
-    RootModule= 'SHiPS.psm1'
+    RootModule= 'Microsoft.PowerShell.SHiPS.dll'
     ModuleVersion = '0.8.0'
     GUID = 'A5FE6B04-385F-470F-9347-66EB3645B422'
     Author = 'Microsoft Corporation'
