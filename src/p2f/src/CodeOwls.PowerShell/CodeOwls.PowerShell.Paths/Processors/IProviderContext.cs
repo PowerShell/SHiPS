@@ -25,7 +25,8 @@ using System;
 using System.Collections.Generic;
 using System.Management.Automation;
 using System.Management.Automation.Provider;
-using System.Security.AccessControl;
+// requires Microsoft.Windows.Compatibility to support System.Security.AccessControl
+//using System.Security.AccessControl;
 using CodeOwls.PowerShell.Paths.Processors;
 using CodeOwls.PowerShell.Provider.PathNodes;
 
@@ -50,7 +51,7 @@ namespace CodeOwls.PowerShell.Provider.PathNodeProcessors
         void WriteDebug(string text);
         void WriteItemObject(object item, string path, bool isContainer);
         void WritePropertyObject(object propertyValue, string path);
-        void WriteSecurityDescriptorObject(ObjectSecurity securityDescriptor, string path);
+       // void WriteSecurityDescriptorObject(ObjectSecurity securityDescriptor, string path);
         void WriteError(ErrorRecord errorRecord);
         bool Stopping { get; }
         IPathNode ResolvePath(string path);

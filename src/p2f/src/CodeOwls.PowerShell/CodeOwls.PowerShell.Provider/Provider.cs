@@ -1746,8 +1746,11 @@ namespace CodeOwls.PowerShell.Provider
         private const string MoveItemInvokeErrorID = "MoveItem.Invoke";
         private const string ShouldContinuePrompt = "Are you sure?";
         private const string GetContentNotSupportedErrorId = "GetContent.NotSupported";
-        private const string SetContentNotSupportedErrorId = "SetContent.NotSupported";
-        private const string ClearContentNotSupportedErrorId = "ClearContent.NotSupported";
-
+        private const string SetContentNotSupportedErrorId = "SetContent.NotSupported";
+
+        private const string ClearContentNotSupportedErrorId = "ClearContent.NotSupported";
+
+
+
     }
 }
