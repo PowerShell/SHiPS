@@ -95,12 +95,12 @@ The following properties are exposed to SHiPS' derived classes as protected memb
 
 - `ProviderContext`: provider's data
 
-  - `Drive`
-  Gets a [Drive][psdriveinfo] that current node originates from.
-  For example, author can use it to get acces to credentials provided by user in `-Credential` parameter of [`New-PSDrive`][new-psdrive] cmdlet.
+  - `DriveCredential`
+  Gets a [drive][psdriveinfo] [credential][pscredential] that was supplied by a user in `-Credential` parameter of [`New-PSDrive`][new-psdrive] cmdlet.
+  Author can use provided credential to get data from sources that requires authentication.
   
     ```powershell
-    $credential = $this.ProviderContext.Drive.Credential
+    $credential = $this.ProviderContext.DriveCredential
     ```
 
   - `DynamicParameters`
@@ -134,6 +134,7 @@ The following properties are exposed to SHiPS' derived classes as protected memb
     if(-not $this.ProviderContext.Force)
     ```
 
+[pscredential]: https://docs.microsoft.com/en-us/dotnet/api/system.management.automation.pscredential
 [psdriveinfo]: https://docs.microsoft.com/en-us/dotnet/api/system.management.automation.psdriveinfo
 [new-psdrive]: https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.management/new-psdrive
 [ds]:../samples/DynamicParameter

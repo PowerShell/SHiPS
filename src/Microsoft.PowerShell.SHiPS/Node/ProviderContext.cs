@@ -11,11 +11,6 @@ namespace Microsoft.PowerShell.SHiPS
     public class ProviderContext
     {
         /// <summary>
-        /// Gets the drive property.
-        /// </summary>
-        public PSDriveInfo Drive { get; internal set; }
-
-        /// <summary>
         /// Gets the force property.
         /// </summary>
         public bool Force { get; internal set; }
@@ -35,22 +30,28 @@ namespace Microsoft.PowerShell.SHiPS
         /// </summary>
         public object DynamicParameters { get; internal set; }
 
+        /// <summary>
+        /// Gets the drive credential property.
+        /// </summary>
+        public PSCredential DriveCredential { get; internal set; }
+
         internal void Set(IProviderContext context)
         {
-            Drive = context.Drive;
             Force = context.Force;
             Recurse = context.Recurse;
             Filter = context.Filter;
             DynamicParameters = context.DynamicParameters;
+            PSDriveInfo drive = context.Drive;
+            DriveCredential = drive != null ? drive.Credential : PSCredential.Empty;
         }
 
         internal void Clear()
         {
-            Drive = null;
             Force = false;
             Recurse = false;
             Filter = null;
             DynamicParameters = null;
+            DriveCredential = null;
         }
     }
 }
