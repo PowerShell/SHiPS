@@ -1,10 +1,12 @@
 version: 1.1.3.{build}
 
 environment:
+  # Avoid expensive initialization of dotnet cli, see: http://donovanbrown.com/post/Stop-wasting-time-during-NET-Core-builds
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
   matrix:
-  - APPVEYOR_BUILD_WORKER_IMAGE: WMF 5
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     PowerShellEdition: Desktop
-  - APPVEYOR_BUILD_WORKER_IMAGE: WMF 5
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     PowerShellEdition: Core
 
 configuration: Release
@@ -48,5 +50,3 @@ on_finish:
         Get-ChildItem -Path c:\projects\ships\test\ -Filter 'TestResults*.xml' -File | ForEach-Object {
             (New-Object 'System.Net.WebClient').UploadFile("https://ci.appveyor.com/api/testresults/nunit/$($env:APPVEYOR_JOB_ID)", "$($_.FullName)")
         }
-        
-    - ps: $blockRdp = $true

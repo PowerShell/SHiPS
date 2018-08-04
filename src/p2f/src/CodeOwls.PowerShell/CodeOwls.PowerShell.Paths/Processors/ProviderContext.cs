@@ -30,8 +30,7 @@ using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Host;
 using System.Management.Automation.Provider;
-// requires Microsoft.Windows.Compatibility to support System.Security.AccessControl
-//using System.Security.AccessControl;
+using System.Security.AccessControl;
 using CodeOwls.PowerShell.Paths.Processors;
 using CodeOwls.PowerShell.Provider.PathNodes;
 
@@ -183,10 +182,10 @@ namespace CodeOwls.PowerShell.Provider.PathNodeProcessors
             _provider.WritePropertyObject(propertyValue, path);
         }
 
-        //public void WriteSecurityDescriptorObject(ObjectSecurity securityDescriptor, string path)
-        //{
-        //    _provider.WriteSecurityDescriptorObject(securityDescriptor, path);
-        //}
+        public void WriteSecurityDescriptorObject(ObjectSecurity securityDescriptor, string path)
+        {
+            _provider.WriteSecurityDescriptorObject(securityDescriptor, path);
+        }
 
         public void WriteError(ErrorRecord errorRecord)
         {
