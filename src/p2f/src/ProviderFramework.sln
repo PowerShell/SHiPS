@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2018
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2F_Sample1_NullProvider", "Samples\P2F_Sample1_NullProvider\P2F_Sample1_NullProvider.csproj", "{E9CBC2B9-98B3-48AE-A5B5-7CBD9A154E78}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeOwls.PowerShell.Paths", "CodeOwls.PowerShell\CodeOwls.PowerShell.Paths\CodeOwls.PowerShell.Paths.csproj", "{ED0453C7-C25A-4354-AC7A-046846D5E7FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeOwls.PowerShell.Paths", "CodeOwls.PowerShell\CodeOwls.PowerShell.Paths\CodeOwls.PowerShell.Paths.csproj", "{ED0453C7-C25A-4354-AC7A-046846D5E7FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeOwls.PowerShell.Provider", "CodeOwls.PowerShell\CodeOwls.PowerShell.Provider\CodeOwls.PowerShell.Provider.csproj", "{B352375B-7C58-4943-95C0-14871E17A208}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CodeOwls.PowerShell.Provider", "CodeOwls.PowerShell\CodeOwls.PowerShell.Provider\CodeOwls.PowerShell.Provider.csproj", "{B352375B-7C58-4943-95C0-14871E17A208}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "P2F", "P2F", "{D500C55E-4C77-4B0C-8BB3-6998366D909D}"
 	ProjectSection(SolutionItems) = preProject
@@ -18,6 +18,15 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2F_Sample2_TypeProvider", "Samples\P2F_Sample2_TypeProvider\P2F_Sample2_TypeProvider.csproj", "{85439FAE-BEC1-4547-BBC0-F7D726830EAA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "P2F_Sample3_TypeProvider", "Samples\P2F_Sample3_TypeProvider\P2F_Sample3_TypeProvider.csproj", "{96A2EE47-84F0-4315-858F-6003A099A135}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{A6475AE1-93F8-49ED-86D5-03EB089776AE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GitHub", "GitHub", "{CFE975D6-78D5-46AF-9677-317922E7D272}"
+	ProjectSection(SolutionItems) = preProject
+		..\default.ps1 = ..\default.ps1
+		..\LICENSE.md = ..\LICENSE.md
+		..\README.md = ..\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,7 +59,13 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{E9CBC2B9-98B3-48AE-A5B5-7CBD9A154E78} = {A6475AE1-93F8-49ED-86D5-03EB089776AE}
 		{ED0453C7-C25A-4354-AC7A-046846D5E7FF} = {D500C55E-4C77-4B0C-8BB3-6998366D909D}
 		{B352375B-7C58-4943-95C0-14871E17A208} = {D500C55E-4C77-4B0C-8BB3-6998366D909D}
+		{85439FAE-BEC1-4547-BBC0-F7D726830EAA} = {A6475AE1-93F8-49ED-86D5-03EB089776AE}
+		{96A2EE47-84F0-4315-858F-6003A099A135} = {A6475AE1-93F8-49ED-86D5-03EB089776AE}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5DD3AFB7-BDEC-4D27-BD82-CC1BF12B639A}
 	EndGlobalSection
 EndGlobal

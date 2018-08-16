@@ -63,7 +63,7 @@ function Get-PSHome {
     if(($script:PowerShellEdition -eq 'Core') -and $script:IsWindows)
     {
         # install-powershell.ps1 depends on NuGet provider. Let's install it first.
-        $null=Install-PackageProvider -Name NuGet -Force        
+        $null=Get-PackageProvider -Name NuGet -Force -ForceBootstrap
 
         ## need to specify TLS version 1.2 since GitHub API requires it
         [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
