@@ -21,7 +21,7 @@
             ReleaseNotes = @'
 
 ## 0.8.0
-* Moved to .NET standard 2.0.
+* Changed to single .NET Standard 2.0 assembly
 * Added error handling for unspported provider cmdlets.
 ## 0.7.2
 * Bug fix for 'dir -force' case.
