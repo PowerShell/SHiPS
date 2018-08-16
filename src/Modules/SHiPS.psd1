@@ -7,7 +7,7 @@
     Copyright = '© Microsoft Corporation. All rights reserved.'
     Description = 'SHiPS is a PowerShell provider. More accurately it is a provider platform that simplifies developing PowerShell providers.'
     PowerShellVersion = '5.0'
-    DotNetFrameworkVersion = '4.6.1'
+    DotNetFrameworkVersion = '4.7.1'
     FormatsToProcess = @( 'SHiPS.formats.ps1xml' )
     CmdletsToExport = @()
     VariablesToExport = @()
