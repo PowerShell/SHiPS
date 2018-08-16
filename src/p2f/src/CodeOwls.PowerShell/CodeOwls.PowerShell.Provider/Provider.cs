@@ -836,7 +836,11 @@ namespace CodeOwls.PowerShell.Provider
             return ExecuteAndLog(() => true, "IsValidPath", path);
         }
 
-        protected override void GetChildItems( string path, bool recurse, uint depth)
+#if PS3
+        protected void GetChildItems(string path, bool recurse, uint depth)
+#else
+        protected override void GetChildItems(string path, bool recurse, uint depth)
+#endif
         {
             Action a= ()=>DoGetChildItems(path, recurse, depth);
             ExecuteAndLog(a, "GetChildItems", path, recurse.ToString());
@@ -1743,7 +1747,10 @@ namespace CodeOwls.PowerShell.Provider
         private const string ShouldContinuePrompt = "Are you sure?";
         private const string GetContentNotSupportedErrorId = "GetContent.NotSupported";
         private const string SetContentNotSupportedErrorId = "SetContent.NotSupported";
+
         private const string ClearContentNotSupportedErrorId = "ClearContent.NotSupported";
+
+
 
     }
 }

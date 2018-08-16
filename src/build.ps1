@@ -1,13 +1,10 @@
 ﻿param(
-    [ValidateSet('net46', 'netcoreapp2.0')]
-    [string]$Framework = 'netcoreapp2.0',
-
     [ValidateSet('Debug', 'Release')]
     [string]$Configuration = "Debug",
-
+    [ValidateSet('netstandard2.0')]   # Keep the Framework parameter in case we need to add a build against netstandard 3.0 e.g. later
+    [string]$Framework = 'netstandard2.0',
     [Switch]$Verbose
 )
-
 
 #
 # Variables
@@ -29,16 +26,6 @@ $solutionDir = $PSScriptRoot
 Write-Output "Solution directory: '$solutionDir'."
 
 
-
-if ($Framework -eq 'netcoreapp2.0')
-{
-    $packageFramework ='coreclr'
-}
-else
-{
-    $packageFramework ='fullclr'
-
-}
 
 #
 # Help functions
@@ -116,7 +103,7 @@ $Pdbs = $AssemblyPaths | % { "$solutionDir\$_\bin\$Configuration\$Framework\*.pd
 $SHiPSManifest = @("$solutionDir/Modules/SHiPS.psd1", "$solutionDir/Modules/SHiPS.psm1","$solutionDir/Modules/SHiPS.formats.ps1xml")
 
 $destinationDir = "$solutionDir/out/SHiPS/"
-$destinationDirBinaries = "$destinationDir/$packageFramework/"
+$destinationDirBinaries = "$destinationDir"
 
 
 CopyToDestinationDir $SHiPSManifest $destinationDir
@@ -124,7 +111,7 @@ CopyToDestinationDir $SHiPSManifest $destinationDirBinaries
 CopyToDestinationDir $Binaries $destinationDirBinaries
 CopyToDestinationDir $Pdbs $destinationDirBinaries
 
-# we do not want to pack this sam dll
+# we do not want to pack this sma dll
 $sma= "$destinationDirBinaries\System.Management.Automation.dll"
 
 if(test-path $sma)
@@ -138,7 +125,7 @@ if(test-path $sma)
 #
 $sourcePath = $destinationDir
 $packagePath= Split-Path -Path $sourcePath
-$packageFileName = Join-Path $packagePath "SHiPS.$packageFramework.zip"
+$packageFileName = Join-Path $packagePath "SHiPS.zip"
 
 if(test-path $packageFileName)
 {

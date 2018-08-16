@@ -37,3 +37,4 @@ artifacts/
 
 # Auto generated
 tools/install-powershell.ps1
+packages/
