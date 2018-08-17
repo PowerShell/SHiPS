@@ -1,7 +1,9 @@
 CHANGELOG
 ========
 ## 0.8.0
-* Changed to single .NET Standard 2.0 assembly
+* Switched to using .NET Standard 2.0 & PowerShellStandard.Library to allow a single cross-platform binary
+   - It requires .NET 4.7.1 running on Windows PowerShell
+  
 ## 0.7.5
 * Added error handling for unsupported provider cmdlets.
 ## 0.7.2
