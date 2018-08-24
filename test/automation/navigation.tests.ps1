@@ -7,9 +7,105 @@ Import-Module  $testpath\abc.psm1
 Import-Module  $testpath\test.psm1
 Import-Module  $testpath\sampleRecursion.psm1
 Import-Module  $testpath\ctor.psm1
+Import-Module  $testpath\Library.psm1
+
 $script:PowerShellProcessName = if($IsCoreCLR) {'pwsh'} else{ 'PowerShell'}
 $script:OnWindows = (-not (Get-Variable -Name IsWindows -ErrorAction Ignore)) -or $IsWindows
 $script:homePath = [System.IO.Path]::Combine('~', 'Test')
+
+Describe "Get and Set test" -Tags "Feature" {
+
+    BeforeEach {
+        If(Test-Path $script:homePath) 
+        {
+            Remove-Item -path $script:homePath -force -Recurse -ErrorAction Ignore
+        }
+
+        cd $home
+        $a=Get-PSDrive -PSProvider SHiPS
+        $a | % {remove-psdrive $_.Name -ErrorAction Ignore}
+        cd $testpath
+    }
+    
+    AfterEach {
+        cd $home
+        $a=Get-PSDrive -PSProvider SHiPS
+        $a | % {remove-psdrive $_.Name -ErrorAction Ignore}
+
+        If(Test-Path $script:homePath) {Remove-Item -Path $script:homePath -force -Recurse -ErrorAction Ignore}
+        
+        cd $testpath
+    }
+            
+    
+    It "Get Set Tests" {
+        <#
+            MM:
+            - Classic
+                - SwanLack
+                - BlueDanube
+            - Rock
+                - Turnstile, Generator
+                - Imagine Dragons, Thunder
+
+        #>
+        $a= new-psdrive -name MM -psprovider SHiPS -root Library#Music
+        $a.Name | Should Be "MM"
+
+
+        cd MM:
+        $b=dir
+        $b.Count | should be 2
+
+        # Get the existing content          
+        $c= Get-Content .\Classic\SwanLake
+        $c | should not BeNullOrEmpty
+
+        # modify it
+        Set-Content .\Classic\SwanLake -Value 'Cool!'
+        $d=Get-Content .\Classic\SwanLake
+        $d[0] | should be 'Cool!'
+
+        # Set-Content is not supported under root by Libary module
+        Set-Content .\foo -Value 'Not Cool!' -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId | Should Be "SetContent.NotSupported,Microsoft.PowerShell.Commands.SetContentCommand"
+
+        # new item is created
+        cd .\Classic\
+        Set-Content .\foooobarrrr -value "works"
+        $f = dir
+        
+        $f.Count | should be ($b.Count + 1)
+        $g = $f | ?{$_.Name -eq 'foooobarrrr'}
+        $g.Name | should be 'foooobarrrr'
+
+        $g1 = Get-Content .\foooobarrrr
+        $g1[0] | should be 'works'
+
+        # modify the content
+        Set-Content .\foooobarrrr -value "not bad"
+        $h = Get-Content .\foooobarrrr
+        $h[0] | should be 'not bad'
+
+        # Rock folder has two leaf node. It does not support Get nor Set-Content
+        cd ..
+        cd .\Rock\
+        $ev = $null
+        Set-Content .\notexist -Value whatever -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId | Should Be "SetContent.NotSupported,Microsoft.PowerShell.Commands.SetContentCommand"
+
+        $ev = $null
+        Get-Content '.\Imagine Dragons, Thunder' -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId | Should Be "GetContent.NotSupported,Microsoft.PowerShell.Commands.GetContentCommand"
+
+        $ev = $null
+        Get-Content '.\whatevernotexist' -ErrorAction SilentlyContinue -ErrorVariable ev
+        $ev.FullyQualifiedErrorId | Should Be "PathNotFound,Microsoft.PowerShell.Commands.GetContentCommand"
+        
+        }
+    
+
+}
 
 Describe "Basic Navigation" -Tags "Feature" {
 
@@ -1314,16 +1410,6 @@ Describe "Not Supported Commands test" -Tags "Feature"{
         $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.RenameItemCommand" | Should Be $true
 	}
 
-    It "GetContent throws NotSupported" {
-        cd ss:\William
-        $b = dir .\Chrisylin
-        $b.Name | should be "Chrisylin"
-
-        $null = dir
-        Get-Content .\Chrisylin -ErrorAction SilentlyContinue -ErrorVariable ev
-        $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.GetContentCommand" | Should be $true
-	}
-
     It "SetContent throws NotSupported" {
         cd ss:\William
         $b = dir .\Chrisylin
@@ -1336,7 +1422,7 @@ Describe "Not Supported Commands test" -Tags "Feature"{
 		}
     }
 
-    It "ClearContent throws NotSupported" {
+    <#It "ClearContent throws NotSupported" {
         cd ss:\William
         $b = dir .\Chrisylin
         $b.Name | should be "Chrisylin"
@@ -1344,7 +1430,7 @@ Describe "Not Supported Commands test" -Tags "Feature"{
         $null = dir
         Clear-Content .\Chrisylin -ErrorAction SilentlyContinue -ErrorVariable ev
         $ev.FullyQualifiedErrorId -match "NotSupported,Microsoft.PowerShell.Commands.ClearContentCommand" | Should be $true
-    }
+    }#>
 }
 
 Describe "Not Supported Commands work properly outside test" -Tags "Feature"{

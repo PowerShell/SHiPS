@@ -145,6 +145,7 @@ function Install-SHiPS
         $SHiPSTestInstallLocation =  Microsoft.PowerShell.Management\Join-Path -Path $SHiPSModulesPath -ChildPath "SHiPSTest"
         $null = New-Item -Path $SHiPSTestInstallLocation -ItemType Directory -Force 
         $null = Microsoft.PowerShell.Management\Copy-Item "$script:TestHome\automation\SHiPSTest\*" -Destination $SHiPSTestInstallLocation\ -Recurse -Force -verbose
+        $null = Microsoft.PowerShell.Management\Copy-Item "$script:TestHome\..\samples\Library\Library.psm1" -Destination $script:TestHome\automation\ -Recurse -Force -verbose
     }
     
     return  $PowerShellHome

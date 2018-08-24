@@ -97,7 +97,12 @@ namespace Microsoft.PowerShell.SHiPS
                 return _builtinProgress ?? BuiltinProgressDefaultValue;
             }
             set { _builtinProgress = value; }
-        } 
+        }
+
+        /// <summary>
+        /// Parent node
+        /// </summary>
+        internal SHiPSDirectory Parent { get; set; }
 
         #endregion
     }

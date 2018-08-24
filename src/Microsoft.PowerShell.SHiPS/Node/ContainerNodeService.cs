@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Management.Automation;
+using System.Management.Automation.Provider;
+using CodeOwls.PowerShell.Paths;
 using CodeOwls.PowerShell.Provider.PathNodeProcessors;
 using CodeOwls.PowerShell.Provider.PathNodes;
 
@@ -14,17 +12,22 @@ namespace Microsoft.PowerShell.SHiPS
     /// <summary>
     /// Defines actions that applies to a ContainerNode.
     /// </summary>
-    internal class ContainerNodeService : PathNodeBase
+    internal class ContainerNodeService : PathNodeBase,
+        ISetItemContent,
+        IClearItemContent
     {
         private readonly SHiPSDrive _drive;
         private readonly SHiPSDirectory _container;
         private static readonly string _directory = "+";
+        private readonly ContentHelper _contentHelper;
 
         internal ContainerNodeService(SHiPSDrive drive, object container, SHiPSDirectory parent)
         {
             _drive = drive;
             _container = container as SHiPSDirectory;
             if (_container != null) { _container.Parent = parent; }
+            _contentHelper = new ContentHelper(_container, drive);
+
         }
 
         internal SHiPSDirectory ContainerNode
@@ -70,33 +73,16 @@ namespace Microsoft.PowerShell.SHiPS
                 }
 
                 // Geting dynamic parameters
-                var parameters = GetNodeChildrenDynamicParameters(Constants.GetChildItemDynamicParameters, item);
+                var parameters = GetNodeChildrenDynamicParameters(item);
                 return parameters;
             }
         }
 
-        private  object GetNodeChildrenDynamicParameters(string methodName, SHiPSDirectory node)
+        private  object GetNodeChildrenDynamicParameters(SHiPSDirectory node)
         {
-            var errors = new ConcurrentBag<ErrorRecord>();
-
-            var parameters = PSScriptRunner.CallPowerShellScript(
-                node,
-                null,
-                _drive.PowerShellInstance,
-                null,
-                methodName,
-                PSScriptRunner.output_DataAdded,
-                (sender, e) => PSScriptRunner.error_DataAdded(sender, e, errors));
-
-            if (errors.WhereNotNull().Any())
-            {
-                var error = errors.FirstOrDefault();
-                var message = Environment.NewLine;
-                message += error.ErrorDetails == null ? error.Exception.Message : error.ErrorDetails.Message;
-                throw new InvalidDataException(message);
-            }
-
-            return parameters != null ? parameters.FirstOrDefault() : null;   
+            var script = Constants.ScriptBlockWithParam1.StringFormat(Constants.GetChildItemDynamicParameters);
+            var parameters = PSScriptRunner.InvokeScriptBlock(null, node, _drive, script, PSScriptRunner.ReportErrors);
+            return parameters?.FirstOrDefault();   
         }
 
         /// <summary>
@@ -150,7 +136,8 @@ namespace Microsoft.PowerShell.SHiPS
             }
             else
             {
-                var nodes = PSScriptRunner.InvokeScriptBlock(context, item, _drive)?.ToList();
+                var script = Constants.ScriptBlockWithParam1.StringFormat(Constants.GetChildItem);
+                var nodes = PSScriptRunner.InvokeScriptBlockAndBuildTree(context, item, _drive, script, PSScriptRunner.ReportErrors)?.ToList();
 
                 // Save the info of the node just visisted
                 SHiPSProvider.LastVisisted.Set(context.Path, this, nodes);
@@ -171,5 +158,34 @@ namespace Microsoft.PowerShell.SHiPS
                 }
             }
         }
+
+        #region ISetItemContent
+
+        public IContentWriter GetContentWriter(IProviderContext context)
+        {
+            return _contentHelper.GetContentWriter(context);
+        }
+
+        public object GetContentWriterDynamicParameters(IProviderContext context)
+        {
+            return _contentHelper.GetContentWriterDynamicParameters(context);
+        }
+
+        #endregion
+
+        #region IClearItemContent
+
+        public void ClearContent(IProviderContext context)
+        {
+            // Define ClearContent for now as the PowerShell engine calls ClearContent first for Set-Content cmdlet.
+            _contentHelper.ClearContent(context);
+        }
+
+        public object ClearContentDynamicParameters(IProviderContext context)
+        {
+            return _contentHelper.ClearContentDynamicParameters(context);
+        }
+
+        #endregion
     }
 }

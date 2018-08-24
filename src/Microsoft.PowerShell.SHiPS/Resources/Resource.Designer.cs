@@ -39,7 +39,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.PowerShell.SHiPS.Resources.Resource", typeof(Resource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Microsoft.PowerShell.SHiPS.Resources", typeof(Resource).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -201,6 +201,15 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
         internal static string UnableToFindModule {
             get {
                 return ResourceManager.GetString("UnableToFindModule", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The node at path &apos;{0}&apos; may not support the cmdlet &apos;{1}&apos;..
+        /// </summary>
+        internal static string UnSupportedCmdlet {
+            get {
+                return ResourceManager.GetString("UnSupportedCmdlet", resourceCulture);
             }
         }
     }

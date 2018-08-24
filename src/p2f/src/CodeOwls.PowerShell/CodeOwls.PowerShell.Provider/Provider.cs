@@ -1533,20 +1533,28 @@ namespace CodeOwls.PowerShell.Provider
         private IContentWriter DoGetContentWriter(string path)
         {
             var factories = GetNodeFactoryFromPath(path);
-            if (null == factories)
+            var pathNodes = factories as IPathNode[] ?? factories.ToArray();
+            if (!pathNodes.Any())
             {
-                WriteError(
-                    new ErrorRecord(
-                        new ItemNotFoundException(path),
-                        GetContentTargetDoesNotExistErrorID,
-                        ErrorCategory.ObjectNotFound,
-                        path
+                // For a case like Set-Content .\foo\bar\baz.ps1 where baz.ps1 possibly does not exist, so try its parent node.
+                var dir = Path.GetDirectoryName(path);
+                factories = GetNodeFactoryFromPath(dir);
+                pathNodes = factories as IPathNode[] ?? factories.ToArray();
+                if (!pathNodes.Any())
+                {
+                    WriteError(
+                        new ErrorRecord(
+                            new ItemNotFoundException(path),
+                            GetContentTargetDoesNotExistErrorID,
+                            ErrorCategory.ObjectNotFound,
+                            path
                         )
                     );
-                return null;
+                    return null;
+                }
             }
 
-            return GetContentWriter(path, factories.FirstOrDefault(a => a is ISetItemContent));
+            return GetContentWriter(path, pathNodes.FirstOrDefault(a => a is ISetItemContent));
         }
 
         private IContentWriter GetContentWriter(string path, IPathNode pathNode)
@@ -1593,13 +1601,7 @@ namespace CodeOwls.PowerShell.Provider
         private void DoClearContent(string path)
         {
             var clear = GetFirstNodeFactoryFromPath(path) as IClearItemContent;
-            if (null == clear)
-            {
-                WriteCmdletNotSupportedAtNodeError(path, ProviderCmdlet.ClearContent, ClearContentNotSupportedErrorId);
-                return;
-            }
-
-            clear.ClearContent(CreateContext(path));
+            clear?.ClearContent(CreateContext(path));
         }
 
         public object ClearContentDynamicParameters(string path)

@@ -1,5 +1,7 @@
 CHANGELOG
 ========
+## 0.8.1
+* Added Get-Content and Set-Content.
 ## 0.8.0
 * Switched to using .NET Standard 2.0 & PowerShellStandard.Library to allow a single cross-platform binary
    - It requires .NET 4.7.1 running on Windows PowerShell
