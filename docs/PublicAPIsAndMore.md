@@ -50,7 +50,7 @@ With that,  in PowerShell, you can pass in a node name argument as follows.
 - [object] SetContent([string]$content, [string]$path)
   Sets the content string text in $content to the path node specified in $path.
 
-- [object] GetContent()
+- [string] GetContent()
   Gets the content text from the current node object.
 
 ## Public Attributes
