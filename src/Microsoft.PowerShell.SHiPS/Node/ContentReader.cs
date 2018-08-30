@@ -34,33 +34,23 @@ namespace Microsoft.PowerShell.SHiPS
         /// <summary>
         /// Reads the specified number of characters or a lines from the MemoryStream.
         /// </summary>
-        ///
         /// <param name="readCount"> The readCount seems to be applied to FileSystem Only. Ignored for all other providers.</param>
-        ///
-        /// <returns>
-        /// An array of strings representing the character(s) or line(s) read from
-        /// the file.
-        /// </returns>
+        /// <returns> An array of strings representing the character(s) or line(s) read from targeted source. </returns>
         public IList Read(long readCount)
         {
-            var blocks = new ArrayList();
-            var readToEnd = readCount <= 0;
+            var blocks = new List<string>();
 
-            for (var currentBlock = 0; (currentBlock < readCount) || (readToEnd); ++currentBlock)
+            // It is observed that displaying content can be slow especially on xterm cases.
+            // Thus by default, we read them all and return all once. This means the user cannot use
+            // Get-Content -TotalCount feature, which is fine comparing the speed of displaying content output.
+            var content = _reader.ReadToEnd();
+            if (content.Length > 0)
             {
-                if (_provider.Stopping)
-                {
-                    break;
-                }
-
-                if (!ReadByLine(blocks))
-                {
-                    // EOF
-                    break;
-                }
+                // For some reason ReadToEnd() or Readline() inserts LF at the end. So trim them off here.
+                blocks.Add(content.TrimEnd(Environment.NewLine.ToCharArray()));
             }
 
-            return blocks.ToArray();
+            return blocks;
         }
 
         private bool ReadByLine(ArrayList blocks)
@@ -104,10 +94,10 @@ namespace Microsoft.PowerShell.SHiPS
         /// <param name="origin"> The origin from which the offset is calculated. </param>
         public void Seek(long offset, SeekOrigin origin)
         {
-            _writer?.Flush();
+            _writer.Flush();
             _stream.Seek(offset, origin);
-            _writer?.Flush();
-            _reader?.DiscardBufferedData();
+            _writer.Flush();
+            _reader.DiscardBufferedData();
         }
 
         /// <summary>
@@ -115,8 +105,6 @@ namespace Microsoft.PowerShell.SHiPS
         /// </summary>
         public void Close()
         {
-            if (_writer == null && _reader == null) { return; }
-
             try
             {
                 _writer?.Flush();

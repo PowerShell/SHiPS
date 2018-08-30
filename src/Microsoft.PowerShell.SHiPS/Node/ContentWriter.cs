@@ -41,7 +41,7 @@ namespace Microsoft.PowerShell.SHiPS
         /// <param name="origin"> The origin from which the offset is calculated. </param>
         public void Seek(long offset, SeekOrigin origin)
         {
-            _writer?.Flush();
+            _writer.Flush();
             _stream.Seek(offset, origin);
         }
 
@@ -50,11 +50,11 @@ namespace Microsoft.PowerShell.SHiPS
         /// </summary>
         public void Close()
         {
-            if (_writer == null) { return; }
+            if (_writer == null || _stream == null) { return; }
 
             try
             {
-                _writer.Flush();        
+                _writer.Flush();
                 _stream.Flush();
 
                 // By now the PS engine completes reading from its pipleline and have the stream ready for SetConent()

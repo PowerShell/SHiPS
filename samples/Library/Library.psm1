@@ -51,10 +51,13 @@ class Classic : SHiPSDirectory
 {
     # Mimicking file storage, database, store, etc
     hidden [object]$children = @()
+    hidden static [string]$SwanLake = "Tchaikovsky's magical ballet tells the story of the doomed love of Prince Siegfried and Princess Odette. Prince Siegfried goes out hunting one night and chases a group of swans – one of them transforms into a young woman, Odette, who explains that she and her companions were turned into swans by the evil Baron Von Rothbart."
+    hidden static [string]$Donau = "Johann Strauss Jr.'s status as an internationally recognized Austrian icon began with the success of his waltz, An der schönen, blauen Donau (The Blue Danube Waltz), at the Paris Exhibition of 1867."
+
     Classic() : base ($this.GetType())
     {
-        $this.children += [SwanLake]::new()
-        $this.children += [BlueDanube]::new()
+        $this.children += [MusicLeaf]::new('SwanLake', [Classic]::SwanLake)
+        $this.children += [MusicLeaf]::new('BlueDanube', [Classic]::Donau)
     }
 
     [object[]] GetChildItem()
@@ -91,7 +94,7 @@ class MusicLeaf : SHiPSLeaf
         $this.data = $content
     }
 
-    [object] GetContent()
+    [string] GetContent()
     {
         return $this.data
     }
@@ -100,33 +103,6 @@ class MusicLeaf : SHiPSLeaf
     {
         $this.data = $value
         return $this
-    }
-}
-
-class SwanLake : MusicLeaf
-{
-    hidden [string]$data = "Tchaikovsky's magical ballet tells the story of the doomed love of Prince Siegfried and Princess Odette. 
-    Prince Siegfried goes out hunting one night and chases a group of swans – one of them transforms into a young woman, Odette, who explains 
-    that she and her companions were turned into swans by the evil Baron
-    Von Rothbart."
-
-    SwanLake() : base ($this.GetType())
-    {
-    }
-
-
-}
-class BlueDanube : MusicLeaf
-{
-    hidden [string]$data = "Johann Strauss Jr.'s status as an internationally recognized Austrian icon began with the success of his waltz,
-    An der schönen, blauen Donau (The Blue Danube Waltz), at the Paris Exhibition of 1867. The Austrians, still smarting 
-    from their military defeat at the hands of the Prussians at Königgrätz in July of 1866, whole-heartedly supported 
-    Strauss's music; when the Blue Danube achieved a resounding success at the Paris exhibition, the Viennese felt they had 
-    shown the French that Austria, despite its recent military setback, was still an important cultural force. Writers even 
-    described Strauss's triumph with military imagery, calling Strauss a ""Napoleon among composers."""
-
-    BlueDanube() : base ($this.GetType())
-    {
     }
 }
 
@@ -143,6 +119,6 @@ class Rock : SHiPSDirectory
         $obj += "Turnstile, Generator"
         $obj += "Imagine Dragons, Thunder"
 
-        return $obj;
+        return $obj
     }
 }

@@ -64,7 +64,7 @@ Describe "Get and Set test" -Tags "Feature" {
         # modify it
         Set-Content .\Classic\SwanLake -Value 'Cool!'
         $d=Get-Content .\Classic\SwanLake
-        $d[0] | should be 'Cool!'
+        $d.Trim() | should be 'Cool!'
 
         # Set-Content is not supported under root by Libary module
         Set-Content .\foo -Value 'Not Cool!' -ErrorAction SilentlyContinue -ErrorVariable ev
@@ -80,12 +80,18 @@ Describe "Get and Set test" -Tags "Feature" {
         $g.Name | should be 'foooobarrrr'
 
         $g1 = Get-Content .\foooobarrrr
-        $g1[0] | should be 'works'
+        $g1.Trim() | should be 'works'
 
         # modify the content
         Set-Content .\foooobarrrr -value "not bad"
         $h = Get-Content .\foooobarrrr
-        $h[0] | should be 'not bad'
+        $h.Trim() | should be 'not bad'
+
+        # Output of Get-Content can be piped to the Set-Content
+        $g1 = Get-Content .\foooobarrrr
+        Get-Content .\foooobarrrr | Set-Content .\SwanLake
+        $g2 = Get-Content .\SwanLake
+        $g2.Trim() | Should be $g1.Trim()
 
         # Rock folder has two leaf node. It does not support Get nor Set-Content
         cd ..

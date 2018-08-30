@@ -21,7 +21,7 @@
             ReleaseNotes = @'
 
 ## 0.8.1
-* Added Get-Content and Set-Content
+* Added Get-Content and Set-Content.
 ## 0.8.0
 * Changed to single .NET Standard 2.0 assembly
 * Added error handling for unspported provider cmdlets.
