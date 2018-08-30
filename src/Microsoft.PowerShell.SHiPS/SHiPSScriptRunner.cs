@@ -379,6 +379,8 @@ namespace Microsoft.PowerShell.SHiPS
                     {
                         powerShell.AddParameter("verbose");
                     }
+
+                    node.SHiPSProviderContext.BoundParameters = parameters.BoundParameters;
                 }
 
                 powerShell.Invoke(null, output, new PSInvocationSettings());
