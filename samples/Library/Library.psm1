@@ -51,8 +51,15 @@ class Classic : SHiPSDirectory
 {
     # Mimicking file storage, database, store, etc
     hidden [object]$children = @()
-    hidden static [string]$SwanLake = "Tchaikovsky's magical ballet tells the story of the doomed love of Prince Siegfried and Princess Odette. Prince Siegfried goes out hunting one night and chases a group of swans – one of them transforms into a young woman, Odette, who explains that she and her companions were turned into swans by the evil Baron Von Rothbart."
-    hidden static [string]$Donau = "Johann Strauss Jr.'s status as an internationally recognized Austrian icon began with the success of his waltz, An der schönen, blauen Donau (The Blue Danube Waltz), at the Paris Exhibition of 1867."
+    hidden static [string]$SwanLake = "
+    Tchaikovsky's magical ballet tells the story of the doomed love of Prince Siegfried and Princess Odette, 
+    Prince Siegfried goes out hunting one night and chases a group of swans – one of them transforms into a 
+    young woman, Odette, who explains that she and her companions were turned into swans by the evil Baron Von Rothbart."
+
+    hidden static [string]$Donau = "
+    Johann Strauss Jr.'s status as an internationally recognized Austrian icon began with the success
+    of his waltz, An der schönen, blauen Donau (The Blue Danube Waltz), at the Paris Exhibition of 1867."
+
 
     Classic() : base ($this.GetType())
     {
@@ -96,6 +103,24 @@ class MusicLeaf : SHiPSLeaf
 
     [string] GetContent()
     {
+        $bp = $this.ProviderContext.BoundParameters
+
+        if ($bp)
+        {
+            # Get-Content -TotalCount
+            if ($bp.TotalCount)
+            {
+                # Making up lines artificially
+                $text = @()
+                $array = $this.data -split '\s+' -match '\S'
+                $count = [Math]::Min($bp.TotalCount, $array.Length)
+                for ($i = 0; $i -lt $count; $i++) {
+                    $text+=$array[$i]
+                }
+                return $text
+            }
+        }
+
         return $this.data
     }
 

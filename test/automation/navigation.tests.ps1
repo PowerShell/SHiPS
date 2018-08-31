@@ -61,6 +61,11 @@ Describe "Get and Set test" -Tags "Feature" {
         $c= Get-Content .\Classic\SwanLake
         $c | should not BeNullOrEmpty
 
+        # Test TotalCount
+        $c2=Get-Content .\Classic\BlueDanube
+        $c3=Get-Content .\Classic\BlueDanube -TotalCount 2
+        $c2.Length -ge $c3.Length | Should be $true
+
         # modify it
         Set-Content .\Classic\SwanLake -Value 'Cool!'
         $d=Get-Content .\Classic\SwanLake
