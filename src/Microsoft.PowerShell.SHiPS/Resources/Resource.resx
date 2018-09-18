@@ -171,4 +171,8 @@
     <value>Item '{0}' may no longer exists. Details: {1}.</value>
     <comment>0 - item path 1- detail error message</comment>
   </data>
+  <data name="UnSupportedCmdlet" xml:space="preserve">
+    <value>The node at path '{0}' may not support the cmdlet '{1}'.</value>
+    <comment>0 - node path, 1 - cmdlet name</comment>
+  </data>
 </root>

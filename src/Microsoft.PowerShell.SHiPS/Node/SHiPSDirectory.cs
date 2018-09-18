@@ -50,7 +50,5 @@ namespace Microsoft.PowerShell.SHiPS
         /// True if the current item has been visisted. This info is useful for cached case.
         /// </summary>
         internal bool ItemNavigated { get; set; }
-
-        internal SHiPSDirectory Parent { get; set; }
     }
 }

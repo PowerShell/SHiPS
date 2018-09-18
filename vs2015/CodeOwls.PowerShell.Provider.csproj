@@ -66,19 +66,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\src\p2f\src\CodeOwls.PowerShell\CodeOwls.PowerShell.Provider\..\..\CodeOwls.AssemblyInfo.cs">
-      <Link>Properties\CodeOwls.AssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="..\src\p2f\src\CodeOwls.PowerShell\CodeOwls.PowerShell.Provider\..\..\CodeOwls.PowerShell.AssemblyInfo.cs">
       <Link>Properties\CodeOwls.PowerShell.AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="..\src\p2f\src\CodeOwls.PowerShell\CodeOwls.PowerShell.Provider\CollectionExtensions.cs" />
     <Compile Include="..\src\p2f\src\CodeOwls.PowerShell\CodeOwls.PowerShell.Provider\Drive.cs" />
     <Compile Include="..\src\p2f\src\CodeOwls.PowerShell\CodeOwls.PowerShell.Provider\NullDisposable.cs" />
-    <Compile Include="..\src\p2f\src\CodeOwls.PowerShell\CodeOwls.PowerShell.Provider\Properties\AssemblyInfo.cs" />
     <Compile Include="..\src\p2f\src\CodeOwls.PowerShell\CodeOwls.PowerShell.Provider\Provider.cs" />
     <Compile Include="..\src\p2f\src\CodeOwls.PowerShell\CodeOwls.PowerShell.Provider\ProviderWithDisposableSession.cs" />
-    <Compile Include="..\src\p2f\src\CodeOwls.PowerShell\CodeOwls.PowerShell.Provider\ProviderWithTransactions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="CodeOwls.PowerShell.Paths.csproj">

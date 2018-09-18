@@ -45,6 +45,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\src\Microsoft.PowerShell.SHiPS\Node\ContentHelper.cs">
+      <Link>ContentHelper.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Microsoft.PowerShell.SHiPS\Node\ContentReader.cs">
+      <Link>ContentReader.cs</Link>
+    </Compile>
+    <Compile Include="..\src\Microsoft.PowerShell.SHiPS\Node\ContentWriter.cs">
+      <Link>ContentWriter.cs</Link>
+    </Compile>
     <Compile Include="..\src\Microsoft.PowerShell.SHiPS\Node\ProviderContext.cs" />
     <Compile Include="..\src\Microsoft.PowerShell.SHiPS\Node\LeafNodeService.cs" />
     <Compile Include="..\src\Microsoft.PowerShell.SHiPS\Node\PathNodeInfo.cs" />

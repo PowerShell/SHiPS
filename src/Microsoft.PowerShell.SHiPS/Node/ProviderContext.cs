@@ -29,6 +29,11 @@ namespace Microsoft.PowerShell.SHiPS
         /// </summary>
         public object DynamicParameters { get; internal set; }
 
+        /// <summary>
+        /// Cmdlet bound parameters.
+        /// </summary>
+        public object BoundParameters { get; internal set; }
+
         internal void Set(IProviderContext context)
         {
             Force = context.Force;

@@ -269,9 +269,9 @@ namespace Microsoft.PowerShell.SHiPS
             return parameterBag;
         }
 
-        internal static IPathNode AddAsChildNode(this SHiPSDirectory parent, object child, SHiPSDrive drive, List<IPathNode> list)
+        internal static IPathNode AddAsChildNode(this SHiPSDirectory parent, object child, SHiPSDrive drive, bool addNodeOnly, List<IPathNode> list)
         {
-            var pNode = GetChildPNode(parent, child, drive, cache:true);
+            var pNode = GetChildPNode(parent, child, drive, addNodeOnly, cache: true);
 
             if (pNode == null) { return null;}
 
@@ -281,7 +281,7 @@ namespace Microsoft.PowerShell.SHiPS
             return pNode;
         }
 
-        internal static IPathNode GetChildPNode(this SHiPSDirectory parent, object child, SHiPSDrive drive, bool cache)
+        internal static IPathNode GetChildPNode(this SHiPSDirectory parent, object child, SHiPSDrive drive, bool addNodeOnly, bool cache)
         {
             if (child == null || parent == null) return null;
 
@@ -303,14 +303,23 @@ namespace Microsoft.PowerShell.SHiPS
                 //warning if nodes have the same name because "directory" cannot be the same name
                 var existNode = parent.Children.Get(pNode.Name);
                 var first = existNode?.FirstOrDefault();
-                if (first != null &&
-                    (first.GetNodeValue().IsCollection ||
-                     (pNode is ContainerNodeService &&
-                      !((ContainerNodeService)pNode).ContainerNode.IsLeaf)))
+                if (first != null)
                 {
-                    drive.SHiPS.WriteWarning(
-                        Resources.Resource.NodesWithSameName.StringFormat(parent.Name.EqualsIgnoreCase(drive.RootNode.Name) ? "root" : parent.Name, pNode.Name));
-                    return null;
+                    if (addNodeOnly)
+                    {
+                        // replace the existing node
+                        parent.Children.RemoveSafe(pNode.Name);
+                        return pNode;
+                    }
+                    if (first.GetNodeValue().IsCollection ||
+                         (pNode is ContainerNodeService &&
+                          !((ContainerNodeService) pNode).ContainerNode.IsLeaf))
+                    {
+                        drive.SHiPS.WriteWarning(
+                            Resources.Resource.NodesWithSameName.StringFormat(
+                                parent.Name.EqualsIgnoreCase(drive.RootNode.Name) ? "root" : parent.Name, pNode.Name));
+                        return null;
+                    }
                 }
 
                 return pNode;
@@ -457,7 +466,7 @@ namespace Microsoft.PowerShell.SHiPS
 
             if (input is SHiPSLeaf)
             {
-                return new LeafNodeService(input);
+                return new LeafNodeService(input, drive, parent);
             }
 
             // get or create a psobject on input
@@ -471,7 +480,7 @@ namespace Microsoft.PowerShell.SHiPS
 
             if (psobject.ImmediateBaseObject is SHiPSLeaf)
             {
-                return new LeafNodeService(psobject.ImmediateBaseObject);
+                return new LeafNodeService(psobject.ImmediateBaseObject, drive, parent);
             }
                 
             return new PSObjectNodeService(psobject);
