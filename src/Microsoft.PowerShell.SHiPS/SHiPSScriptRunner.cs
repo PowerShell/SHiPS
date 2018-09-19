@@ -448,7 +448,7 @@ namespace Microsoft.PowerShell.SHiPS
 
         internal static void SetContentNotSupported(string item, IProviderContext context, IEnumerable<ErrorRecord> errors)
         {
-            var message = Resource.UnSupportedCmdlet.StringFormat(context.Path, Constants.SetContent);
+            var message = Resource.UnSupportedCmdlet.StringFormat(context.Path, "Set-Content");
 
             foreach (var error in errors)
             {

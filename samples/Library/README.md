@@ -14,11 +14,39 @@ See the [Library module][fm].
   cd <yourclonefolder>\SHiPS
   Import-Module  SHiPS
   Import-Module  .\samples\Library\Library.psm1
-
   new-psdrive -name M -psprovider SHiPS -root 'Library#Music'
+
   cd M:
-  dir
+  PS M:\> dir
+
+    Directory: M:
+
+  Mode  Name
+  ----  ----
+  +     Classic
+  +     Rock
+
+  PS M:\> cd .\Classic\
+  PS M:\Classic> Get-Content .\SwanLake
+
+      Tchaikovsky's magical ballet tells ...
+
+  PS M:\Classic>Set-Content .\Nocturnes  -Value "Beautiful"
+  PS M:\Classic> dir
+
+      Directory: MM:\Classic
+
+  Mode  Name
+  ----  ----
+  .     SwanLake
+  .     BlueDanube
+  .     Nocturnes
+
+
+  PS M:\Classic> Get-Content .\Nocturnes
   
+  Beautiful
+
  ```
 
 ## Key Takeaways from this example
