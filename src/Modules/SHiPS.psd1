@@ -1,6 +1,6 @@
 @{
     RootModule= 'Microsoft.PowerShell.SHiPS.dll'
-    ModuleVersion = '0.8.0'
+    ModuleVersion = '0.8.1'
     GUID = 'A5FE6B04-385F-470F-9347-66EB3645B422'
     Author = 'Microsoft Corporation'
     CompanyName = 'Microsoft Corporation'
@@ -20,6 +20,8 @@
             ProjectUri = 'https://github.com/PowerShell/SHiPS'
             ReleaseNotes = @'
 
+## 0.8.1
+* Added Get-Content and Set-Content.
 ## 0.8.0
 * Changed to single .NET Standard 2.0 assembly
 * Added error handling for unspported provider cmdlets.

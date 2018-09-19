@@ -2,9 +2,11 @@
 using System.Management.Automation;
 using System;
 using System.Collections.Concurrent;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CodeOwls.PowerShell.Paths.Exceptions;
 using CodeOwls.PowerShell.Provider.PathNodeProcessors;
 using CodeOwls.PowerShell.Provider.PathNodes;
 using Microsoft.PowerShell.SHiPS.Resources;
@@ -18,16 +20,22 @@ namespace Microsoft.PowerShell.SHiPS
     internal class PSScriptRunner
     {
         /// <summary>
-        /// Invokes a PowerShell script block.
+        /// Invokes a PowerShell script block; Removes the existing child node list before adding new ones.
         /// </summary>
         /// <param name="context">A ProviderContext object contains information that a PowerShell provider needs.</param>
         /// <param name="node">ContainerNode object that is corresponding to the current path.</param>
         /// <param name="drive">Current drive that a user is in use.</param>
+        /// <param name="script">PowerShell script to be run.</param>
+        /// <param name="errorHandler">Action for handling error cases.</param>
+        /// <param name="args">Arguments passed into the script block.</param>
         /// <returns></returns>
-        internal static IEnumerable<IPathNode> InvokeScriptBlock(
+        internal static IEnumerable<IPathNode> InvokeScriptBlockAndBuildTree(
             IProviderContext context,
             SHiPSDirectory node,
-            SHiPSDrive drive)
+            SHiPSDrive drive,
+            string script,
+            Action<string, IProviderContext, IEnumerable<ErrorRecord>> errorHandler,
+            params string[] args)
         {           
             var progressId = 1;
             var activityId = Resource.RetrievingData;
@@ -41,7 +49,6 @@ namespace Microsoft.PowerShell.SHiPS
             try
             {
                 ICollection<object> results = new List<object>();
-                var methodToCall = Constants.GetChildItem;
 
                 var errors = new ConcurrentBag<ErrorRecord>();
                 var parameters = context.GetSHiPSParameters();
@@ -59,12 +66,12 @@ namespace Microsoft.PowerShell.SHiPS
                 {
                     results = CallPowerShellScript(
                         node,
-                        context,
                         drive.PowerShellInstance,
                         parameters,
-                        methodToCall,
+                        script,
                         output_DataAdded,
-                        (sender, e) => error_DataAdded(sender, e, errors));
+                        (sender, e) => error_DataAdded(sender, e, errors),
+                        args);
 
                 }, cts.Token);
 
@@ -97,7 +104,7 @@ namespace Microsoft.PowerShell.SHiPS
                     }
 
                     // report the error if there are any
-                    ReportErrors(node.Name, context, errors);
+                    errorHandler?.Invoke(node.Name, context, errors);
                     //do not yield break here as we need to display the rest of outputs
                 }
 
@@ -119,7 +126,8 @@ namespace Microsoft.PowerShell.SHiPS
                     return Enumerable.Empty<IPathNode>();
                 }
 
-                return (node.UseCache && !usingDynamicParameter) ? ProcessResultsWithCache(results, context, node, drive) : ProcessResultsWithNoCache(results, context, node, drive);
+                // Add the node list to the cache if needed
+                return (node.UseCache && !usingDynamicParameter) ? ProcessResultsWithCache(results, context, node, drive, addNodeOnly: false) : ProcessResultsWithNoCache(results, context, node, drive);
             }
             finally
             {
@@ -139,11 +147,87 @@ namespace Microsoft.PowerShell.SHiPS
             }
         }
 
+        /// <summary>
+        /// Invokes a script block and updates the parent's children node list in the cached case.
+        /// </summary>
+        /// <param name="context">A ProviderContext object contains information that a PowerShell provider needs.</param>
+        /// <param name="node">Node object that is corresponding to the current path.</param>
+        /// <param name="drive">Current drive that a user is in use.</param>
+        /// <param name="script">PowerShell script to be run.</param>
+        /// <param name="errorHandler">Action for handling error cases.</param>
+        /// <param name="args">Arguments passed into the script block.</param>
+        /// <returns></returns>
+        internal static ICollection<object> InvokeScriptBlock(
+           IProviderContext context,
+           SHiPSBase node,
+           SHiPSDrive drive,
+           string script,
+           Action<string, IProviderContext, IEnumerable<ErrorRecord>> errorHandler,
+           params string[] args)
+        {
+            try
+            {
+                var errors = new ConcurrentBag<ErrorRecord>();
+                var parameters = context?.GetSHiPSParameters();
+
+                var results = CallPowerShellScript(
+                    node,
+                    drive.PowerShellInstance,
+                    parameters,
+                    script,
+                    output_DataAdded,
+                    (sender, e) => error_DataAdded(sender, e, errors),
+                    args);
+
+
+                if (errors.WhereNotNull().Any())
+                {
+                    if (context != null)
+                    {
+                        // report the error if there are any
+                        errorHandler?.Invoke(node.Name, context, errors);
+                    }
+                    else
+                    {
+                        // report the error if there are any
+                        var error = errors.FirstOrDefault();
+                        var message = Environment.NewLine;
+                        message += error.ErrorDetails == null ? error.Exception.Message : error.ErrorDetails.Message;
+                        throw new InvalidDataException(message);
+                    }
+                }
+
+                if (results == null || !results.Any())
+                {
+                    return null;
+                }
+
+                if(context != null && node.UseCache)
+                {
+                    if (node.IsLeaf)
+                    {
+                        ProcessResultsWithCache(results, context, node.Parent, drive, addNodeOnly: true);
+                    }
+                    else
+                    {
+                        ProcessResultsWithCache(results, context, node as SHiPSDirectory, drive, addNodeOnly: true);
+                    }
+                }
+                return results;
+            }
+            finally
+            {
+                //stop the running script
+                drive.PowerShellInstance.Stop();
+            }
+        }
+
         private static IEnumerable<IPathNode> ProcessResultsWithCache(
             ICollection<object> results,
             IProviderContext context,
             SHiPSDirectory node,
-            SHiPSDrive drive)
+            SHiPSDrive drive,
+            bool addNodeOnly)
         {
             //TODO: async vs cache
             //we could yield result right away but we need to save the all children in the meantime because 
@@ -152,8 +236,12 @@ namespace Microsoft.PowerShell.SHiPS
 
             List<IPathNode> retval = new List<IPathNode>();
 
-            //clear the child node list, get ready to get the refreshed ones
-            node.Children?.Clear();
+            // addNodeOnly true means we just add the node to Children node list. Don't clear the list.
+            if (!addNodeOnly)
+            {
+                //clear the child node list, get ready to get the refreshed ones
+                node.Children?.Clear();
+            }
 
             foreach (var result in results.WhereNotNull())
             {
@@ -162,7 +250,7 @@ namespace Microsoft.PowerShell.SHiPS
                 {
                     return null;
                 }
-                node.AddAsChildNode(result, drive, retval);
+                node.AddAsChildNode(result, drive, addNodeOnly, retval);
             }
 
             // Mark the node visited once we sucessfully fetched data.
@@ -185,7 +273,7 @@ namespace Microsoft.PowerShell.SHiPS
                     yield break;
                 }
 
-                var cnode = node.GetChildPNode(result, drive, cache:false);
+                var cnode = node.GetChildPNode(result, drive, false, cache:false);
                 if (cnode != null)
                 {
                     yield return cnode;
@@ -232,13 +320,13 @@ namespace Microsoft.PowerShell.SHiPS
         }
 
         internal static ICollection<object> CallPowerShellScript(
-            SHiPSDirectory node,
-            IProviderContext context,
+            SHiPSBase node,
             System.Management.Automation.PowerShell powerShell,
             SHiPSParameters parameters,
-            string methodName,            
+            string script,
             EventHandler<DataAddedEventArgs> outputAction,
-            EventHandler<DataAddedEventArgs> errorAction)
+            EventHandler<DataAddedEventArgs> errorAction,
+            params string[] args)
         {
             if (node == null)
             {
@@ -270,10 +358,17 @@ namespace Microsoft.PowerShell.SHiPS
                 //output = node.GetChildItem();
 
                 //make script block             
-                powerShell.AddScript("[CmdletBinding()] param([object]$object)  $object.{0}()".StringFormat(methodName));
+                powerShell.AddScript(script);
                 powerShell.AddParameter("object", node);
-                
-                
+
+                if (args != null && args.Any())
+                {
+                    for (int i = 0; i < args.Length; i++)
+                    {
+                        powerShell.AddParameter(("p" + i), args[i]);
+                    }
+                }
+
                 if (parameters != null)
                 {
                     if (parameters.Debug)
@@ -284,6 +379,8 @@ namespace Microsoft.PowerShell.SHiPS
                     {
                         powerShell.AddParameter("verbose");
                     }
+
+                    node.SHiPSProviderContext.BoundParameters = parameters.BoundParameters;
                 }
 
                 powerShell.Invoke(null, output, new PSInvocationSettings());
@@ -295,7 +392,6 @@ namespace Microsoft.PowerShell.SHiPS
                 powerShell.Streams.Error.DataAdded -= errorAction;
             }
         }
-
 
         internal static void error_DataAdded(object sender, DataAddedEventArgs e, ConcurrentBag<ErrorRecord> errors)
         {
@@ -335,7 +431,7 @@ namespace Microsoft.PowerShell.SHiPS
             }
         }
 
-        private static void ReportErrors(string item, IProviderContext context, IEnumerable<ErrorRecord> errors)
+        internal static void ReportErrors(string item, IProviderContext context, IEnumerable<ErrorRecord> errors)
         {
             foreach (var error in errors)
             {
@@ -348,6 +444,27 @@ namespace Microsoft.PowerShell.SHiPS
                     context.WriteDebug(error.Exception.StackTrace);
                 }
             }
+        }
+
+        internal static void SetContentNotSupported(string item, IProviderContext context, IEnumerable<ErrorRecord> errors)
+        {
+            var message = Resource.UnSupportedCmdlet.StringFormat(context.Path, Constants.SetContent);
+
+            foreach (var error in errors)
+            {
+                var msg = error.ErrorDetails == null ? error.Exception.Message : error.ErrorDetails.Message;
+                message += Environment.NewLine + "More details: " + msg;
+
+                if (!string.IsNullOrWhiteSpace(error.Exception.StackTrace))
+                {
+                    // give a debug hint if we have a script stack trace for more info
+
+                    context.WriteDebug(error.Exception.StackTrace);
+                }
+            }
+
+            context.ReportError(ErrorId.SetContentNotSupportedErrorId, message, ErrorCategory.NotImplemented, context.Path);
+
         }
     }
 }
