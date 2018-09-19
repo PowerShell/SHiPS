@@ -59,11 +59,9 @@ cd <yourclonefolder>\SHiPS\src\
 # and Windows10 SDK if you are running on Windows
 .\bootstrap.ps1
 
-# build SHiPS fullclr
-.\build.ps1 net46
+# build SHiPS
+.\build.ps1 Release
 
-# or build SHiPS on .Net CoreCLR
-.\build.ps1 netcoreapp2.0
 ```
 
 ## Installing SHiPS
