@@ -186,6 +186,7 @@ namespace Microsoft.PowerShell.SHiPS
                     {
                         // report the error if there are any
                         errorHandler?.Invoke(node.Name, context, errors);
+                        return null;
                     }
                     else
                     {
