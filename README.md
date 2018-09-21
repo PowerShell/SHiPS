@@ -44,6 +44,7 @@ To be more precise it's a provider utility that simplifies developing PowerShell
 
 - Windows
   - PowerShell v5 (or later), which is shipped in Win10, Windows Server 2016, or [WMF 5.1][wmf51]
+  - [.Net Framework 4.7.1][dotnet471]
 - Linux or Mac
   - [PowerShell Core][ps]
 
@@ -169,3 +170,4 @@ SHiPS is under the [MIT license][license].
 [getstarted]: /docs/README.md
 [faq]: /docs/FAQ.md
 [psgallery]: https://www.powershellgallery.com/packages/SHiPS
+[dotnet471]: http://go.microsoft.com/fwlink/?LinkId=852095
