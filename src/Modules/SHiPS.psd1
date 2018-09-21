@@ -1,18 +1,19 @@
 @{
     RootModule= 'Microsoft.PowerShell.SHiPS.dll'
-    ModuleVersion = '0.8.1'
+    ModuleVersion = '0.8.2'
     GUID = 'A5FE6B04-385F-470F-9347-66EB3645B422'
     Author = 'Microsoft Corporation'
     CompanyName = 'Microsoft Corporation'
     Copyright = '© Microsoft Corporation. All rights reserved.'
     Description = 'SHiPS is a PowerShell provider. More accurately it is a provider platform that simplifies developing PowerShell providers.'
-    PowerShellVersion = '5.0'
+    PowerShellVersion = '5.1'
     DotNetFrameworkVersion = '4.7.1'
     FormatsToProcess = @( 'SHiPS.formats.ps1xml' )
     CmdletsToExport = @()
     VariablesToExport = @()
     AliasesToExport = @()
     DscResourcesToExport = @()
+    CompatiblePSEditions =@('Desk', 'Core')
 
     PrivateData = @{
         PSData = @{
