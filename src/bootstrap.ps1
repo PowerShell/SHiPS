@@ -96,7 +96,7 @@ function Start-DotnetBootstrap
     }
 
     # Install for Windows
-    if ($IsWindows -and -not $IsCoreCLR) {
+    if ($IsWindows) {
         Remove-Item -ErrorAction SilentlyContinue -Recurse -Force ~\AppData\Local\Microsoft\dotnet
         $installScript = 'dotnet-install.ps1'
         Invoke-WebRequest -Uri $obtainUrl/$installScript -OutFile $installScript
@@ -105,9 +105,6 @@ function Start-DotnetBootstrap
         # Since we are downloading the installScript everytime, remove it after the run
         # to not create a diff in Git
         #Remove-Item $installScript -Verbose -Force
-
-    } elseif ($IsWindows) {
-        Write-Warning 'Start-DotnetBootstrap cannot be run in Core PowerShell on Windows (need Invoke-WebRequest!)'
     }
 }
 
