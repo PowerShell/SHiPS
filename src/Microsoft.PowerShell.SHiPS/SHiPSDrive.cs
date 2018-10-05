@@ -80,9 +80,9 @@ namespace Microsoft.PowerShell.SHiPS
             var modulePath = Path.Combine((moduleBaseObj).ModuleBase, (moduleBaseObj).Name.TrimEnd() + ".psd1");
             if(!File.Exists(modulePath))
             {
-                _provider.WriteWarning(Resources.Resource.FileNotExist.StringFormat(modulePath));
+                _provider.WriteDebug(Resources.Resource.FileNotExist.StringFormat(modulePath));
                 modulePath = moduleBaseObj.Path;
-                _provider.WriteWarning(Resources.Resource.Trying.StringFormat(modulePath));
+                _provider.WriteDebug(Resources.Resource.Trying.StringFormat(modulePath));
             }
 
             _provider.WriteVerbose(modulePath);
