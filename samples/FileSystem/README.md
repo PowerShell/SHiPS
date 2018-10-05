@@ -13,7 +13,7 @@ See the [FileSystem module][fs].
 ```powershell
 Import-Module  SHiPS
 Import-Module .\samples\FileSystem
-new-psdrive -name FS -psprovider SHiPS -root FileSystem#C
+New-PSDrive -Name FS -PSProvider SHiPS -Root FileSystem#Home
 cd FS:
 dir
 ```
