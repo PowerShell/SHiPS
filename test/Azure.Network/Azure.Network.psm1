@@ -8,7 +8,7 @@
 
 using namespace Microsoft.PowerShell.SHiPS
 
-class Network : SHiPSDirectory 
+class Network : SHiPSDirectory
 {
     Network ()
     {
@@ -21,11 +21,11 @@ class Network : SHiPSDirectory
     }
 
     [object[]] GetChildItem()
-    { 
+    {
         $result =  @()
         $result += [NetworkInterfaces]::new()
         $result += [NetworkSecurityGroups]::new()
-        $result += [VirtualNetworks]::new()        
+        $result += [VirtualNetworks]::new()
         return $result
     }
 
@@ -47,7 +47,7 @@ class NetworkInterfaces : Network
 {
 
     NetworkInterfaces () : base ($this.GetType().Name)
-    {       
+    {
     }
 
     [object[]] GetChildItem()
@@ -59,13 +59,13 @@ class NetworkInterfaces : Network
         }
 
         return $result
-    }    
+    }
 }
 
 class NetworkSecurityGroups : Network
 {
     NetworkSecurityGroups () : base ($this.GetType().Name)
-    {       
+    {
     }
 
     [object[]] GetChildItem()
@@ -77,13 +77,13 @@ class NetworkSecurityGroups : Network
         }
 
         return $result
-    }    
+    }
 }
 
 class VirtualNetworks : Network
 {
     VirtualNetworks () : base ($this.GetType().Name)
-    {       
+    {
     }
 
     [object[]] GetChildItem()

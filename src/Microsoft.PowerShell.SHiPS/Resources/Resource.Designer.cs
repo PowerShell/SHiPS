@@ -10,8 +10,8 @@
 
 namespace Microsoft.PowerShell.SHiPS.Resources {
     using System;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,15 +23,15 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resource {
-        
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resource() {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -45,7 +45,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,7 +59,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cannot create an instance of type &apos;{0}&apos; in the module &apos;{1}&apos;. Make sure type &apos;{0}&apos; exists, inherits from Microsoft.PowerShell.SHiPS.SHiPSDirectory, and Name is set in constructors. As a root, a constructor &apos;{0}([string]$name)&apos;  is required. Fix the script and try again..
         /// </summary>
@@ -68,7 +68,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
                 return ResourceManager.GetString("CannotCreateInstance", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cannot find module &apos;{0}&apos;..
         /// </summary>
@@ -77,7 +77,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
                 return ResourceManager.GetString("CannotGetModule", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cannot find base Powershell module folder..
         /// </summary>
@@ -86,7 +86,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
                 return ResourceManager.GetString("CantFindBaseModuleFolder", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Acquiring data for &apos;{0}&apos; ....
         /// </summary>
@@ -95,7 +95,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
                 return ResourceManager.GetString("FetchingData", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to &apos;{0}&apos; does not exist..
         /// </summary>
@@ -104,7 +104,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
                 return ResourceManager.GetString("FileNotExist", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Found invalid root format &apos;{0}&apos;. The supported format is &apos;Module#Class&apos;..
         /// </summary>
@@ -113,7 +113,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
                 return ResourceManager.GetString("InvalidRootFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to A root node must be derived from Microsoft.PowerShell.SHiPS.SHiPSDirectory..
         /// </summary>
@@ -122,7 +122,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
                 return ResourceManager.GetString("InvalidRootNode", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Found root node type is set to &apos;{0}&apos;. A root node must be derived from Microsoft.PowerShell.SHiPS.SHiPSDirectory..
         /// </summary>
@@ -131,7 +131,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
                 return ResourceManager.GetString("InvalidRootNodeType", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invoking PowerShell script &apos;{0}&apos; for path &apos;{1}&apos; returns null or empty..
         /// </summary>
@@ -140,7 +140,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
                 return ResourceManager.GetString("InvokeScriptReturnNull", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Item &apos;{0}&apos; may no longer exists. Details: {1}..
         /// </summary>
@@ -149,7 +149,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
                 return ResourceManager.GetString("MaybeItemNotExist", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Found a child node of &apos;{0}&apos; has name with null or empty string. Make sure name is set properly in the constructors..
         /// </summary>
@@ -158,7 +158,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
                 return ResourceManager.GetString("NameWithNullOrEmpty", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Drive root does not exist. .
         /// </summary>
@@ -167,7 +167,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
                 return ResourceManager.GetString("NewDriveRootDoesNotExist", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Under &apos;{0}&apos; node, found multiple child nodes have the same name &apos;{1}&apos;. Fix the script and try again..
         /// </summary>
@@ -176,7 +176,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
                 return ResourceManager.GetString("NodesWithSameName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Retrieving data.
         /// </summary>
@@ -185,7 +185,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
                 return ResourceManager.GetString("RetrievingData", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Trying &apos;{0}&apos;..
         /// </summary>
@@ -194,7 +194,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
                 return ResourceManager.GetString("Trying", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unable to find &apos;{0}&apos; at &apos;{1}&apos;..
         /// </summary>
@@ -203,7 +203,7 @@ namespace Microsoft.PowerShell.SHiPS.Resources {
                 return ResourceManager.GetString("UnableToFindModule", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The node at path &apos;{0}&apos; may not support the cmdlet &apos;{1}&apos;..
         /// </summary>

@@ -3,7 +3,7 @@
 Import-Module  SHiPS -force
 Import-Module  SHiPSTest -force
 
-Import-Module  $testpath\abc.psm1 
+Import-Module  $testpath\abc.psm1
 Import-Module  $testpath\test.psm1
 Import-Module  $testpath\sampleRecursion.psm1
 Import-Module  $testpath\ctor.psm1
@@ -16,7 +16,7 @@ $script:homePath = [System.IO.Path]::Combine('~', 'Test')
 Describe "Get and Set test" -Tags "Feature" {
 
     BeforeEach {
-        If(Test-Path $script:homePath) 
+        If(Test-Path $script:homePath)
         {
             Remove-Item -path $script:homePath -force -Recurse -ErrorAction Ignore
         }
@@ -26,18 +26,18 @@ Describe "Get and Set test" -Tags "Feature" {
         $a | % {remove-psdrive $_.Name -ErrorAction Ignore}
         cd $testpath
     }
-    
+
     AfterEach {
         cd $home
         $a=Get-PSDrive -PSProvider SHiPS
         $a | % {remove-psdrive $_.Name -ErrorAction Ignore}
 
         If(Test-Path $script:homePath) {Remove-Item -Path $script:homePath -force -Recurse -ErrorAction Ignore}
-        
+
         cd $testpath
     }
-            
-    
+
+
     It "Get Set Tests" {
         <#
             MM:
@@ -57,7 +57,7 @@ Describe "Get and Set test" -Tags "Feature" {
         $b=dir
         $b.Count | should be 2
 
-        # Get the existing content          
+        # Get the existing content
         $c= Get-Content .\Classic\SwanLake
         $c | should not BeNullOrEmpty
 
@@ -79,7 +79,7 @@ Describe "Get and Set test" -Tags "Feature" {
         cd .\Classic\
         Set-Content .\foooobarrrr -value "works"
         $f = dir
-        
+
         $f.Count | should be ($b.Count + 1)
         $g = $f | ?{$_.Name -eq 'foooobarrrr'}
         $g.Name | should be 'foooobarrrr'
@@ -112,9 +112,9 @@ Describe "Get and Set test" -Tags "Feature" {
         $ev = $null
         Get-Content '.\whatevernotexist' -ErrorAction SilentlyContinue -ErrorVariable ev
         $ev.FullyQualifiedErrorId | Should Be "PathNotFound,Microsoft.PowerShell.Commands.GetContentCommand"
-        
+
         }
-    
+
 
 }
 
@@ -133,13 +133,13 @@ AfterEach{
         $a | % {remove-psdrive $_.Name -ErrorAction Ignore}
 
         If(Test-Path $script:homePath) {Remove-Item -Path $script:homePath -force -Recurse -ErrorAction Ignore}
-        
+
         cd $testpath
        }
-        
+
 
     It "dir -force and dir ~ home dir under SHiPS drive" {
-        
+
         If(Test-Path $script:homePath) {Remove-Item -path $script:homePath -force -Recurse -ErrorAction Ignore}
 
         $a= new-psdrive -name FS -psprovider SHiPS -root Test#Home
@@ -153,7 +153,7 @@ AfterEach{
         $c=dir ~
         $c.Count | should be  $b.Count
 
-                 
+
         # create 6 folders/files for testing
         # ~
         #   Test
@@ -170,7 +170,7 @@ AfterEach{
         cd .\Test
         New-Item -Path .\ -Name Test1 -ItemType Directory -Force
         New-Item -Path .\ -Name testfile -ItemType File
-       
+
         cd .\Test1
         New-Item -Path .\ -Name Test2 -ItemType Directory -Force
         New-Item -Path .\ -Name test1file_a -ItemType File
@@ -178,8 +178,8 @@ AfterEach{
 
         cd .\Test2
         New-Item -Path .\ -Name test2file -ItemType file
-        
-      
+
+
         cd FS:\Test -ErrorAction SilentlyContinue -ErrorVariable ev
         $ev.FullyQualifiedErrorId | Should Be "PathNotFound,Microsoft.PowerShell.Commands.SetLocationCommand"
 
@@ -190,7 +190,7 @@ AfterEach{
         ### Remove a file
         cd FS:\Test\Test1
         $e1 = dir '.\test1file_b'
-        $e1.Name | should be 'test1file_b' 
+        $e1.Name | should be 'test1file_b'
 
         cd $script:homePath
         cd .\Test1
@@ -216,7 +216,7 @@ AfterEach{
 
         cd ~\Test\Test1\
         Remove-Item -Path '.\Test2' -Force -Recurse
-        
+
         cd FS:
         $f = dir '.\test2file'
         $f.Name | should be 'test2file'  # cached
@@ -234,7 +234,7 @@ AfterEach{
         # go to FS:\Test\Test1
         cd ..\
         $h = dir
-        $h.Name | should be 'test1file_a'  
+        $h.Name | should be 'test1file_a'
 
         #Create a new folder
         cd ~\Test\Test1
@@ -246,15 +246,15 @@ AfterEach{
 
         # go to \test folder and test dir folder -force
         cd ..\
-        
+
         $k = dir .\Test1\ -force
         $k.Name -contains   'Test2New' | should be $true
         $k.Name -contains   'test1file_a' | should be $true
-      
+
      }
-    
+
      It "dir -force error cases" {
-        
+
         $a=New-PSDrive -Name t2 -PSProvider SHiPS -Root Test#ErrorCase
         $a.Name | Should Be "t2"
 
@@ -266,7 +266,7 @@ AfterEach{
         $Error.Clear()
         $b = dir -ErrorAction SilentlyContinue -ErrorVariable evb
         $evb.FullyQualifiedErrorId | should be "Microsoft.PowerShell.Commands.WriteErrorException,Microsoft.PowerShell.Commands.GetChildItemCommand"
-        
+
         # None items should get deleted
         cd t2:\
         $c=dir
@@ -275,20 +275,20 @@ AfterEach{
         $Error.Clear()
         dir .\WriteError -ErrorAction SilentlyContinue -ErrorVariable evc
         $evc.FullyQualifiedErrorId | should be "Microsoft.PowerShell.Commands.WriteErrorException,Microsoft.PowerShell.Commands.GetChildItemCommand"
-    
+
         # None items should get deleted
         cd t2:\
         $d=dir
         $d.Count | should be $a1.Count
-      
+
         $Error.Clear()
         $g = dir .\ErrorThrow -force -ErrorAction SilentlyContinue -ErrorVariable evg
         $evg.FullyQualifiedErrorId | should be "Microsoft.PowerShell.Commands.WriteErrorException,Microsoft.PowerShell.Commands.GetChildItemCommand"
-    
+
         $Error.Clear()
         $h = dir .\ErrorThrow -ErrorAction SilentlyContinue -ErrorVariable evh
         $evh.FullyQualifiedErrorId | should be "PathNotFound,Microsoft.PowerShell.Commands.GetChildItemCommand"
-    
+
         cd t2:\
         $j=dir
         $j.Count | should be ($a1.Count -1)
@@ -298,7 +298,7 @@ AfterEach{
         $Error.Clear()
         $k = dir -force -ErrorAction SilentlyContinue -ErrorVariable evk
         $evk.FullyQualifiedErrorId | should be "Microsoft.PowerShell.Commands.WriteErrorException,Microsoft.PowerShell.Commands.GetChildItemCommand"
-    
+
         # WriteError item gets deleted
         cd t2:\
         $m=dir
@@ -307,31 +307,31 @@ AfterEach{
     }
 
     It "New-PSdrive, expect success." {
-        
+
        $a= new-psdrive -name abc -psprovider SHiPS -root abc#abc
        $a.Name | Should Be "abc"
-         
+
        $b= new-psdrive -name bb -psprovider SHiPS -root abc#abc
        $b.Name | Should Be "bb"
     }
-    
+
     It "New-PSdrive and new-psdrive again with the same drive name expect error." {
-        
-        $a= new-psdrive -name abc -psprovider SHiPS -root abc#abc        
-        $a.Name | Should Be "abc" 
+
+        $a= new-psdrive -name abc -psprovider SHiPS -root abc#abc
+        $a.Name | Should Be "abc"
 
         $a= new-psdrive -name abc -psprovider SHiPS -root abc#abc -ev ev -ErrorAction SilentlyContinue
         $ev.FullyQualifiedErrorId | Should Be "DriveAlreadyExists,Microsoft.PowerShell.Commands.NewPSDriveCommand"
     }
 
     It "New-PSdrive and run new-psdrive again with different drive name and module, expect success." {
-        
-       $a= new-psdrive -name kk -psprovider SHiPS -root sampleRecursion#Root        
-       $a.Name | Should Be "kk" 
-        
-       cd kk: 
-       $b= new-psdrive -name jj -psprovider SHiPS -root Test#Root        
-       $b.Name | Should Be "jj" 
+
+       $a= new-psdrive -name kk -psprovider SHiPS -root sampleRecursion#Root
+       $a.Name | Should Be "kk"
+
+       cd kk:
+       $b= new-psdrive -name jj -psprovider SHiPS -root Test#Root
+       $b.Name | Should Be "jj"
 
        cd jj:
        $c=dir
@@ -341,15 +341,15 @@ AfterEach{
        cd kk:
        $d=dir
        $d[0].Name | Should Be "Austin"
-       
+
        cd jj:
        $e=dir
        $e[0].Name | Should Be $script:PowerShellProcessName
-       
+
     }
 
     It "cd to root" -Skip:($IsCoreCLR -and (-not $script:OnWindows)){
-        
+
        $a= new-psdrive -name jj -psprovider SHiPS -root sampleRecursion#Root
        $a.Name | Should Be "jj"
 
@@ -360,13 +360,13 @@ AfterEach{
        cd \
        $c=dir
        $c[0].Name | Should be "Austin"
-           
+
        cd Austin
        $d=dir
        $d[0].Name | Should be "explorer1"
-      
-       $e= new-psdrive -name kk -psprovider SHiPS -root Test#Root        
-       $e.Name | Should Be "kk" 
+
+       $e= new-psdrive -name kk -psprovider SHiPS -root Test#Root
+       $e.Name | Should Be "kk"
 
        cd kk:\William
        $f=dir
@@ -384,7 +384,7 @@ AfterEach{
     }
 
     It "cd to root for non-Windows" -Skip:($script:OnWindows){
-        
+
        $a= new-psdrive -name jj -psprovider SHiPS -root sampleRecursion#Root
        $a.Name | Should Be "jj"
 
@@ -398,13 +398,13 @@ AfterEach{
        cd jj:/
        $c=dir
        $c[0].Name | Should be "Austin"
-           
+
        cd Austin
        $d=dir
        $d[0].Name | Should be "explorer1"
-      
-       $e= new-psdrive -name kk -psprovider SHiPS -root Test#Root        
-       $e.Name | Should Be "kk" 
+
+       $e= new-psdrive -name kk -psprovider SHiPS -root Test#Root
+       $e.Name | Should Be "kk"
 
        cd kk:/William
        $f=dir
@@ -420,8 +420,8 @@ AfterEach{
     }
 
     It "new-psdrive, cd into it and dir" {
-        
-       $a= new-psdrive -name jj -psprovider SHiPS -root Test#Root        
+
+       $a= new-psdrive -name jj -psprovider SHiPS -root Test#Root
        $a.Name | Should Be "jj"
 
        cd jj:
@@ -429,7 +429,7 @@ AfterEach{
 
        $b[0].Name | Should Be "Bill"
        $b[0].SSItemMode | Should Be "+"
-        
+
        cd Bill
        $c=dir
 
@@ -438,7 +438,7 @@ AfterEach{
     }
 
     It "Navigating down and up" {
-        
+
        $a= new-psdrive -name jj -psprovider SHiPS -root sampleRecursion#Root
        $a.Name | Should Be "jj"
 
@@ -447,7 +447,7 @@ AfterEach{
 
        $b.Name | Should Be "Austin"
        $b.SSItemMode | Should Be "+"
-        
+
        cd Austin
        $c=dir
 
@@ -491,7 +491,7 @@ AfterEach{
     }
 
     It "Directory pushd and popd" {
-        
+
        $a= new-psdrive -name jj -psprovider SHiPS -root sampleRecursion#Root
        $a.Name | Should Be "jj"
 
@@ -502,7 +502,7 @@ AfterEach{
 
        pushd explorer1\explorer2\explorer3
        $c = dir
-       $c[0].Name | Should Be "explorer4"     
+       $c[0].Name | Should Be "explorer4"
 
        popd
        $e=dir
@@ -510,8 +510,8 @@ AfterEach{
      }
 
     It "dir with recurse" {
-        
-       $a= new-psdrive -name jj -psprovider SHiPS -root Test#Root        
+
+       $a= new-psdrive -name jj -psprovider SHiPS -root Test#Root
        $a.Name | Should Be "jj"
 
        cd jj:
@@ -519,23 +519,23 @@ AfterEach{
 
        $b.Count | Should Be 12
        $b[0].Name | Should Be "Bill"
-            
+
     }
 
     It "dir with depth" {
-        
-       $a= new-psdrive -name jj -psprovider SHiPS -root Test#Root        
+
+       $a= new-psdrive -name jj -psprovider SHiPS -root Test#Root
        $a.Name | Should Be "jj"
 
        cd jj:
 
        $b=dir
        $b.Count | Should Be 2
-       
-       $c=dir -Depth 1  
+
+       $c=dir -Depth 1
        $c.Count | Should Be 8
-             
-       $d=dir -Depth 2  
+
+       $d=dir -Depth 2
        $d.Count | Should Be 9
 
 
@@ -546,8 +546,8 @@ AfterEach{
     }
 
     It "dir with filter" {
-        
-       $a= new-psdrive -name jj -psprovider SHiPS -root Test#Root        
+
+       $a= new-psdrive -name jj -psprovider SHiPS -root Test#Root
        $a.Name | Should Be "jj"
 
        cd jj:
@@ -559,12 +559,12 @@ AfterEach{
        $c | Should Not BeNullOrEmpty
        $c.Count | Should be 1
        $c.Name | Should be $script:PowerShellProcessName
-          
+
     }
-    
+
     It "dir with include and exclude" {
-        
-       $a= new-psdrive -name jj -psprovider SHiPS -root Test#Root        
+
+       $a= new-psdrive -name jj -psprovider SHiPS -root Test#Root
        $a.Name | Should Be "jj"
 
        cd jj:
@@ -574,20 +574,20 @@ AfterEach{
        $c | Should Not BeNullOrEmpty
        $c.Count | Should be 1
        $c.Name | Should be $script:PowerShellProcessName
-               
-       $d=dir -Exclude p* -Recurse      
+
+       $d=dir -Exclude p* -Recurse
        $d.Count | Should be ($b.Count - $c.Count)
     }
-    
+
     It "Navigation with FQ Provider path" {
-        
+
        $a= new-psdrive -name jj -psprovider SHiPS -root sampleRecursion#Root -Scope global
        $a.Name | Should Be "jj"
 
-       cd jj: 
+       cd jj:
        $b = (dir).PSParentPath
-       cd $b 
-       
+       cd $b
+
        $c = dir
        $c.Name | Should Be "Austin"
        $c.SSItemMode | Should Be "+"
@@ -607,39 +607,39 @@ AfterEach{
        $g.SSItemMode | Should Be "+"
 
        $h=get-item .\Austin\
-       $h.Name| Should Be "Austin"     
+       $h.Name| Should Be "Austin"
     }
 
     It "Get-Item" {
-        
+
        $a= new-psdrive -name jj -psprovider SHiPS -root sampleRecursion#Root
        $a.Name | Should Be "jj"
 
        cd jj:
 
-       $c=get-item  -path .\*  
+       $c=get-item  -path .\*
        $c.Name | Should Be "Austin"
        $c.SSItemMode | Should Be "+"
 
-       
+
        cd $c.Name
-       $b = get-item -path .\ 
+       $b = get-item -path .\
        $b.Name | Should Be "Austin"
 
-       $e=get-item -path .\e*  
+       $e=get-item -path .\e*
        $e.Name | Should Be "explorer1"
        $e.SSItemMode | Should Be "+"
 
        $f=get-item  -path .\..\..\a*
-       $f.Name| Should Be "Austin"       
+       $f.Name| Should Be "Austin"
     }
-    
+
     It "Run from a file - Automation Case" {
 
         <#
             .\automationcase.ps1 contains the following:
 
-            new-psdrive -name kk -psprovider SHiPS -root Test#Root 
+            new-psdrive -name kk -psprovider SHiPS -root Test#Root
             cd kk:
             dir
 
@@ -650,21 +650,21 @@ AfterEach{
         $a[0].Name | Should be "bill"
         $a[1].Name | Should be "William"
      }
-     
+
     It "Loading module from Program files - path with spaces" {
-        
+
         $a= new-psdrive -name jj -psprovider SHiPS -root SHiPSTest#SHiPSTest
         $a.Name | Should Be "jj"
 
         cd jj:
-       
+
         $b=dir
         $b[0].Name | Should be $script:PowerShellProcessName
         $b[1].Name | Should be "SHiPSTest"
      }
-          
+
     It "Get-, Set-, Push-, Pop-Location, Resolve-Path" -Skip:($IsCoreCLR -and (-not $script:OnWindows)) {
-        
+
        $a= new-psdrive -name jj -psprovider SHiPS -root sampleRecursion#Root
        $a.Name | Should Be "jj"
 
@@ -678,7 +678,7 @@ AfterEach{
 
        pushd explorer1\explorer2\explorer3
        $d = dir
-       $d[0].Name | Should Be "explorer4"     
+       $d[0].Name | Should Be "explorer4"
 
        $e=Resolve-Path -Path ..\..\
        $e.Path | Should Be "jj:\Austin\explorer1"
@@ -709,7 +709,7 @@ AfterEach{
        }
 
        It "CannotGetModule" {
-        
+
         $error.Clear()
 
         new-psdrive -name JJ -psprovider SHiPS -root Tesdfst#root -ErrorAction SilentlyContinue -ErrorVariable ev
@@ -718,7 +718,7 @@ AfterEach{
        }
 
        It "CannotGetModule" {
-        
+
         $error.Clear()
 
         new-psdrive -name JJ -psprovider SHiPS -root Tesdfst#rootsdfsf -ErrorAction SilentlyContinue -ErrorVariable ev
@@ -727,7 +727,7 @@ AfterEach{
        }
 
        It "InvalidRootFormat" {
-        
+
         $error.Clear()
 
         new-psdrive -name JJ -psprovider SHiPS -root Test$rootsdfsf -ErrorAction SilentlyContinue -ErrorVariable ev
@@ -736,16 +736,16 @@ AfterEach{
        }
 
        It "InvalidRootFormat" {
-        
+
         $error.Clear()
 
         new-psdrive -name JJ -psprovider SHiPS -root Test?rootsdfsf -ErrorAction SilentlyContinue -ErrorVariable ev
         $ev.FullyQualifiedErrorId | Should Be "InvalidRootFormat,Microsoft.PowerShell.Commands.NewPSDriveCommand"
 
        }
-       
+
        It "InvalidRootFormat" {
-        
+
         $error.Clear()
 
         new-psdrive -name JJ -psprovider SHiPS -root Test::::rootsdfsf -ErrorAction SilentlyContinue -ErrorVariable ev
@@ -754,7 +754,7 @@ AfterEach{
        }
 
        It "Dup entries - leaf and container. warning" {
-        
+
         $error.Clear()
 
         new-psdrive -name nn -psprovider SHiPS -root Test#duptest
@@ -765,7 +765,7 @@ AfterEach{
        }
 
        It "Dup entries Leaf only. no warning" {
-        
+
         $error.Clear()
 
         new-psdrive -name nn -psprovider SHiPS -root Test#chris
@@ -774,7 +774,7 @@ AfterEach{
         $a.Count | should be 3
 
        }
-       
+
        It "dir bogus - expected PathNotFound" {
         $error.Clear()
         $a= new-psdrive -name jj -psprovider SHiPS -root sampleRecursion#Root
@@ -785,67 +785,67 @@ AfterEach{
         $b=dir
         $b[0].Name | Should Be "explorer1"
 
-      
-        Get-ChildItem foooBarrr  -ErrorAction SilentlyContinue -ErrorVariable ev     
+
+        Get-ChildItem foooBarrr  -ErrorAction SilentlyContinue -ErrorVariable ev
         $ev.FullyQualifiedErrorId | Should Be "PathNotFound,Microsoft.PowerShell.Commands.GetChildItemCommand"
 
        }
-      
+
        It "dir leaf node - expected PathNotFound" {
         $error.Clear()
         $a= new-psdrive -name jj -psprovider SHiPS -root test#SHiPSLeafTest
         $a.Name | Should Be "jj"
 
         cd jj:
-       
+
         $b=dir .\Birch
         $b[0].Name | Should Be "Birch"
 
-      
-        cd Birch  -ErrorAction SilentlyContinue -ErrorVariable ev     
+
+        cd Birch  -ErrorAction SilentlyContinue -ErrorVariable ev
         $ev.FullyQualifiedErrorId | Should Be "PathNotFound,Microsoft.PowerShell.Commands.SetLocationCommand"
 
-       }     
+       }
 
        It "dir and cd to a node which just visisted - expected PathNotFound" {
         $error.Clear()
-       
+
         $a= new-psdrive -name jj -psprovider SHiPS -root sampleRecursion#Root
         $a.Name | Should Be "jj"
 
         cd jj:
         $b=dir .\Austin\
         $b[0].Name | Should Be "explorer1"
-       
+
         cd Austin
         $c=dir
         $c[0].Name | Should Be "explorer1"
 
-        cd Austin -ErrorAction SilentlyContinue -ErrorVariable ev            
+        cd Austin -ErrorAction SilentlyContinue -ErrorVariable ev
         $ev.FullyQualifiedErrorId | Should Be "PathNotFound,Microsoft.PowerShell.Commands.SetLocationCommand"
         $error.Clear()
 
-        dir Austin -ErrorAction SilentlyContinue -ErrorVariable ev            
+        dir Austin -ErrorAction SilentlyContinue -ErrorVariable ev
         $ev.FullyQualifiedErrorId | Should Be "PathNotFound,Microsoft.PowerShell.Commands.GetChildItemCommand"
         $error.Clear()
 
         cd .\explorer1\explorer2\
         $d=dir
         $d[0].Name | Should Be "explorer3"
-        
+
         cd ..\..\
-        cd Austin -ErrorAction SilentlyContinue -ErrorVariable ev            
+        cd Austin -ErrorAction SilentlyContinue -ErrorVariable ev
         $ev.FullyQualifiedErrorId | Should Be "PathNotFound,Microsoft.PowerShell.Commands.SetLocationCommand"
         $error.Clear()
 
-        $e=dir .\explorer1\explorer2\explorer3\ 
+        $e=dir .\explorer1\explorer2\explorer3\
         $e[0].Name | Should Be "explorer4"
-  
+
         cd explorer1\explorer2\explorer3\explorer4\
         $f=dir
         $f | Should Be "Current iteration number is 5. I have done enough. Exiting..."
 
-        cd explorer4 -ErrorAction SilentlyContinue -ErrorVariable ev            
+        cd explorer4 -ErrorAction SilentlyContinue -ErrorVariable ev
         $ev.FullyQualifiedErrorId | Should Be "PathNotFound,Microsoft.PowerShell.Commands.SetLocationCommand"
         $error.Clear()
 
@@ -856,15 +856,15 @@ AfterEach{
         cd ..
         $g=dir
         $g[0].Name | Should Be "explorer4"
-       } 
-    
+       }
+
        It "dir pipe with select -first" {
         $error.Clear()
-       
+
         $a= new-psdrive -name jj -psprovider SHiPS -root sampleRecursion#Root
         $a.Name | Should Be "jj"
 
-                    
+
         dir -ErrorVariable ev| Select -First 1 -OutVariable ov
         $ev | Should BeNullOrEmpty
         $ov.Name | Should Not BeNullOrEmpty
@@ -887,9 +887,9 @@ AfterEach{
         cd $testpath
        }
 
-  
+
     It "Dir with questionmark" {
-        
+
        $a= new-psdrive -name jj -psprovider SHiPS -root Test#Root
        $a.Name | Should Be "jj"
 
@@ -897,8 +897,8 @@ AfterEach{
 
        $b=dir -Filter  bi?l -Recurse
        $b.Name | Should Be "Bill"
-       
-       $c=dir -Filter  bi?l 
+
+       $c=dir -Filter  bi?l
        $c.Name | Should Be "Bill"
 
        $d=dir -Filter  bi?s -Recurse
@@ -923,7 +923,7 @@ AfterEach{
 
        }
     It "Dir with asterisk" {
-        
+
        $a0= new-psdrive -name jj -psprovider SHiPS -root Test#Root
        $a0.Name | Should Be "jj"
 
@@ -939,11 +939,11 @@ AfterEach{
        $c.Name | Should Be $a.Name
        $c.Name | Should Be "William"
 
-       
-       $d=dir bi* -Recurse 
+
+       $d=dir bi* -Recurse
        $d.Count | should be 7
 
-       $e =dir -Filter  bi* -Recurse 
+       $e =dir -Filter  bi* -Recurse
 
        $e | ?{ $_.name -eq "Bill" } | should not BeNullOrEmpty
        $e | ?{ $_.name -eq "Bits" } | should not BeNullOrEmpty
@@ -952,7 +952,7 @@ AfterEach{
 
 
     It "Get-Item with questionmark" {
-        
+
        $a0= new-psdrive -name jj -psprovider SHiPS -root Test#Root
        $a0.Name | Should Be "jj"
 
@@ -973,13 +973,13 @@ AfterEach{
 
        $d= get-item .\bi?l
        $d.Name | Should Be "bill"
-         
+
        $e= get-item .\bill\bi?s
        $e.Name | Should Be "bits"
 
        }
     It "Get-Item with asterisk" {
-        
+
        $a= new-psdrive -name jj -psprovider SHiPS -root Test#Root
        $a.Name | Should Be "jj"
 
@@ -1016,92 +1016,92 @@ AfterEach{
         cd $testpath
        }
 
-    It "Environment ctor conlision with .Net Type - Success" {       
-        
-        $a= new-psdrive -name JJ -psprovider SHiPS -root ctor#Environment 
+    It "Environment ctor conlision with .Net Type - Success" {
+
+        $a= new-psdrive -name JJ -psprovider SHiPS -root ctor#Environment
         $a.Name | Should Be "jj"
 
         cd jj:
 
         $b= dir env*
-        $b.Name | Should Be "Environment"    
+        $b.Name | Should Be "Environment"
        }
-  
-    It "RegularClass ctor not from ContainerNode" {       
+
+    It "RegularClass ctor not from ContainerNode" {
         $error.Clear()
 
         new-psdrive -name JJ -psprovider SHiPS -root ctor#RegularClass -ErrorAction SilentlyContinue -ErrorVariable ev
         $ev.FullyQualifiedErrorId | Should Be "NotContainerNode,Microsoft.PowerShell.Commands.NewPSDriveCommand"
        }
-    
-    It "ClassDoesnotExist" {       
+
+    It "ClassDoesnotExist" {
         $error.Clear()
 
         new-psdrive -name JJ -psprovider SHiPS -root ctor#ClassDoesnotExist -ErrorAction SilentlyContinue -ErrorVariable ev
         $ev.FullyQualifiedErrorId | Should Be "CannotCreateInstance,Microsoft.PowerShell.Commands.NewPSDriveCommand"
        }
 
-    It "ClassWithNoRootNameCtor missing required ctor" {       
+    It "ClassWithNoRootNameCtor missing required ctor" {
         $error.Clear()
 
         new-psdrive -name JJ -psprovider SHiPS -root ctor#ClassWithNoRootNameCtor -ErrorAction SilentlyContinue -ErrorVariable ev
         $ev.FullyQualifiedErrorId | Should Be "CannotCreateInstance,Microsoft.PowerShell.Commands.NewPSDriveCommand"
 
        }
-    It "ClassWithEmptyRootName" {       
+    It "ClassWithEmptyRootName" {
         $error.Clear()
 
         new-psdrive -name JJ -psprovider SHiPS -root ctor#ClassWithEmptyRootName -ErrorAction SilentlyContinue -ErrorVariable ev
         $ev.FullyQualifiedErrorId | Should Be "NodeNameIsNullOrEmpty,Microsoft.PowerShell.Commands.NewPSDriveCommand"
        }
 
-    It "ClassWithNullName" {       
+    It "ClassWithNullName" {
         $error.Clear()
 
         $a=new-psdrive -name JJ -psprovider SHiPS -root ctor#ClassWithNullName -ErrorAction SilentlyContinue -ErrorVariable ev
         $a.Name | Should Be "jj"
-        
+
         cd jj:
         $b=dir
         $b.Name | should BeNullOrEmpty
        }
 
-    It "ClassInheritsFromShipsLeaf" {               
+    It "ClassInheritsFromShipsLeaf" {
         $error.Clear()
 
         new-psdrive -name JJ -psprovider SHiPS -root ctor#ClassInheritsFromShipsLeaf -ErrorAction SilentlyContinue -ErrorVariable ev
         $ev.FullyQualifiedErrorId | Should Be "NotContainerNode,Microsoft.PowerShell.Commands.NewPSDriveCommand"
        }
-       
+
     It "Node name contains slash" {
-        
+
        $a= new-psdrive -name jj -psprovider SHiPS -root test#slash
        $a.Name | Should Be "jj"
 
        cd jj:
 
-       $c=get-item .\Will-iam\ 
+       $c=get-item .\Will-iam\
        $c.Name | Should Be "Will-iam"
-       $c.PSChildName | Should Be "Will-iam"         
-        
-    }   
-    
+       $c.PSChildName | Should Be "Will-iam"
+
+    }
+
     It "NewDrive 3 times - expected error" {
         $error.Clear()
 
-        $a= new-psdrive -name jj -psprovider SHiPS -root Test#Root        
+        $a= new-psdrive -name jj -psprovider SHiPS -root Test#Root
         $a.Name | Should Be "jj"
 
         cd jj:
         dir | Should Not BeNullOrEmpty
 
-        New-psdrive -name jj -psprovider SHiPS -root Test#Root  -ErrorAction SilentlyContinue -ErrorVariable ev                
+        New-psdrive -name jj -psprovider SHiPS -root Test#Root  -ErrorAction SilentlyContinue -ErrorVariable ev
         $ev.FullyQualifiedErrorId | Should Be "DriveAlreadyExists,Microsoft.PowerShell.Commands.NewPSDriveCommand"
 
         $error.Clear()
-        New-psdrive -name jj -psprovider SHiPS -root Test#Root  -ErrorAction SilentlyContinue -ErrorVariable ev2                
+        New-psdrive -name jj -psprovider SHiPS -root Test#Root  -ErrorAction SilentlyContinue -ErrorVariable ev2
         $ev2.FullyQualifiedErrorId | Should Be "DriveAlreadyExists,Microsoft.PowerShell.Commands.NewPSDriveCommand"
-       }     
+       }
 }
 
 Describe "Cache test" -Tags "Feature"{
@@ -1119,57 +1119,57 @@ AfterEach{
         cd $testpath
        }
 
-    It "GetChildItem return null or empty" {       
-        
-        $a= new-psdrive -name JJ -psprovider SHiPS -root Test#ReturnNull 
+    It "GetChildItem return null or empty" {
+
+        $a= new-psdrive -name JJ -psprovider SHiPS -root Test#ReturnNull
         $a.Name | Should Be "jj"
 
         cd jj:
 
         $b= dir
-        $b| Should BeNullOrEmpty 
-        
-        
+        $b| Should BeNullOrEmpty
+
+
         $c= new-psdrive -name empty -psprovider SHiPS -root Test#ReturnEmpty
         $c.Name | Should Be "empty"
 
         cd empty:
 
         $d= dir
-        $d| Should BeNullOrEmpty   
+        $d| Should BeNullOrEmpty
        }
 
-     It "UseCacheTrueAndBuiltinProgressFalse - expect succeed" {       
-        
+     It "UseCacheTrueAndBuiltinProgressFalse - expect succeed" {
+
         $a= new-psdrive -name JJ -psprovider SHiPS -root Test#UseCacheTrueAndBuiltinProgressFalse
         $a.Name | Should Be "jj"
 
         cd jj:
 
-        dir | Should be "hi" 
+        dir | Should be "hi"
        }
-     
-     It "WithBuiltinProgressFalseButMsg - expect succeed" {       
-        
+
+     It "WithBuiltinProgressFalseButMsg - expect succeed" {
+
         $a= new-psdrive -name JJ -psprovider SHiPS -root Test#WithBuiltinProgressFalseButMsg
         $a.Name | Should Be "jj"
 
         cd jj:
 
-        dir | Should be "hi" 
+        dir | Should be "hi"
        }
 
-     It "WithBuiltinProgressAndMsg - expect succeed" {       
-        
+     It "WithBuiltinProgressAndMsg - expect succeed" {
+
         $a= new-psdrive -name JJ -psprovider SHiPS -root Test#WithBuiltinProgressAndMsg
         $a.Name | Should Be "jj"
 
         cd jj:
 
-        dir | Should be "hi" 
+        dir | Should be "hi"
        }
  }
-  
+
 Describe "Dynamic Parameters test" -Tags "Feature"{
 BeforeEach{
         cd $home
@@ -1186,19 +1186,19 @@ AfterEach{
        }
 
 
-     It "DynamicParameterTest - expect succeed" {       
-        
+     It "DynamicParameterTest - expect succeed" {
+
         $a= new-psdrive -name JJ -psprovider SHiPS -root Test#DynamicParameterTest
         $a.Name | Should Be "jj"
 
         cd jj:
 
-        (dir).Name | Should be "William" 
+        (dir).Name | Should be "William"
 
-        dir -SHiPSListAvailable | Should be "Hello DynamicParameterTest" 
+        dir -SHiPSListAvailable | Should be "Hello DynamicParameterTest"
 
         cd "William"
-        (dir) | Should be "Hello DynamicParameterTest2" 
+        (dir) | Should be "Hello DynamicParameterTest2"
 
         $b=dir -SHiPSListAvailable2 -CityCapital2 seattle -flowers2 @("aa", "bb")
         $b[0] | Should be "aa"
@@ -1206,19 +1206,19 @@ AfterEach{
 
        }
 
-     It "Calling class with Cache enabled to no cache type - expect succeed" {       
-        
+     It "Calling class with Cache enabled to no cache type - expect succeed" {
+
         $a= new-psdrive -name JJ -psprovider SHiPS -root Test#DynamicParameterTestWithCache
         $a.Name | Should Be "jj"
 
         cd jj:
 
-        (dir).Name | Should be "William" 
+        (dir).Name | Should be "William"
 
-        dir -SHiPSListAvailable | Should be "Hello DynamicParameterTestWithCache" 
+        dir -SHiPSListAvailable | Should be "Hello DynamicParameterTestWithCache"
 
         cd "William"
-        dir | Should be "Hello DynamicParameterTest2" 
+        dir | Should be "Hello DynamicParameterTest2"
 
         $b=dir -SHiPSListAvailable2 -CityCapital2 seattle -flowers2 @("aa", "bb")
         $b[0] | Should be "aa"
@@ -1226,22 +1226,22 @@ AfterEach{
 
        }
 
-     It "Calling class with No Cache  to cache enabled type - expect succeed" {       
-        
+     It "Calling class with No Cache  to cache enabled type - expect succeed" {
+
         $a= new-psdrive -name JJ -psprovider SHiPS -root Test#DynamicParameterTestWithNoCache
         $a.Name | Should Be "jj"
 
         cd jj:
 
-        (dir).Name | Should be "William" 
+        (dir).Name | Should be "William"
 
-        dir -SHiPSListAvailable | Should be "Hello DynamicParameterTestWithNoCache" 
-
-        cd "William"
-        (dir).Name | Should be "William" 
+        dir -SHiPSListAvailable | Should be "Hello DynamicParameterTestWithNoCache"
 
         cd "William"
-        dir | Should be "Hello DynamicParameterTest2" 
+        (dir).Name | Should be "William"
+
+        cd "William"
+        dir | Should be "Hello DynamicParameterTest2"
 
         $b=dir -SHiPSListAvailable2 -CityCapital2 seattle -flowers2 @("aa", "bb")
         $b[0] | Should be "aa"
@@ -1249,35 +1249,35 @@ AfterEach{
 
        }
 
-       It "DynamicParameterKeyValuePairTraditional - expect succeed" {       
-        
+       It "DynamicParameterKeyValuePairTraditional - expect succeed" {
+
         $a= new-psdrive -name JJ -psprovider SHiPS -root Test#DynamicParameterKeyValuePairTraditional
         $a.Name | Should Be "jj"
 
         cd jj:
 
-        dir | Should be "DynamicParameterKeyValuePairTraditional:" 
+        dir | Should be "DynamicParameterKeyValuePairTraditional:"
 
-        dir -list   | Should be "DynamicParameterKeyValuePairTraditional:true" 
+        dir -list   | Should be "DynamicParameterKeyValuePairTraditional:true"
         dir -age 22 | Should be  "DynamicParameterKeyValuePairTraditional:22"
         dir -city seattle   | Should be  "DynamicParameterKeyValuePairTraditional:seattle"
         dir -city seattle -age 11 | Should be  "DynamicParameterKeyValuePairTraditional:11seattle"
         dir -city seattle -age 11 -list | Should be  "DynamicParameterKeyValuePairTraditional:true11seattle"
 
        }
-      
-     It "Filter - expect succeed" {       
-        
+
+     It "Filter - expect succeed" {
+
         $a= new-psdrive -name JJ -psprovider SHiPS -root Test#FilterTest
         $a.Name | Should Be "jj"
 
         cd jj:
 
-        (dir)| Should be "hi" 
+        (dir)| Should be "hi"
 
-        dir -Filter William* | Should be "William*" 
+        dir -Filter William* | Should be "William*"
 
-        dir -Filter William* -Recurse | Should be "William*Recurse"      
+        dir -Filter William* -Recurse | Should be "William*Recurse"
 
        }
 
@@ -1345,10 +1345,10 @@ Describe "Not Supported Commands test" -Tags "Feature"{
 		{
 			Remove-Item -Path $script:homePath -force -Recurse -ErrorAction Ignore
 		}
-        
+
         cd $testpath
 	}
- 
+
     It "ClearItem throws NotSupported" {
         cd ss:\William;
         $null = dir
@@ -1469,16 +1469,16 @@ Describe "Not Supported Commands work properly outside test" -Tags "Feature"{
 			Remove-PSDrive $_.Name -ErrorAction Ignore
 		}
 
-        if(Test-Path $script:homePath) 
+        if(Test-Path $script:homePath)
 		{
 			Remove-Item -Path $script:homePath -force -Recurse -ErrorAction Ignore
 		}
-        
+
         cd $testpath
 		Remove-Item -Path $testpath\TestDir -Recurse -ErrorAction SilentlyContinue
 		Clear-Item -Path Variable:aa -ErrorAction SilentlyContinue -ErrorVariable ev
 	}
- 
+
     It "ClearItem works properly outside" {
         cd ss:\William;
         $aa = "aa"

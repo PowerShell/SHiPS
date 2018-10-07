@@ -15,7 +15,7 @@ using Microsoft.PowerShell.SHiPS.Resources;
 namespace Microsoft.PowerShell.SHiPS
 {
     /// <summary>
-    /// A class that is responsible for invoking a given powershell script. 
+    /// A class that is responsible for invoking a given powershell script.
     /// </summary>
     internal class PSScriptRunner
     {
@@ -36,14 +36,14 @@ namespace Microsoft.PowerShell.SHiPS
             string script,
             Action<string, IProviderContext, IEnumerable<ErrorRecord>> errorHandler,
             params string[] args)
-        {           
+        {
             var progressId = 1;
             var activityId = Resource.RetrievingData;
             int percentComplete = 1;
             var desciption = (Resource.FetchingData).StringFormat(node.Name??"");
             int waittime = 1000; // 1s
 
-            CancellationTokenSource cts = new CancellationTokenSource();        
+            CancellationTokenSource cts = new CancellationTokenSource();
             var progressTracker = new ProgressTracker(progressId, activityId, desciption, node.BuiltinProgress);
 
             try
@@ -53,11 +53,11 @@ namespace Microsoft.PowerShell.SHiPS
                 var errors = new ConcurrentBag<ErrorRecord>();
                 var parameters = context.GetSHiPSParameters();
                 var usingDynamicParameter = parameters.BoundParameters.UsingDynamicParameter(node, drive);
-                 
+
                 //PowerShell engine hangs if we call like this in default runspace
                 //var task = Task.Factory.StartNew(() =>
                 //{
-                //    results = node.GetChildItem();                  
+                //    results = node.GetChildItem();
 
                 //}, cts.Token);
 
@@ -75,7 +75,7 @@ namespace Microsoft.PowerShell.SHiPS
 
                 }, cts.Token);
 
-                
+
                 var stop = task.Wait(waittime, cts.Token);
 
                 if (!stop && !cts.Token.IsCancellationRequested && !context.Stopping)
@@ -116,7 +116,7 @@ namespace Microsoft.PowerShell.SHiPS
 
                     if (errors.Count == 0)
                     {
-                        // do not mark the node visited if there is an error. e.g., if login to azure fails, 
+                        // do not mark the node visited if there is an error. e.g., if login to azure fails,
                         // we should not cache so that a user can dir again once the cred resolved.
                         node.ItemNavigated = true;
                     }
@@ -231,8 +231,8 @@ namespace Microsoft.PowerShell.SHiPS
             bool addNodeOnly)
         {
             //TODO: async vs cache
-            //we could yield result right away but we need to save the all children in the meantime because 
-            //InvokeScript can be costly.So we need to cache the results first by completing the foreach before 
+            //we could yield result right away but we need to save the all children in the meantime because
+            //InvokeScript can be costly.So we need to cache the results first by completing the foreach before
             //returning to a caller.
 
             List<IPathNode> retval = new List<IPathNode>();
@@ -303,7 +303,7 @@ namespace Microsoft.PowerShell.SHiPS
 
                 var output = new PSDataCollection<PSObject>();
                 output.DataAdded += output_DataAdded;
-                
+
                 if (errorAction != null)
                 {
                     powerShell.Streams.Error.DataAdded += errorAction;
@@ -354,11 +354,11 @@ namespace Microsoft.PowerShell.SHiPS
                     powerShell.Streams.Error.DataAdded += errorAction;
                 }
 
-                // Calling the following throws 'Unable to cast object of type 'System.Management.Automation.Language.FunctionMemberAst' to 
+                // Calling the following throws 'Unable to cast object of type 'System.Management.Automation.Language.FunctionMemberAst' to
                 // type 'System.Management.Automation.Language.FunctionDefinitionAst'.
                 //output = node.GetChildItem();
 
-                //make script block             
+                //make script block
                 powerShell.AddScript(script);
                 powerShell.AddParameter("object", node);
 
@@ -388,7 +388,7 @@ namespace Microsoft.PowerShell.SHiPS
 
                 return output.Count == 0 ? null : output;
             }
-            finally 
+            finally
             {
                 powerShell.Streams.Error.DataAdded -= errorAction;
             }

@@ -19,7 +19,7 @@ namespace Microsoft.PowerShell.SHiPS
         public SHiPSDirectory()
         {
         }
-     
+
         /// <summary>
         /// C'tor.
         /// </summary>

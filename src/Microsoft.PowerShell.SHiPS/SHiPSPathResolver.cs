@@ -53,9 +53,9 @@ namespace Microsoft.PowerShell.SHiPS
                 yield break;
             }
 
-            // See Issue: https://github.com/PowerShell/SHiPS/issues/10 
+            // See Issue: https://github.com/PowerShell/SHiPS/issues/10
             // While a user is under the drive and run some cmdlets such as Get-Module -listavailable,
-            // the PowerShell engine calls its all registered providers to see whether 
+            // the PowerShell engine calls its all registered providers to see whether
             // any providers can resolve these files defined in .psd1 manifest file.
             // In this case, our provider does not know these files as its child item, cache misses. So it calls GetChildItem(),
             // which triggers the engine to call us again. Cycling around, causing potential deadlock or significant delays.
@@ -73,7 +73,7 @@ namespace Microsoft.PowerShell.SHiPS
             }
         }
 
-   
+
         private IPathNode GetNodeObjectFromPath(IProviderContext context, string path, bool force)
         {
             var parts = path.Split('/', '\\');
@@ -137,7 +137,7 @@ namespace Microsoft.PowerShell.SHiPS
 
             // Save the info for the node just visited
             lastVisisted.Set(context.Path, child, null);
-            
+
             return child;
         }
 
@@ -148,9 +148,9 @@ namespace Microsoft.PowerShell.SHiPS
 
             // Check if the node has been dir'ed
             // Here we do not need to add NeedRefresh check because:
-            // For cd (set-location), there is no -force, i.e., NeedRefresh is always false. This means for cached cases, 
+            // For cd (set-location), there is no -force, i.e., NeedRefresh is always false. This means for cached cases,
             // a user needs to do 'dir -force' to get fresh data.
-            // For dir case, path in ResolvePath() is pointing to the parent path, e.g., dir c:\foo\bar\baz.txt, 
+            // For dir case, path in ResolvePath() is pointing to the parent path, e.g., dir c:\foo\bar\baz.txt,
             // the path is poing to c:\foo\bar even if baz.txt just gets created. Thus ResolvePath() only needs to resolve
             // the parent path and the GetChildItem() will check NeedRefresh to get fresh data.
             if (!force && parentNode.UseCache && parentNode.ItemNavigated)
@@ -166,13 +166,13 @@ namespace Microsoft.PowerShell.SHiPS
                 {
                     // If a childitem exists and cached, but none of them matches what specified in the 'pathName',
                     // we will return null, because
-                    // 
+                    //
                     // dir         --- Assuming displays a long list of child items. So user does
                     // dir a[tab]  --- a user wants to see any child items start with 'a'. This may be no child item starts with a.
                     //                 so we do not need to go out fetching again if cache misses.
                     //
-                    // caveat:  
-                    // dir foobar  --- if a user expects foobar child item exists, and cache misses, SHiPS is not going out fetch 
+                    // caveat:
+                    // dir foobar  --- if a user expects foobar child item exists, and cache misses, SHiPS is not going out fetch
                     //                 automatically, unless -force
                     // By removing the else block, SHiPS will go out fetching for data if cache misses. But dir a[tab] will be slow.
                     return null;
@@ -191,7 +191,7 @@ namespace Microsoft.PowerShell.SHiPS
                     return null;
                 }
 
-                //add it to its child list            
+                //add it to its child list
                 if (node != null)
                 {
                     if (pathName.EqualsIgnoreCase(node.Name))

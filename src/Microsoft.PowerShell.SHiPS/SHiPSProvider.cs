@@ -20,7 +20,7 @@ namespace Microsoft.PowerShell.SHiPS
         public const string ProviderName = "SHiPS";
         //internal static Regex PathRegex = new Regex(@"^([^:\\/]*?):[\\/](.*)$", RegexOptions.IgnoreCase);
         internal static Regex WellFormatPathRegex = new Regex(@"^([^:\\/]*?)[:\\/]+(.*)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
- 
+
         //Support pattern: Module#Type:\\foobar
         internal static Regex ModuleRegex = new Regex(@"^(.[^#]+\s*#[^:\\/]+)[:\\/]*(.*)$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
 
@@ -57,7 +57,7 @@ namespace Microsoft.PowerShell.SHiPS
                             ProviderInfo.Drives.FirstOrDefault(each => each.Name.EqualsIgnoreCase(driveName) ||
                             each.Root.EqualsIgnoreCase(driveName)) as SHiPSDrive;
                 return drive != null ? drive.PathResolver : null;
-            }           
+            }
 
             return null;
         }
@@ -91,10 +91,10 @@ namespace Microsoft.PowerShell.SHiPS
             ThrowTerminatingError(er);
         }
 
-        #region Path to Node Object Optimization 
+        #region Path to Node Object Optimization
 
         // Note: The following methods are for reducing the calls to SHiPS based providers.
-        // 
+        //
         // When a user types "dir" for example, the PowerShell engine calls the methods defined in it's provider, including
         // ItemExists, IsItemContainer, GetChildItems.
         //
@@ -120,7 +120,7 @@ namespace Microsoft.PowerShell.SHiPS
             // We cannot use the lastvisisted node info only if path matches. This is because
             // the item could be just removed. So commented out the code below.
             // For example
-            // dir ./foobar.ps1 
+            // dir ./foobar.ps1
             // delete foobar.ps1
             // dir ./foobar.ps1  should give an error.
             //if (LastVisisted.NodeObject != null && LastVisisted.Path.EqualsIgnoreCase(path))
@@ -146,7 +146,7 @@ namespace Microsoft.PowerShell.SHiPS
 
         protected override void GetChildNames(string path, ReturnContainers returnContainers)
         {
-            // Before calling this GetChildNames(), the PowerShell engine has called ItemExists, IsItemContainer, 
+            // Before calling this GetChildNames(), the PowerShell engine has called ItemExists, IsItemContainer,
             // and HasChildItems. HasChildItem will then call GetNodeChildren() -> GetNodeChildrenInternal().
             // GetNodeChildrenInternal() will call GetChildItems for fetching data.
 
@@ -157,7 +157,7 @@ namespace Microsoft.PowerShell.SHiPS
             }
 
             // Go fetching data
-            base.GetChildNames(path, returnContainers);       
+            base.GetChildNames(path, returnContainers);
         }
 
         protected override void GetItem(string path)
@@ -185,7 +185,7 @@ namespace Microsoft.PowerShell.SHiPS
             LastVisisted.Set(path, null, null);
 
             // Go fetching data to find out if the item exists
-            base.GetItem(path);           
+            base.GetItem(path);
         }
 
         /// <summary>

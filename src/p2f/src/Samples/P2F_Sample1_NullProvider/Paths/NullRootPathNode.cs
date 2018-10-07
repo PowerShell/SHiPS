@@ -4,8 +4,8 @@ namespace ProviderFramework_1_TheNullProvider
 {
     /// <summary>
     /// the value factory class.
-    /// 
-    /// used by P2F to manage items for a 
+    ///
+    /// used by P2F to manage items for a
     /// particular path value.
     /// </summary>
     class NullRootPathNode : PathNodeBase
@@ -14,7 +14,7 @@ namespace ProviderFramework_1_TheNullProvider
 
         /// <summary>
         /// supplies the item for the current path value
-        /// 
+        ///
         /// the item it wrapped in either a PathValue instance
         /// that describes the item, its name, and whether it is
         /// a container.

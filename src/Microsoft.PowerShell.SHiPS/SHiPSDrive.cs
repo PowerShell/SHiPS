@@ -119,7 +119,7 @@ namespace Microsoft.PowerShell.SHiPS
 
             var node = rootPsObject.FirstOrDefault().ToNode();
             if (node == null)
-            {              
+            {
                 _provider.ThrowError(Resources.Resource.InvalidRootNode, ErrorId.NotContainerNode);
             }
 
@@ -134,7 +134,7 @@ namespace Microsoft.PowerShell.SHiPS
             }
 
             RootNode = node;
-             
+
             RootPathNode = new ContainerNodeService(this, node, null);
 
             // Getting the Get-ChildItem default parameters before running any commands. It will be used for checking
@@ -233,8 +233,8 @@ namespace Microsoft.PowerShell.SHiPS
                         return null;
                     }
                     ps = System.Management.Automation.PowerShell.Create();
-                    
-                    //Cannot use ps.Runspace = Runspace.DefaultRunspace, it will give you an error                 
+
+                    //Cannot use ps.Runspace = Runspace.DefaultRunspace, it will give you an error
                     //Pipelines cannot be run concurrently
                     ps.Runspace = _runspace;
                     return ps;

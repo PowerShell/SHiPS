@@ -2,11 +2,11 @@
     Note:
 
     This is just an example of using SHiPS provider to navigate Azure resources.
-    The code below is for demo only. They are not optimized. 
+    The code below is for demo only. They are not optimized.
 
     Assuming you have done git clone and run build.ps1, cd to your git clone folder and try the following.
 
-    Import-Module  SHiPS                         
+    Import-Module  SHiPS
     Import-Module  .\test\AzureResources.psm1
 
     new-psdrive -name ar -psprovider SHiPS -root AzureResources#Resources
@@ -26,7 +26,7 @@ class DataHolder
     [object]$resourceCurrent
 }
 Enum RMOperation
-{    
+{
     None = 0;
     Add = 1;
     Remove = 2;
@@ -40,12 +40,12 @@ class Resources : SHiPSDirectory
 
     Resources(): base($this.GetType())
     {
-    } 
+    }
 
-    #define this constructor so that it can be a root node such as for testing purpose 
+    #define this constructor so that it can be a root node such as for testing purpose
     Resources([string]$name): base($name)
     {
-    } 
+    }
 
     Resources ([string]$name, [DataHolder]$data, [object] $property) : base ($name)
     {
@@ -55,7 +55,7 @@ class Resources : SHiPSDirectory
 
     [object] UpdateAzureRmObject([string]$command, [hashtable]$Parameters, [RMOperation]$operation)
     {
-    
+
         if($Parameters){
             $azureObjects = &$command @parameters
         }
@@ -83,7 +83,7 @@ class Resources : SHiPSDirectory
         return $azureObjects
     }
 
-    
+
     [object] FindChildren ([DataHolder] $context)
     {
         $resourceTypeName = $context.resource | ForEach-Object {($_.ResourceType -split '/')[$context.tokenIndex]} | Sort-Object -Unique
@@ -92,11 +92,11 @@ class Resources : SHiPSDirectory
             throw "this should never happen!!!"
         }
 
-        $obj =  New-Object System.Collections.ArrayList 
+        $obj =  New-Object System.Collections.ArrayList
 
         $resourceTypeName | Foreach-Object {
 
-            if($context.parentName){ 
+            if($context.parentName){
                 $ShortName = $_
                 $resourceName = $context.ParentName,$ShortName -join $context.sprtChar
             }
@@ -106,23 +106,23 @@ class Resources : SHiPSDirectory
             }
 
             [bool]$IsVariableSet = $false
-              
+
             Write-Verbose -message ("ShortName={0}" -f $ShortName)
             Write-Verbose -message ("tokenIndex={0}" -f ($context.tokenIndex))
-        
+
             $resourceCurrent = $context.resource | Where-Object{$_.ResourceType -eq $resourceName}
-            $resourceChild   = $context.resource | Where-Object{$_.ResourceType.Startswith("$resourceName/")}                    
-             
+            $resourceChild   = $context.resource | Where-Object{$_.ResourceType.Startswith("$resourceName/")}
+
             # prep for its child node
             $data = [DataHolder]::new()
-                         
+
             $data.resource   = $resourceChild
             $data.parentName = $resourceName
             $data.tokenIndex = $context.tokenIndex+1
             $data.sprtChar   = '/'
             $data.resourceCurrent = $resourceCurrent
 
-            
+
             if($resourceChild)
             {
                 $kid = [Resources]::new($ShortName, $data, $data.resourceCurrent)
@@ -130,10 +130,10 @@ class Resources : SHiPSDirectory
             else
             {
                 $kid = [ResourcesLeaf]::new($ShortName, $data.resourceCurrent)
-            }  
-              
+            }
+
             $obj.add($kid);  #$resourcechild is its child node
-       
+
         }
 
         return $obj;
@@ -141,19 +141,19 @@ class Resources : SHiPSDirectory
 
     # called by SHiPS while a user does 'dir'
     [object[]] GetChildItem()
-    {  
+    {
         if($this.data)
         {
             return $this.FindChildren($this.data);
         }
         else
-        {                    
+        {
             $resourceResult = $this.UpdateAzureRmObject('AzureRM.Resources\Get-AzureRmResource', $null, [RMOperation]::Remove);
-  
+
             $d = [DataHolder]::new()
             $d.resource = $resourceResult
             return $this.FindChildren($d);
-        }    
+        }
     }
 }
 

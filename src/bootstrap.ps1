@@ -2,10 +2,10 @@ try {
     $IsWindows = (-not (Get-Variable -Name IsWindows -ErrorAction Ignore)) -or $IsWindows
     $IsLinux = (Get-Variable -Name IsLinux -ErrorAction Ignore) -and $IsLinux
     $IsMacOS = (Get-Variable -Name IsMacOS -ErrorAction Ignore) -and $IsMacOS
-    $IsCoreCLR = (Get-Variable -Name IsCoreCLR -ErrorAction Ignore) -and $IsCoreCLR  
+    $IsCoreCLR = (Get-Variable -Name IsCoreCLR -ErrorAction Ignore) -and $IsCoreCLR
 }
 catch {
-    # on linux error from PowerShell: "Cannot overwrite variable IsLinux because it is read-only". 
+    # on linux error from PowerShell: "Cannot overwrite variable IsLinux because it is read-only".
 }
 
 Write-Verbose -Message  "IsWindows=$IsWindows; IsLinux=$IsLinux; IsMacOS=$IsMacOS; IsCoreCLR=$IsCoreCLR" -Verbose
@@ -19,12 +19,12 @@ if ($IsLinux) {
     $IsCentOS = $LinuxInfo.ID -match 'centos' -and $LinuxInfo.VERSION_ID -match '7'
 }
 
-function Start-DotnetBootstrap 
+function Start-DotnetBootstrap
 {
     [CmdletBinding(SupportsShouldProcess=$true, ConfirmImpact='High')]
     param(
         [string]$Channel = 'preview',
-        [string]$Version = '2.1.3'              
+        [string]$Version = '2.1.3'
     )
 
     # Install ours and .NET's dependencies
@@ -161,7 +161,7 @@ function Test-Windows10SDK
     param()
 
     # Use the PackageManagement to check if the Windows 10 SDK is installed
-    # Not specifing the -name because we want to support as low of Windows 10 SDK version as possible and -name doesn't support wildcards. 
+    # Not specifing the -name because we want to support as low of Windows 10 SDK version as possible and -name doesn't support wildcards.
     # The display name of Windows 10 SDK contains the version number.
     $installedsdk = get-package -ProviderName Programs -ErrorAction SilentlyContinue | Where-Object {$_.Name -like $script:win10sdkdisplaynamehint}
     return ($installedsdk -and ($installedsdk.version -ge $script:win10sdkpackageminimumversion))

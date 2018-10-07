@@ -1,7 +1,7 @@
 ﻿<#
     Modeling a Family Tree for example:
 
-    Austin 
+    Austin
           - Bill
           - Ben
                 - Cathy
@@ -11,7 +11,7 @@
 
     Assuming you have done git clone and run build.ps1, cd to your git clone folder and try the following.
 
-    Import-Module  SHiPS                         
+    Import-Module  SHiPS
     Import-Module  .\samples\FamilyTree.psm1
 
     new-psdrive -name Austin -psprovider SHiPS -root FamilyTree#Austin

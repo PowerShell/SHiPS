@@ -7,29 +7,29 @@ COPYRIGHT
 	Permission is hereby granted, free of charge, to any person obtaining a
 	copy of this software and associated documentation files (the "Software"),
 	to deal in the Software without restriction, including without limitation
-	the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-	and/or sell copies of the Software, and to permit persons to whom the 
+	the rights to use, copy, modify, merge, publish, distribute, sublicense,
+	and/or sell copies of the Software, and to permit persons to whom the
 	Software is furnished to do so, subject to the following conditions:
 
 	The above copyright notice and this permission notice shall be included in
 	all copies or substantial portions of the Software.
 
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
-	THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
-	DEALINGS IN THE SOFTWARE. 
-   
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+	THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+	DEALINGS IN THE SOFTWARE.
+
 DESCRIPTION
-    The Null Provider demonstrates the minimum work necessary to create a 
+    The Null Provider demonstrates the minimum work necessary to create a
 	skeleton PowerShell provider using the Code Owls PowerShell Provider
-	Framework (P2F).  
-	
+	Framework (P2F).
+
 	The project produces a dll that contains a single provider (NullProvider)
 	and exposes a single default drive (null:).  The provider supports:
-	* navigation (set-location) 
+	* navigation (set-location)
 	* enumeration (get-childitem)
 	* item query and retrieval (get-item)
 	* drive and provider info (get-psdrive, get-psprovider)
@@ -39,10 +39,10 @@ DESCRIPTION
 PROJECT NOTES
 
 	The P2F forces you to isolate the following concerns in your provider:
-	
+
 	1. Supporting standard PowerShell item cmdlets
-	2. Interpreting path strings 
-	3. Managing item operations (e.g., adding items, removing items) 
+	2. Interpreting path strings
+	3. Managing item operations (e.g., adding items, removing items)
 
 	Generally speaking, there is very little PowerShell-aware code you will
 	need to create.  Your focus will be on the items exposed by your provider,
@@ -56,14 +56,14 @@ PROJECT NOTES
 	1. One or More Provider Classes
 		Your provider classes must derive from the P2F class
 		CodeOwls.PowerShell.Provider.Provider.  This base class implements
-		all of the PowerShell plumbing to enable proper support for item 
+		all of the PowerShell plumbing to enable proper support for item
 		cmdlets and provider features.
 
 		You will need to override the InitializeDefaultDrives and/or
 		the NewDrive methods to manage creating the drives necessary to
 		support your provider.
-	
-		The NullProvider.cs file contains the single provider class for the 
+
+		The NullProvider.cs file contains the single provider class for the
 		Null Provider sample project.
 
 	2. One or More Drive Classes
@@ -77,9 +77,9 @@ PROJECT NOTES
 	3. A Path Processor Class
 		The path processor is responsible for adapting a path string, such
 		as "drive:/path/to/item.txt" into a Path Node Factory (see
-		item 4 below for more information on these).  
-		
-		The path processor class must implement the 
+		item 4 below for more information on these).
+
+		The path processor class must implement the
 		CodeOwls.PowerShell.Paths.Processors.IPathNodeProcessor interface.
 		This interface provides a protocol for translating a path string into
 		an path node factory.  It is recommended that the class derive from the
@@ -87,41 +87,41 @@ PROJECT NOTES
 		enable predictable path resolution behavior.  While there are no hard
 		rules to interpreting path strings, the PathNodeProcessorBase class is
 		designed to meet existing path expectations (e.g., supporting / and \
-		as path separators).		
+		as path separators).
 
 	4. One or More Path Node Classes
 		A path node class represents a single location in a path.  E.g.
-		the path "drive:/path/to/item.txt" might be represented by a 
+		the path "drive:/path/to/item.txt" might be represented by a
 		TextFilePathNode class; the path "db:/databasename/tablename" might
 		be represented as a DatabaseTablePathNode.
 
-		The role of the path node class in the P2F is to isolate the 
+		The role of the path node class in the P2F is to isolate the
 		operations that are valid for a specific path node.  For instance, the
 		path node class is where you would implement support for the
 		standard provider cmdlets (e.g., new-item).
-		
+
 		Path node classes must implement the
 		CodeOwls.PowerShell.Provider.PathNodes.IPathNode interface.  This
 		interface provides a protocol for:
-		* querying a path node's name, 
-		* retrieving the path node's item (see 5 below), and 
+		* querying a path node's name,
+		* retrieving the path node's item (see 5 below), and
 		* enumerating its child nodes (walking the path)
-		
+
 		It is recommended that you derive from the
-		CodeOwls.PowerShell.Provider.PathNodes.PathNodeBase class.  This 
+		CodeOwls.PowerShell.Provider.PathNodes.PathNodeBase class.  This
 		class provides a default implementation of child node resolution.
 
 	5. One or More Item Classes
 		Each path node must expose an object that represents the item for the
 		path.  Think of these items as the "value" of each path node, or the
 		specific "thing" retrieved by calling get-item with the path.
-		
+
 		E.g., the item at path "drive:/path/to/item.txt" could be a FileInfo
-		instance.  The item at path "db:/databasename/tablename" could be a 
+		instance.  The item at path "db:/databasename/tablename" could be a
 		DataTable instance.
 
 		There are no rules or restrictions on the nature of item classes.  It
-		is recommended that you provide unique classes to represent each 
+		is recommended that you provide unique classes to represent each
 		indivdual type of item exposed by your provider.  This will make adding
 		type and format information much easier as the project matures.
 
@@ -141,21 +141,21 @@ RUNNING / DEBUGGING THE PROJECT
 
 EXAMPLES
     -------------------------- EXAMPLE 1 --------------------------
-    
+
     C:\PS>cd null:
-    
-    
+
+
     Description
     -----------
-    This command changes the current session location to the null: drive 
+    This command changes the current session location to the null: drive
 	defined by the NullProvider example.
 
 
 	-------------------------- EXAMPLE 2 --------------------------
-    
+
     C:\PS>ls null:/
-    
-    
+
+
     Description
     -----------
     This command enumerates all items stored in the root of the null: drive.
@@ -164,21 +164,18 @@ EXAMPLES
 
 
 	-------------------------- EXAMPLE 3 --------------------------
-    
+
     C:\PS>get-item null:/ | get-member
-    
-    
+
+
     Description
     -----------
     This command retrieves the item at the root of the null: drive, passing
 	the item to the get-member cmdlet to retrieve type information.  Note that
-	the type of the root node is the NullItem class defined in the sample 
+	the type of the root node is the NullItem class defined in the sample
 	project.
 
 
 SEE ALSO
 	http://msdn.microsoft.com/en-us/library/windows/desktop/ee126192%28v=vs.85%29.aspx
 	https://github.com/beefarino/p2f
-
-
-	

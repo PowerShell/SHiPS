@@ -1,15 +1,15 @@
 ﻿<#
     Assuming you have done git clone and run build.ps1, cd to your git clone folder and try the following.
 
-    Import-Module  SHiPS                   
+    Import-Module  SHiPS
     Import-Module  .\test\adhoc\Cache-NoCach-CacheTest.psm1
-   
+
     new-psdrive -name n -psprovider SHiPS -root Cache-NoCach-CacheTest#UseCacheTest
-    
+
 
     Test:
     cd n:\
-    dir                  # you will see progress bar. 
+    dir                  # you will see progress bar.
     dir                  # no progress bar
     cd UseNoCacheTest
     dir                  # you will see the progress bar

@@ -32,9 +32,9 @@ To be more precise it's a provider utility that simplifies developing PowerShell
 ### Nightly run Master branch
 
 
-| AppVeyor (Windows)       
+| AppVeyor (Windows)
 |--------------------------
-| [![av-image-master-n][]][av-site-master-n] 
+| [![av-image-master-n][]][av-site-master-n]
 
 [av-image-master-n]: https://ci.appveyor.com/api/projects/status/od48qs1sf6xo3ro0/branch/master?svg=true
 [av-site-master-n]: https://ci.appveyor.com/project/PowerShell/ships-yfgug/branch/master

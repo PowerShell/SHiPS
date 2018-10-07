@@ -7,31 +7,31 @@ COPYRIGHT
 	Permission is hereby granted, free of charge, to any person obtaining a
 	copy of this software and associated documentation files (the "Software"),
 	to deal in the Software without restriction, including without limitation
-	the rights to use, copy, modify, merge, publish, distribute, sublicense, 
-	and/or sell copies of the Software, and to permit persons to whom the 
+	the rights to use, copy, modify, merge, publish, distribute, sublicense,
+	and/or sell copies of the Software, and to permit persons to whom the
 	Software is furnished to do so, subject to the following conditions:
 
 	The above copyright notice and this permission notice shall be included in
 	all copies or substantial portions of the Software.
 
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
-	THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
-	DEALINGS IN THE SOFTWARE. 
-   
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+	THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+	DEALINGS IN THE SOFTWARE.
+
 DESCRIPTION
-    The Type Provider demonstrates the minimum work necessary to create a 
+    The Type Provider demonstrates the minimum work necessary to create a
 	PowerShell navigation provider using the Code Owls PowerShell Provider
 	Framework (P2F).  This provider allows the user to explore the assemblies
 	and types currently loaded in their powershell session as if they were a
-	filesystem.  
-	
+	filesystem.
+
 	The project produces a dll that contains a single provider (Types)
 	and exposes a single default drive (types:).  The provider supports:
-	* heirarchical navigation (set-location) 
+	* heirarchical navigation (set-location)
 	* enumeration (get-childitem)
 	* item query and retrieval (get-item)
 	* drive and provider info (get-psdrive, get-psprovider)
@@ -59,8 +59,8 @@ PROJECT NOTES
 	* the TypePathNode (representing types inside of assemblies) supports the
 		invoke-item cmdlet for creating instances of types.
 
-	A path node factory can support an item cmdlet by implementing a specific 
-	interface.  The item cmdlets and interfaces necessary to support them are 
+	A path node factory can support an item cmdlet by implementing a specific
+	interface.  The item cmdlets and interfaces necessary to support them are
 	defined below:
 
 	new-item		CodeOwls.PowerShell.Provider.PathNodes.INewItem
@@ -78,11 +78,11 @@ PROJECT NOTES
 	Note that the get-item and get-childitem cmdlets are supported by every
 	path node factory class implicitly.  In addition, the Provider base class
 	provides default support for get- and set-itemproperty that can be used
-	to modify .NET object properties on items.  
+	to modify .NET object properties on items.
 
 	Support for the other -itemproperty cmdlets and the item
 	content cmdlets is not implemented at this time.
-	
+
 RUNNING / DEBUGGING THE PROJECT
 	1. Open the project properties
 	2. Go to the Debug tab
@@ -98,20 +98,20 @@ RUNNING / DEBUGGING THE PROJECT
 
 EXAMPLES
     -------------------------- EXAMPLE 1 --------------------------
-    
+
     C:\PS>new-item types:/system.drawing
-    
-    
+
+
     Description
     -----------
     This command adds the system.drawing assembly to the session.
 
 
 	-------------------------- EXAMPLE 2 --------------------------
-    
+
     C:\PS>invoke-item types:/system.drawing/system.drawing.fontconverter -variablename fc
-    
-    
+
+
     Description
     -----------
     This command creates an instance of the system.drawing.fontconverter class and stores
@@ -121,9 +121,5 @@ EXAMPLES
 SEE ALSO
 	http://msdn.microsoft.com/en-us/library/windows/desktop/ee126192%28v=vs.85%29.aspx
 	http://psqlite.codeplex.com/
-	http://o.codeplex.com/	
+	http://o.codeplex.com/
 	http://studioshell.codeplex.com/
-	
-
-
-	

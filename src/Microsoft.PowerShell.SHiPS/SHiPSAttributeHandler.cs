@@ -7,7 +7,7 @@ namespace Microsoft.PowerShell.SHiPS
     /// A helper class for getting SHiPSPropertyAttribute settings.
     /// </summary>
     internal class SHiPSAttributeHandler
-    {           
+    {
         private static SHiPSProviderAttribute defaultAttribute = new SHiPSProviderAttribute();
 
         internal static SHiPSProviderAttribute GetSHiPSProperty(Type type)
@@ -20,6 +20,6 @@ namespace Microsoft.PowerShell.SHiPS
                 return defaultAttribute;
             }
             return descriptions[0];
-        }      
+        }
     }
 }
