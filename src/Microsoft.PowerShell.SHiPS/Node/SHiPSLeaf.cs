@@ -12,7 +12,7 @@
         public SHiPSLeaf()
         {
         }
-          
+
         /// <summary>
         /// C'tor.
         /// </summary>

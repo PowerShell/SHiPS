@@ -36,7 +36,7 @@ namespace CodeOwls.PowerShell.Provider
             return o.ToString();
         }
 
-        
-        
+
+
     }
 }

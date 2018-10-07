@@ -7,7 +7,7 @@ namespace Microsoft.PowerShell.SHiPS
     /// A class containing the current node information.
     /// </summary>
     internal class PathNodeInfo
-    { 
+    {
         internal string Path { get; set; }
         internal string PathWithNoEndSlash { get; set; }
         internal IPathNode NodeObject { get; set; }

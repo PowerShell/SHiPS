@@ -117,7 +117,7 @@ internal class {0} {{
             $entry -f $name,$val
         }
     } | Out-String
-    
+
     $bodyCode = $body -f $shortClassName,$entries,$ClassName,$moduleName
 
     if ($NamespaceName)

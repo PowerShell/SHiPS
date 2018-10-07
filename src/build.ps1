@@ -41,7 +41,7 @@ Function CopyToDestinationDir($itemsToCopy, $destination)
         Write-Verbose "file=$file" -Verbose:$Verbose
 
         if (Test-Path $file)
-        {            
+        {
             Copy-Item -Path $file -Destination $destination -Verbose:$Verbose -Force
             #Copy-Item -Path $file -Destination (Join-Path $destination (Split-Path $file -Leaf)) -Verbose -Force
         }
@@ -83,11 +83,11 @@ try
         #dotnet publish --framework $Framework --configuration $Configuration
 
         Pop-Location
-    }  
+    }
 }
 finally
 {
- 
+
 }
 
 
@@ -139,14 +139,14 @@ if($script:IsWindowsOS -and (-not $script:IsCoreCLRPlatform))
 }
 
 Write-Output "Zipping $sourcePath into $packageFileName"
-[System.IO.Compression.ZipFile]::CreateFromDirectory($sourcePath, $packageFileName) 
+[System.IO.Compression.ZipFile]::CreateFromDirectory($sourcePath, $packageFileName)
 
 
 #
 # Removing the build generated files
 #
 
- 
+
 $BuildGenerated = @(
     "./Microsoft.PowerShell.SHiPS/Resources/Microsoft.PowerShell.SHiPS.Resources.Resource.resx",
     "./Microsoft.PowerShell.SHiPS/bin/",

@@ -20,7 +20,7 @@ init:
 
 
 # Install Pester
-install: 
+install:
     - cinst -y pester
 
 # to run your custom scripts instead of automatic MSBuild
@@ -41,7 +41,7 @@ test_script:
 # Upload the project along with TestResults as a zip archive
 on_finish:
     - ps: |
-        
+
         @(
             # You can add other artifacts here
             "C:\projects\ships\src\out\SHiPS.zip"

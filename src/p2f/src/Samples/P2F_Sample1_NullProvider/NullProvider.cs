@@ -16,7 +16,7 @@ namespace ProviderFramework_1_TheNullProvider
     {
         /// <summary>
         /// a required P2F override
-        /// 
+        ///
         /// supplies P2F with the path processor for this provider
         /// </summary>
         protected override CodeOwls.PowerShell.Paths.Processors.IPathResolver PathResolver
@@ -31,8 +31,8 @@ namespace ProviderFramework_1_TheNullProvider
         {
             return new Collection<PSDriveInfo>
                        {
-                           new NullDrive( 
-                               new PSDriveInfo( "Null", ProviderInfo, String.Empty, "Null Drive", null ) 
+                           new NullDrive(
+                               new PSDriveInfo( "Null", ProviderInfo, String.Empty, "Null Drive", null )
                            )
                        };
         }

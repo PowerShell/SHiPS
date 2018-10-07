@@ -15,7 +15,7 @@ namespace ProviderFramework_1_TheNullProvider
         {
             get
             {
-                return new NullRootPathNode();            
+                return new NullRootPathNode();
             }
         }
     }

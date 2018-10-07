@@ -7,7 +7,7 @@
 #>
 using namespace Microsoft.PowerShell.SHiPS
 
-class Compute : SHiPSDirectory 
+class Compute : SHiPSDirectory
 {
     Compute ()
     {
@@ -20,7 +20,7 @@ class Compute : SHiPSDirectory
     }
 
     [object[]] GetChildItem()
-    { 
+    {
         $result =  @()
         $result += [AvailabilitySets]::new()
         $result += [Locations]::new()
@@ -51,7 +51,7 @@ class AvailabilitySets : Compute
         }
 
         return $result
-    }    
+    }
 }
 
 class Locations : Compute
@@ -65,7 +65,7 @@ class Locations : Compute
         }
 
         return $result
-    }    
+    }
 }
 
 class VirtualMachines : Compute
@@ -92,6 +92,6 @@ class VirtualMachineScaleSets : Compute
             [ComputeLeaf]::WebRedirectMessage('https://docs.microsoft.com/en-us/azure/virtual-machine-scale-sets/','VirtualMachineScaleSets')
         }
 
-        return $result         
+        return $result
     }
 }

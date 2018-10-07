@@ -17,7 +17,7 @@ namespace Microsoft.PowerShell.SHiPS
         public bool UseCache { get; set; } = SHiPSBase.UseCacheDefaultValue;
 
         /// <summary>
-        /// Gets and sets a flag specifying whether SHiPS needs to Write-Progress. 
+        /// Gets and sets a flag specifying whether SHiPS needs to Write-Progress.
         /// True, SHiPS will call Write-Progress; false it is assumed module will call Write-Progress.
         /// </summary>
         public bool BuiltinProgress { get; set; } = SHiPSBase.BuiltinProgressDefaultValue;
