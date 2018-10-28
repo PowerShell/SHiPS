@@ -2,7 +2,7 @@
 using CodeOwls.PowerShell.Provider.PathNodeProcessors;
 
 namespace Microsoft.PowerShell.SHiPS
-{ 
+{
     /// <summary>
     /// Defines a base type for node objects.
     /// </summary>
@@ -20,7 +20,7 @@ namespace Microsoft.PowerShell.SHiPS
         protected SHiPSBase() : this(null)
         {
         }
-          
+
         /// <summary>
         /// C'tor.
         /// </summary>
@@ -28,7 +28,7 @@ namespace Microsoft.PowerShell.SHiPS
         protected SHiPSBase(string name) : this (name, isLeaf:false)
         {
         }
-        
+
         /// <summary>
         /// C'tor.
         /// </summary>
@@ -85,7 +85,7 @@ namespace Microsoft.PowerShell.SHiPS
             }
             set { _useCache = value; }
         }
-         
+
         /// <summary>
         /// True SHiPS will call Write-Progress. False otherwise.
         /// By default BuiltinProgress is set to true.

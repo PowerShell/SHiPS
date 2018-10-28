@@ -29,7 +29,7 @@ namespace ProviderFramework_3_TypeProvider
 
         /// <summary>
         /// returns an object defining custom parameters for the new-item cmdlet.
-        /// 
+        ///
         /// because this provider requires a custom parameter for invoke-item, this
         /// implementation return an instance object describing those parameters
         /// </summary>
@@ -49,11 +49,11 @@ namespace ProviderFramework_3_TypeProvider
         /// <summary>
         /// processes the invoke-item cmdlet when invoked on a path that
         /// resolves to a type value.
-        /// 
+        ///
         /// this implementation attempts to create an instance of the type
         /// represented by the path.  the type must have a default constructor
         /// for this to work.
-        /// 
+        ///
         /// once an instance is created, it is stored in the variable indicated
         /// by the custom parameter
         /// </summary>

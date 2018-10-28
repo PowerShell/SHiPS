@@ -11,7 +11,7 @@ namespace Microsoft.PowerShell.SHiPS
         private readonly string _description;
         private bool _builtinProgress;
         private ProgressRecord _progressRecord;
- 
+
         internal ProgressTracker(int progressId, string activity, string description, bool builtinProgress)
         {
             _progressId = progressId;

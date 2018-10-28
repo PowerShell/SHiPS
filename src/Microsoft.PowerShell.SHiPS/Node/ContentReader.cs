@@ -113,7 +113,7 @@ namespace Microsoft.PowerShell.SHiPS
                 _stream?.Flush();
                 _stream?.Dispose();
             }
-            finally 
+            finally
             {
                 _writer = null;
                 _reader = null;

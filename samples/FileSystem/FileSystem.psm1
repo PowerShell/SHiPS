@@ -35,7 +35,7 @@ class Home : SHiPSDirectory
        $obj =  @()
 
        Write-Verbose $data
-       
+
        dir $data | ForEach-Object {
 
                 if($_.PSIsContainer)

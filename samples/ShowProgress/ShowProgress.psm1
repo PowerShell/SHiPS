@@ -1,7 +1,7 @@
 ﻿<#
     Assuming you have done git clone and run build.ps1, cd to your git clone folder and try the following.
 
-    Import-Module  SHiPS                   
+    Import-Module  SHiPS
     Import-Module  .\samples\ShowProgress.psm1
     new-psdrive -name m -psprovider SHiPS -root ShowProgress#BuiltinProgress
 

@@ -1,7 +1,7 @@
 ﻿<#
     Modeling a tree for example:
 
-    Nature 
+    Nature
           - Plant
                 - Birch
                 - Maple
@@ -13,20 +13,20 @@
                     - Bulldog
 
 
- 
-    Import-Module  SHiPS                         
+
+    Import-Module  SHiPS
     Import-Module  .\samples\DynamicParameterSample.psm1
 
     new-psdrive -name n -psprovider SHiPS -root 'DynamicParameterSample#Nature'
     cd n:
     dir
-    
+
     dir -Type Plant
 
     dir -Type Creature
 
     dir -Filter p* -recurse
-  
+
 #>
 
 using namespace Microsoft.PowerShell.SHiPS
@@ -66,11 +66,11 @@ class NatureBase : SHiPSDirectory
 
     # Define dynamic parameters for Get-ChildItem
     [object] GetChildItemDynamicParameters()
-    {      
+    {
         return [SampleDynamicParameter]::new()
     }
 
-    # Assuming we have a backend database and support searching with wildcards. 
+    # Assuming we have a backend database and support searching with wildcards.
     [object] FuzzySearch([string] $queryString)
     {
         $queryString = $this.ProviderContext.Filter
@@ -199,7 +199,7 @@ class Dog : NatureBase
 
 
 class Birch : SHiPSLeaf
-{    
+{
     static $data =[NatureData]::new("Birch", "Plant");
     $Properties = [Birch]::data
 

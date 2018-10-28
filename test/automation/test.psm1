@@ -1,7 +1,7 @@
 ﻿<#
    Assuming you have done clone. Now cd to SHiPS\test\automation folder. Try the following.
-    
-    Import-Module  ..\..\src\out\SHiPS\SHiPS                      
+
+    Import-Module  ..\..\src\out\SHiPS\SHiPS
     Import-Module  .\test.psm1
     new-psdrive -name JJ -psprovider SHiPS -root Test#Root
 
@@ -21,18 +21,18 @@ class Root : SHiPSDirectory
     Root([string]$name): base($name)
     {
     }
-    
+
     [object] GetChildItemDynamicParameters()
-    {      
+    {
         return [MyDynamicParameter]::new()
     }
 
     [object[]] GetChildItem()
-    {     
+    {
         $obj = @()
-        $obj += [Austin]::new("Bill", $script:PowerShellProcessName);     
+        $obj += [Austin]::new("Bill", $script:PowerShellProcessName);
         $obj += [Chris]::new("William");
-        return $obj     
+        return $obj
     }
 }
 
@@ -44,14 +44,14 @@ class Austin : SHiPSDirectory
     {
     }
 
-    Austin ([string]$name, [object]$data) : base ($name) 
+    Austin ([string]$name, [object]$data) : base ($name)
     {
         $this.data=$data
     }
 
 
     [object] Funny()
-    { 
+    {
         return "BITS"
     }
 
@@ -59,10 +59,10 @@ class Austin : SHiPSDirectory
     {
         #Write-warning "GetChildItem gets called."
 
-        $obj =  @() 
+        $obj =  @()
         # $nodeData gets set when the object gets created. Through this we pass around the data from parent node to child
-        $processes = Get-Process $this.data 
-        foreach ($p in $processes) {        
+        $processes = Get-Process $this.data
+        foreach ($p in $processes) {
             $obj += [AlexLeaf]::new($p.Name);
             break;
         }
@@ -73,8 +73,8 @@ class Austin : SHiPSDirectory
 
         # child class
         $obj += [Warning]::new("Warning");
-       
-        return $obj;      
+
+        return $obj;
     }
 }
 
@@ -93,10 +93,10 @@ class Warning : SHiPSDirectory
     }
 
     [object[]] GetChildItem()
-    {                            
-       #Write-Warning ("Testing purpose. Don't panic!")  
+    {
+       #Write-Warning ("Testing purpose. Don't panic!")
        return [Chris]::new("Chris");
-             
+
     }
 }
 
@@ -109,14 +109,14 @@ class DupTest: SHiPSDirectory
 
     [object[]] GetChildItem()
     {
-        $obj =  @() 
-     
+        $obj =  @()
+
 
         # child class
         $obj += [ChrisLeaf]::new("Chris");
         $obj += [Chris]::new("Chris");
-       
-        return $obj;      
+
+        return $obj;
     }
 }
 
@@ -128,18 +128,18 @@ class Chris : SHiPSDirectory
     Chris([string]$name): base($name)
     {
     }
-    Chris ([string]$name, [string]$data) : base ($name) 
+    Chris ([string]$name, [string]$data) : base ($name)
     {
         $this.data=$data
     }
-    
+
     [object[]] GetChildItem()
-    {          
-        $obj =  @()                 
-        $obj += [ChrisLeaf]::new("Chris Jr.", "Chris's Son");        
-        $obj += [ChrisLeaf]::new("Chrisylin", "Chris's daughter1"); 
-        $obj += [ChrisLeaf]::new("Chrisylinni", "Chris's daughter2"); 
-        return $obj;        
+    {
+        $obj =  @()
+        $obj += [ChrisLeaf]::new("Chris Jr.", "Chris's Son");
+        $obj += [ChrisLeaf]::new("Chrisylin", "Chris's daughter1");
+        $obj += [ChrisLeaf]::new("Chrisylinni", "Chris's daughter2");
+        return $obj;
     }
 }
 
@@ -162,18 +162,18 @@ class Slash : SHiPSDirectory
     Slash([string]$name): base($name)
     {
     }
-    
-    Slash ([string]$name, [object]$data) : base ($name) 
+
+    Slash ([string]$name, [object]$data) : base ($name)
     {
         $this.data=$data
     }
 
     [object[]] GetChildItem()
-    {     
+    {
         $obj = @()
-        $obj += [Austin]::new("Bill",  $script:PowerShellProcessName);     
+        $obj += [Austin]::new("Bill",  $script:PowerShellProcessName);
         $obj += [Chris]::new("Will/iam", $null);
-        return $obj     
+        return $obj
     }
 }
 
@@ -186,16 +186,16 @@ class WithoutCacheTest : SHiPSDirectory
     WithoutCacheTest([string]$name): base($name)
     {
     }
-    
-    WithoutCacheTest ([string]$name, [object]$data) : base ($name) 
+
+    WithoutCacheTest ([string]$name, [object]$data) : base ($name)
     {
         $this.data=$data
     }
 
     [object[]] GetChildItem()
-    {     
+    {
        Start-Sleep -Milliseconds 500
-       return "hi"   
+       return "hi"
     }
 }
 
@@ -207,16 +207,16 @@ class WithCacheTest : SHiPSDirectory
     WithCacheTest([string]$name): base($name)
     {
     }
-    
-    WithCacheTest ([string]$name, [object]$data) : base ($name) 
+
+    WithCacheTest ([string]$name, [object]$data) : base ($name)
     {
         $this.data=$data
     }
 
     [object[]] GetChildItem()
-    {     
+    {
        Start-Sleep -Milliseconds 500
-       return "hi"   
+       return "hi"
     }
 }
 
@@ -228,15 +228,15 @@ class UseCacheTrueAndBuiltinProgressFalse : SHiPSDirectory
     UseCacheTrueAndBuiltinProgressFalse([string]$name): base($name)
     {
     }
-    
-    UseCacheTrueAndBuiltinProgressFalse ([string]$name, [object]$data) : base ($name) 
+
+    UseCacheTrueAndBuiltinProgressFalse ([string]$name, [object]$data) : base ($name)
     {
         $this.data=$data
     }
 
     [object[]] GetChildItem()
-    {           
-       return "hi"   
+    {
+       return "hi"
     }
 }
 
@@ -248,15 +248,15 @@ class WithBuiltinProgressFalseButMsg : SHiPSDirectory
     WithBuiltinProgressFalseButMsg([string]$name): base($name)
     {
     }
-    
-    WithBuiltinProgressFalseButMsg ([string]$name, [object]$data) : base ($name) 
+
+    WithBuiltinProgressFalseButMsg ([string]$name, [object]$data) : base ($name)
     {
         $this.data=$data
     }
 
     [object[]] GetChildItem()
-    {           
-       return "hi"   
+    {
+       return "hi"
     }
 }
 
@@ -268,15 +268,15 @@ class WithBuiltinProgressAndMsg : SHiPSDirectory
     WithBuiltinProgressAndMsg([string]$name): base($name)
     {
     }
-    
-    WithBuiltinProgressAndMsg ([string]$name, [object]$data) : base ($name) 
+
+    WithBuiltinProgressAndMsg ([string]$name, [object]$data) : base ($name)
     {
         $this.data=$data
     }
 
     [object[]] GetChildItem()
-    {           
-       return "hi"   
+    {
+       return "hi"
     }
 }
 
@@ -288,15 +288,15 @@ class ReturnEmpty : SHiPSDirectory
     ReturnEmpty([string]$name): base($name)
     {
     }
-    
-    ReturnEmpty ([string]$name, [object]$data) : base ($name) 
+
+    ReturnEmpty ([string]$name, [object]$data) : base ($name)
     {
         $this.data=$data
     }
 
     [object[]] GetChildItem()
-    {     
-        return ""   
+    {
+        return ""
     }
 }
 
@@ -307,18 +307,18 @@ class ReturnNull : SHiPSDirectory
     ReturnNull([string]$name): base($name)
     {
     }
-    
-    ReturnNull ([string]$name, [object]$data) : base ($name) 
+
+    ReturnNull ([string]$name, [object]$data) : base ($name)
     {
         $this.data=$data
     }
 
     [object[]] GetChildItem()
-    {     
-        return $null   
+    {
+        return $null
     }
 }
- 
+
 
 
 class MyDynamicParameter
@@ -352,25 +352,25 @@ class DynamicParameterTest : SHiPSDirectory
     DynamicParameterTest([string]$name): base($name)
     {
     }
-    
+
     [object] GetChildItemDynamicParameters()
-    {      
+    {
         return [MyDynamicParameter]::new()
     }
 
     [object[]] GetChildItem()
-    {     
-        
-        $a = $this.ProviderContext.DynamicParameters -as [MyDynamicParameter]  
-        
+    {
+
+        $a = $this.ProviderContext.DynamicParameters -as [MyDynamicParameter]
+
         $obj =@()
         $obj+= [DynamicParameterTest2]::new("William")
 
         if($a.SHiPSListAvailable)
-        {    
+        {
             return "Hello DynamicParameterTest"
         }
-        
+
         return $obj
     }
 }
@@ -382,20 +382,20 @@ class DynamicParameterTest2 : SHiPSDirectory
     DynamicParameterTest2([string]$name): base($name)
     {
     }
-    
+
     [object] GetChildItemDynamicParameters()
-    {      
+    {
         return [MyDynamicParameter2]::new()
     }
 
     [object[]] GetChildItem()
-    {     
-        
-        $a = $this.ProviderContext.DynamicParameters -as [MyDynamicParameter2] 
-            
+    {
+
+        $a = $this.ProviderContext.DynamicParameters -as [MyDynamicParameter2]
+
         if($a.SHiPSListAvailable2)
-        {          
-            return $a.flowers2 
+        {
+            return $a.flowers2
         }
         else
         {
@@ -410,25 +410,25 @@ class DynamicParameterTestWithCache : SHiPSDirectory
     DynamicParameterTestWithCache([string]$name): base($name)
     {
     }
-    
+
     [object] GetChildItemDynamicParameters()
-    {      
+    {
         return [MyDynamicParameter]::new()
     }
 
     [object[]] GetChildItem()
-    {     
+    {
         #Write-Warning "Calling GetChildItem DynamicParameterTest - WithCache"
-        $a = $this.ProviderContext.DynamicParameters -as [MyDynamicParameter]  
-        
+        $a = $this.ProviderContext.DynamicParameters -as [MyDynamicParameter]
+
         $obj =@()
         $obj+= [DynamicParameterTest2]::new("William")
 
         if($a.SHiPSListAvailable)
-        {    
+        {
             return "Hello DynamicParameterTestWithCache"
         }
-        
+
         return $obj
     }
 }
@@ -441,25 +441,25 @@ class DynamicParameterTestWithNoCache : SHiPSDirectory
     DynamicParameterTestWithNoCache([string]$name): base($name)
     {
     }
-    
+
     [object] GetChildItemDynamicParameters()
-    {      
+    {
         return [MyDynamicParameter2]::new()
     }
 
     [object[]] GetChildItem()
-    {     
+    {
         #Write-Warning "Calling GetChildItem DynamicParameterTest - WithNoCache"
-        
-        $a = $this.ProviderContext.DynamicParameters -as [MyDynamicParameter2] 
+
+        $a = $this.ProviderContext.DynamicParameters -as [MyDynamicParameter2]
 
         if($a.SHiPSListAvailable2)
-        {                    
+        {
             return "Hello DynamicParameterTestWithNoCache"
         }
 
-        # calling class with cache 
-        return [DynamicParameterTestWithCache]::new("William")  
+        # calling class with cache
+        return [DynamicParameterTestWithCache]::new("William")
     }
 }
 
@@ -467,21 +467,21 @@ class DynamicParameterTestWithNoCache : SHiPSDirectory
 
 function GenerateDynamicParameters
 {
-          
+
     $paramDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
     $ageAttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]            
-    $ageAttribute = New-Object System.Management.Automation.ParameterAttribute        
+    $ageAttribute = New-Object System.Management.Automation.ParameterAttribute    
     $ageAttributeCollection.Add($ageAttribute)
 
 
     $cityAttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-    $cityAttribute = New-Object System.Management.Automation.ParameterAttribute           
+    $cityAttribute = New-Object System.Management.Automation.ParameterAttribute       
     $cityAttributeCollection.Add($cityAttribute)
-    
+
     $listAttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
     $listAttribute = New-Object System.Management.Automation.ParameterAttribute     
-    $listAttribute.ValueFromPipeline = $true     
+    $listAttribute.ValueFromPipeline = $true 
     $listAttributeCollection.Add($listAttribute)
 
     $ageParam = New-Object System.Management.Automation.RuntimeDefinedParameter('age', [System.Int16], $ageAttributeCollection)
@@ -492,8 +492,8 @@ function GenerateDynamicParameters
     $paramDictionary.Add('city', $cityParam)
     $paramDictionary.Add('list', $listParam)
 
-    return $paramDictionary       
-    
+    return $paramDictionary   
+
 }
 
 class DynamicParameterKeyValuePairTraditional : SHiPSDirectory
@@ -502,34 +502,34 @@ class DynamicParameterKeyValuePairTraditional : SHiPSDirectory
     DynamicParameterKeyValuePairTraditional([string]$name): base($name)
     {
     }
-    
+
     [System.Management.Automation.RuntimeDefinedParameterDictionary] GetChildItemDynamicParameters()
-    {      
+    {
         return GenerateDynamicParameters
     }
 
     [object[]] GetChildItem()
-    {     
+    {
         $dp = $this.ProviderContext.DynamicParameters  -as [System.Management.Automation.RuntimeDefinedParameterDictionary]
 
         $msg ="DynamicParameterKeyValuePairTraditional:"
 
         if($dp -and $dp.Containskey("list") -and $dp['list'].IsSet)
-        {                    
+        {
             $msg += "true"
         }
         if($dp -and $dp.Containskey("age") -and $dp['age'].IsSet)
-        {         
+        {
             $msg += $($dp['age']).Value
-                   
+
         }
         if($dp -and $dp.Containskey("city") -and $dp['city'].IsSet)
-        {      
+        {
             $msg += $($dp['city']).Value
-                      
+
         }
 
-        return $msg     
+        return $msg
     }
 }
 
@@ -541,13 +541,13 @@ class FilterTest : SHiPSDirectory
     FilterTest([string]$name): base($name)
     {
     }
-    
+
 
     [object[]] GetChildItem()
-    {     
-   
+    {
+
         if($this.ProviderContext.Filter)
-        {            
+        {
             if($this.ProviderContext.Recurse)
             {
                 return $this.ProviderContext.Filter+"Recurse"
@@ -569,14 +569,14 @@ class SHiPSLeafTest: SHiPSDirectory
     SHiPSLeafTest([string]$name): base($name){}
 
     [object[]] GetChildItem()
-    { 
+    {
         return [Birch]::new()
-    }  
+    }
 
 }
 
 class Birch : SHiPSLeaf
-{    
+{
     Birch() : base($this.GetType())
     {
     }
@@ -602,7 +602,7 @@ class Home : SHiPSDirectory
        $obj =  @()
 
        Write-Verbose $data
-       
+
        dir $data | ForEach-Object {
 
                 if($_.PSIsContainer)
@@ -655,9 +655,9 @@ class ErrorCaseWriteError : SHiPSDirectory
     ErrorCaseWriteError([string]$name): base($name)
     {
     }
-    
+
     [object[]] GetChildItem()
-    {     
+    {
        Write-Error "Hi there this is an expected error!"
        return $null
         #throw "Hi there this is an expected error!"
@@ -671,9 +671,9 @@ class ErrorCaseThrow : SHiPSDirectory
     ErrorCaseThrow([string]$name): base($name)
     {
     }
-    
+
     [object[]] GetChildItem()
-    {     
+    {
        Write-Error "Hi there this is an expected error!"
        return $null
         #throw "Hi there this is an expected error!"
@@ -686,9 +686,9 @@ class ErrorCase : SHiPSDirectory
     ErrorCase([string]$name): base($name)
     {
     }
-    
+
     [object[]] GetChildItem()
-    {     
+    {
         $obj = @()
         $obj += [ErrorCaseWriteError]::new('WriteError')
         $obj += [ErrorCaseThrow]::new('ErrorThrow')

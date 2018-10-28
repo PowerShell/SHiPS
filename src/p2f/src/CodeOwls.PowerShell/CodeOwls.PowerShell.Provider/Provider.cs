@@ -1,23 +1,23 @@
 ﻿/*
 	Copyright (c) 2014 Code Owls LLC
 
-	Permission is hereby granted, free of charge, to any person obtaining a copy 
-	of this software and associated documentation files (the "Software"), to 
-	deal in the Software without restriction, including without limitation the 
-	rights to use, copy, modify, merge, publish, distribute, sublicense, and/or 
-	sell copies of the Software, and to permit persons to whom the Software is 
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to
+	deal in the Software without restriction, including without limitation the
+	rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+	sell copies of the Software, and to permit persons to whom the Software is
 	furnished to do so, subject to the following conditions:
 
-	The above copyright notice and this permission notice shall be included in 
+	The above copyright notice and this permission notice shall be included in
 	all copies or substantial portions of the Software.
 
-	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
-	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
-	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
-	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
-	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING 
-	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS 
-	IN THE SOFTWARE. 
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+	IN THE SOFTWARE.
 */
 
 
@@ -48,9 +48,9 @@ using CodeOwls.PowerShell.Provider.PathNodes;
 namespace CodeOwls.PowerShell.Provider
 {
     //[CmdletProvider("YourProviderName", ProviderCapabilities.ShouldProcess)]
-    
-    public abstract class Provider : NavigationCmdletProvider, 
-        IPropertyCmdletProvider, 
+
+    public abstract class Provider : NavigationCmdletProvider,
+        IPropertyCmdletProvider,
         ICmdletProviderSupportsHelp,
         IContentCmdletProvider
     {
@@ -82,8 +82,8 @@ namespace CodeOwls.PowerShell.Provider
         protected abstract IPathResolver PathResolver { get; }
 
         /// <summary>
-        /// When multiple drives are registered with the same provider and a user 'cd' among them, ProviderInfo.Drives will 
-        /// contains their corresponding dirves. 
+        /// When multiple drives are registered with the same provider and a user 'cd' among them, ProviderInfo.Drives will
+        /// contains their corresponding dirves.
         /// In addition, when a user types "cd FooBarProvider\FooBarProvider::Test\, PSDriveInfo as FooBarProvider can be null.
         /// Thus the derived class need to get the right drive object from ProviderInfo.Drives based on given path.
         /// </summary>
@@ -147,7 +147,7 @@ namespace CodeOwls.PowerShell.Provider
         }
 
         void GetProperty(string path, IPathNode factory, Collection<string> providerSpecificPickList)
-        {           
+        {
             var node = factory.GetNodeValue();
             PSObject values = null;
 
@@ -321,7 +321,7 @@ namespace CodeOwls.PowerShell.Provider
         private string GetExistingHelpDocumentFilename()
         {
             CultureInfo currentUICulture = Host.CurrentUICulture;
-            string moduleLocation = this.ProviderInfo.Module.ModuleBase; 
+            string moduleLocation = this.ProviderInfo.Module.ModuleBase;
             string filename = null;
             while (currentUICulture != null && currentUICulture != currentUICulture.Parent)
             {
@@ -472,7 +472,7 @@ namespace CodeOwls.PowerShell.Provider
             {
                 if (null != move)
                 {
-                    DoMoveItem(path, destination, move);                    
+                    DoMoveItem(path, destination, move);
                 }
                 else
                 {
@@ -520,7 +520,7 @@ namespace CodeOwls.PowerShell.Provider
             //trim the end slash for the consistent experience to other built-in providers such as FileSystem.
             //Show: drive:\A\B\C>
             //Not:  drive:\A\B\C\>
-            var newChild = child.TrimEnd('/', '\\');     
+            var newChild = child.TrimEnd('/', '\\');
             var newPath = base.MakePath(parent, newChild);
             return newPath;
         }
@@ -904,7 +904,7 @@ namespace CodeOwls.PowerShell.Provider
                         }
                         catch (PipelineStoppedException )
                         {
-                            // For a case like 'dir | select -First 3', we can get PipelineStoppedException 
+                            // For a case like 'dir | select -First 3', we can get PipelineStoppedException
                             // from the PowerShell engine. That's ok because it just means that we're done.
                             // Note that in a provider, by swallowing the PipelineStoppedException exception may
                             // cause the PowerShell instance exit early without properly rendering outputs.
@@ -912,7 +912,7 @@ namespace CodeOwls.PowerShell.Provider
                             // This is because the PowerShell may throw a new PipelineStoppedException exception directly to a user.
 
                             // Refer to https://msdn.microsoft.com/en-us/library/system.management.automation.pipelinestoppedexception(v=vs.85).aspx
-                            // cmdlets or providers ... allow this exception to propagate up, and the Windows PowerShell 
+                            // cmdlets or providers ... allow this exception to propagate up, and the Windows PowerShell
                             // runtime will catch the exception.
                             exit = true;
                             throw;
@@ -927,7 +927,7 @@ namespace CodeOwls.PowerShell.Provider
 
         private bool IsRootPath(string path)
         {
-            // 
+            //
             // e.g., MyProvider\MyProvider::JT:\
             // cd ..
             //should return false if the path is null or empty
@@ -1053,7 +1053,7 @@ namespace CodeOwls.PowerShell.Provider
                 WriteGeneralCmdletError(e, RenameItemInvokeErrorID, fullPath);
             }
         }
-        
+
         protected override object RenameItemDynamicParameters(string path, string newName)
         {
             Func<object> a=()=> DoRenameItemDynamicParameters(path);
@@ -1110,12 +1110,12 @@ namespace CodeOwls.PowerShell.Provider
             {
                 return;
             }
-            
+
             try
             {
                 var item = @new.NewItem(CreateContext(fullPath), child, itemTypeName, newItemValue);
                 PathValue value = item as PathValue;
-                
+
                 WritePathNode(parentPath, value);
             }
             catch (Exception e)
@@ -1190,7 +1190,7 @@ namespace CodeOwls.PowerShell.Provider
             }
             PSObject pso = PSObject.AsPSObject(value.Item);
             pso.Properties.Add(new PSNoteProperty(ItemModePropertyName, factory.ItemMode));
-            // PowerShell issue? we need to trim backslash here to make get-item .\foo\ and get-item .\foo to work 
+            // PowerShell issue? we need to trim backslash here to make get-item .\foo\ and get-item .\foo to work
             WriteItemObject(pso, nodeContainerPath?.TrimEnd('/', '\\'), value.IsCollection);
         }
 
@@ -1201,7 +1201,7 @@ namespace CodeOwls.PowerShell.Provider
                 WriteItemObject(value.Item, MakePath( nodeContainerPath, value.Name ), value.IsCollection);
             }
         }
-        
+
         protected override void RemoveItem(string path, bool recurse)
         {
             Action a = ()=>DoRemoveItem(path, recurse);
@@ -1239,10 +1239,10 @@ namespace CodeOwls.PowerShell.Provider
             {
                 return;
             }
-            
+
             try
             {
-                DoRemoveItem(path, recurse, remove);                
+                DoRemoveItem(path, recurse, remove);
             }
             catch (Exception e)
             {
@@ -1301,7 +1301,7 @@ namespace CodeOwls.PowerShell.Provider
             // nodes for m times where m= number of child nodes.
             // In addition, Resolve()/PathNodeBase.cs calls GetNodeChildren(). This can be expensive
             // because getting child items again and again.
-            // Therefore moving Filter action to WritePathNode(). 
+            // Therefore moving Filter action to WritePathNode().
             //if ( resolveFinalFilter && !String.IsNullOrEmpty(Filter))
             //{
             //    factories = factories.First().Resolve(CreateContext(path), null);
@@ -1402,7 +1402,7 @@ namespace CodeOwls.PowerShell.Provider
             {
                 return;
             }
-            
+
             try
             {
                 IPathValue value = DoCopyItem(path, copyPath, recurse, copyItem);
@@ -1642,13 +1642,13 @@ namespace CodeOwls.PowerShell.Provider
             }
             catch (PipelineStoppedException)
             {
-                // For a case like 'dir | select -First 3', we can get PipelineStoppedException 
+                // For a case like 'dir | select -First 3', we can get PipelineStoppedException
                 // from the PowerShell engine. That's ok because it just means that we're done.
                 // Note that in a provider, by swallowing the PipelineStoppedException exception may
                 // cause the PowerShell instance exit early without properly rendering outputs.
                 // Also we should not call PowerShell APIs such as WriteError when receiving PipelineStoppedException.
                 // This is because the PowerShell may throw a new PipelineStoppedException exception directly to a user.
-            
+
                 throw;
             }
             catch (Exception e)
@@ -1686,7 +1686,7 @@ namespace CodeOwls.PowerShell.Provider
             }
             catch (PipelineStoppedException)
             {
-                // For a case like 'dir | select -First 3', we can get PipelineStoppedException 
+                // For a case like 'dir | select -First 3', we can get PipelineStoppedException
                 // from the PowerShell engine. That's ok because it just means that we're done.
                 // Note that in a provider, by swallowing the PipelineStoppedException exception may
                 // cause the PowerShell instance exit early without properly rendering outputs.

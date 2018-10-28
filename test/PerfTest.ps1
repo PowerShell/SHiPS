@@ -7,7 +7,7 @@
 
 $ProgressPreference = 'SilentlyContinue'
 
-Import-Module SHiPS 
+Import-Module SHiPS
 Import-Module SHiPS.AzureRM
 Import-Module $PSScriptRoot\..\test\AzureResourceNavigation.psm1 -force
 

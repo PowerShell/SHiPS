@@ -45,7 +45,7 @@ namespace Microsoft.PowerShell.SHiPS
             }
 
             var o = obj.BaseObject as PSVariable;
-            return (o != null) && o.Name.EqualsIgnoreCase(value);          
+            return (o != null) && o.Name.EqualsIgnoreCase(value);
         }
 
         internal static bool ContainsIgnoreCase(this IEnumerable<string> collection, PSObject value)
@@ -107,7 +107,7 @@ namespace Microsoft.PowerShell.SHiPS
                 return args.Aggregate(formatString.Replace('{', '\u00ab').Replace('}', '\u00bb'), (current, arg) => current + string.Format(CultureInfo.CurrentCulture, " \u00ab{0}\u00bb", arg));
             }
 
-            return string.Format(CultureInfo.CurrentCulture, formatString, args);        
+            return string.Format(CultureInfo.CurrentCulture, formatString, args);
         }
 
         internal static string TrimDrive(this string path, SHiPSDrive drive)
@@ -124,7 +124,7 @@ namespace Microsoft.PowerShell.SHiPS
                 path1 = match.Groups[2].Value;
             }
             else
-            {               
+            {
                 // match regular drive style like E:\ or JT:?
                 // This is needed when cd MyProvider\MyProvider::JT:\A\B\C
                 // cd .. to B; cd .. to A; and then cd tab, show A
@@ -132,7 +132,7 @@ namespace Microsoft.PowerShell.SHiPS
                 if (match3.Success)
                 {
                     path1 = match3.Groups[2].Value;
-                }                
+                }
             }
 
             return path1.TrimEnd('\\', '/');
@@ -193,7 +193,7 @@ namespace Microsoft.PowerShell.SHiPS
                 }
             }
 
-            // If a user specify -force, -debug -verbose -filter or dynamic parameters, we do not use cache.          
+            // If a user specify -force, -debug -verbose -filter or dynamic parameters, we do not use cache.
             return force || debug || verbose || usedDynamicParameter;
         }
 
@@ -344,7 +344,7 @@ namespace Microsoft.PowerShell.SHiPS
             PropertyInfo mi = typeOfObject.GetProperty(propertyName, BindingFlags.NonPublic | BindingFlags.Instance);
 
             return mi.GetValue(objContainProperty, null);
-        }    
+        }
 
         internal static void ReportError(this IProviderContext context, string errorId, string errorMessage, ErrorCategory errorCategory, object targetobject)
         {
@@ -482,10 +482,10 @@ namespace Microsoft.PowerShell.SHiPS
             {
                 return new LeafNodeService(psobject.ImmediateBaseObject, drive, parent);
             }
-                
+
             return new PSObjectNodeService(psobject);
         }
-   
+
         internal static SHiPSDirectory ToNode(this PSObject input)
         {
 

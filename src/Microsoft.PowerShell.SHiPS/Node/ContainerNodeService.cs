@@ -82,7 +82,7 @@ namespace Microsoft.PowerShell.SHiPS
         {
             var script = Constants.ScriptBlockWithParam1.StringFormat(Constants.GetChildItemDynamicParameters);
             var parameters = PSScriptRunner.InvokeScriptBlock(null, node, _drive, script, PSScriptRunner.ReportErrors);
-            return parameters?.FirstOrDefault();   
+            return parameters?.FirstOrDefault();
         }
 
         /// <summary>
@@ -103,7 +103,7 @@ namespace Microsoft.PowerShell.SHiPS
 
         private IEnumerable<IPathNode> GetNodeChildrenInternal(IProviderContext context)
         {
-            //find the current parent node 
+            //find the current parent node
             var item = this.ContainerNode;
             if (item == null || item.IsLeaf)
             {
@@ -113,7 +113,7 @@ namespace Microsoft.PowerShell.SHiPS
 
             // Set the ProviderContext as the DynamicParameters and Filter objects will be used in the
             // PowerShell module's GetChildItem().
-            // If dynamic parameters are used, then SHiPS is not using cache. 
+            // If dynamic parameters are used, then SHiPS is not using cache.
             // ProviderContext has to be set right now because context.NeedRefresh uses it.
             item.SHiPSProviderContext.Set(context);
 
@@ -141,7 +141,7 @@ namespace Microsoft.PowerShell.SHiPS
 
                 // Save the info of the node just visisted
                 SHiPSProvider.LastVisisted.Set(context.Path, this, nodes);
-                
+
                 if (nodes == null || nodes.Count == 0)
                 {
                     yield break;

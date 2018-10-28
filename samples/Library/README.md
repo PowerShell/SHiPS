@@ -44,7 +44,7 @@ See the [Library module][fm].
 
 
   PS M:\Classic> Get-Content .\Nocturnes
-  
+
   Beautiful
 
  ```
