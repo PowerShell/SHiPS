@@ -1,4 +1,4 @@
-﻿namespace Microsoft.PowerShell.SHiPS
+namespace Microsoft.PowerShell.SHiPS
 {
     internal static class ErrorId
     {

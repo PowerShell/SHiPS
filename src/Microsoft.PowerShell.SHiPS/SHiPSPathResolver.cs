@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using CodeOwls.PowerShell.Paths.Processors;
 using CodeOwls.PowerShell.Provider.PathNodeProcessors;

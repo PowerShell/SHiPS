@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Management.Automation;
 using System;
 using System.Collections.Concurrent;

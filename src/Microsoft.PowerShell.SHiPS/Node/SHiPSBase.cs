@@ -1,4 +1,4 @@
-﻿using CodeOwls.PowerShell.Paths.Extensions;
+using CodeOwls.PowerShell.Paths.Extensions;
 using CodeOwls.PowerShell.Provider.PathNodeProcessors;
 
 namespace Microsoft.PowerShell.SHiPS

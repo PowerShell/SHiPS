@@ -1,4 +1,4 @@
-﻿using CodeOwls.PowerShell.Paths.Processors;
+using CodeOwls.PowerShell.Paths.Processors;
 using CodeOwls.PowerShell.Provider.PathNodes;
 
 namespace ProviderFramework_1_TheNullProvider

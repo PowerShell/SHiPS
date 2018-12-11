@@ -1,4 +1,4 @@
-﻿using System.Management.Automation;
+using System.Management.Automation;
 using CodeOwls.PowerShell.Paths.Extensions;
 using CodeOwls.PowerShell.Provider.PathNodes;
 

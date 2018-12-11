@@ -1,4 +1,4 @@
-﻿using System.Management.Automation;
+using System.Management.Automation;
 
 namespace ProviderFramework_1_TheNullProvider
 {
