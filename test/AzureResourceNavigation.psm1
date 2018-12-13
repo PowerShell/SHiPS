@@ -1,4 +1,4 @@
-﻿<#
+<#
     Note:
 
     1. This is just an example of using SHiPS provider to navigate Azure resources.

@@ -1,4 +1,4 @@
-﻿<#
+<#
    Assuming you have done clone. Now cd to SHiPS\test\automation folder. Try the following.
 
     Import-Module  ..\..\src\out\SHiPS\SHiPS
@@ -470,18 +470,18 @@ function GenerateDynamicParameters
 
     $paramDictionary = New-Object System.Management.Automation.RuntimeDefinedParameterDictionary
 
-    $ageAttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]            
-    $ageAttribute = New-Object System.Management.Automation.ParameterAttribute    
+    $ageAttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+    $ageAttribute = New-Object System.Management.Automation.ParameterAttribute
     $ageAttributeCollection.Add($ageAttribute)
 
 
     $cityAttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-    $cityAttribute = New-Object System.Management.Automation.ParameterAttribute       
+    $cityAttribute = New-Object System.Management.Automation.ParameterAttribute
     $cityAttributeCollection.Add($cityAttribute)
 
     $listAttributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
-    $listAttribute = New-Object System.Management.Automation.ParameterAttribute     
-    $listAttribute.ValueFromPipeline = $true 
+    $listAttribute = New-Object System.Management.Automation.ParameterAttribute
+    $listAttribute.ValueFromPipeline = $true
     $listAttributeCollection.Add($listAttribute)
 
     $ageParam = New-Object System.Management.Automation.RuntimeDefinedParameter('age', [System.Int16], $ageAttributeCollection)
@@ -492,7 +492,7 @@ function GenerateDynamicParameters
     $paramDictionary.Add('city', $cityParam)
     $paramDictionary.Add('list', $listParam)
 
-    return $paramDictionary   
+    return $paramDictionary
 
 }
 

@@ -1,4 +1,4 @@
-﻿<#
+<#
    Assuming you clone to E:\azure\
 
     Import-Module  ..\SHiPS.psd1

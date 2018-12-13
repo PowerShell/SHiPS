@@ -1,4 +1,4 @@
-﻿@{
+@{
     RootModule= 'SHiPSTest.psm1'
     ModuleVersion = '1.0.0'
     GUID = 'A5FE6B04-385F-470F-9347-66EB3645B466'
