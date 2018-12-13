@@ -1,4 +1,4 @@
-﻿<#
+<#
     Modeling a tree for example:
 
     Nature

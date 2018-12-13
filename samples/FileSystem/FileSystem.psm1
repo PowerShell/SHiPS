@@ -1,4 +1,4 @@
-﻿<#
+<#
     Modeling the FileSystem
 
     Try it:

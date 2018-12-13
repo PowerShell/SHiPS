@@ -1,4 +1,4 @@
-﻿# Simple Hierarchy in PowerShell (SHiPS) Design
+# Simple Hierarchy in PowerShell (SHiPS) Design
 
 ## High Level Requirement
 

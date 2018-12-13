@@ -1,4 +1,4 @@
-﻿<#
+<#
     Modeling a Family Tree for example:
 
     Austin

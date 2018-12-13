@@ -1,4 +1,4 @@
-﻿<#
+<#
     Assuming you have done git clone and run build.ps1, cd to your git clone folder and try the following.
 
     Import-Module  SHiPS
