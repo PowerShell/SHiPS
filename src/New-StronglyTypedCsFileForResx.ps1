@@ -1,4 +1,4 @@
-﻿param(
+param(
     [ValidateSet("Microsoft.PowerShell.SHiPS", "CodeOwls.PowerShell.Paths", "CodeOwls.PowerShell.Provider")]
     [string] $project
 )

@@ -1,4 +1,4 @@
-﻿<#
+<#
     Import-Module  E:\azure\PSCloudConsole\test\ctor.psm1 -force
     $mod=get-module ctor
     &($mod){[Austin]::new('hello')}

@@ -1,4 +1,4 @@
-﻿TOPIC
+TOPIC
     Null Provider Example Project
 
 COPYRIGHT

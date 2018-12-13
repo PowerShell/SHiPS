@@ -1,4 +1,4 @@
-﻿<#
+<#
     $driveName = 'azCompute'
     Remove-PSDrive $driveName -ErrorAction SilentlyContinue
     ipmo .\Azure.Compute.psd1 -Force

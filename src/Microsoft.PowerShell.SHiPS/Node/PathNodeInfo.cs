@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using CodeOwls.PowerShell.Provider.PathNodes;
 
 namespace Microsoft.PowerShell.SHiPS

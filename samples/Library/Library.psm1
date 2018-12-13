@@ -1,4 +1,4 @@
-﻿<#
+<#
     Modeling a Music Tree for example:
 
         M:
@@ -53,7 +53,7 @@ class Classic : SHiPSDirectory
     hidden [object]$children = @()
     hidden static [string]$SwanLake = "
     Tchaikovsky's magical ballet tells the story of the doomed love of Prince Siegfried and Princess Odette,
-    Prince Siegfried goes out hunting one night and chases a group of swans – one of them transforms into a
+    Prince Siegfried goes out hunting one night and chases a group of swans - one of them transforms into a
     young woman, Odette, who explains that she and her companions were turned into swans by the evil Baron Von Rothbart."
 
     hidden static [string]$Donau = "

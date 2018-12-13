@@ -1,4 +1,4 @@
-﻿<#
+<#
     Assuming you have done clone. Now cd to SHiPS\test\automation folder. Try the following.
 
     Import-Module  ..\..\src\out\SHiPS\SHiPS

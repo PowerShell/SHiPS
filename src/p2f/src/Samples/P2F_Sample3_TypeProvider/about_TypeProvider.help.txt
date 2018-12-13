@@ -1,4 +1,4 @@
-﻿TOPIC
+TOPIC
     Extended Type Provider Example Project
 
 COPYRIGHT
