@@ -30,9 +30,9 @@ See the [DynamicParameterSample module][ds].
 
 ```powershell
    Import-Module  SHiPS
-   Import-Module  .\samples\DynamicParameterSample
+   Import-Module  .\samples\DynamicParameter
 
-   new-psdrive -name n -psprovider SHiPS -root DynamicParameterSample#Nature
+   new-psdrive -name n -psprovider SHiPS -root DynamicParameter#Nature
    cd n:
    dir
 
