@@ -21,7 +21,7 @@ init:
 
 # Install Pester
 install:
-    - cinst -y pester
+    - choco install pester --version=4.10.1 -y
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
