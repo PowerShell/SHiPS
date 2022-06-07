@@ -36,5 +36,6 @@ artifacts/
 **/Properties/launchSettings.json
 
 # Auto generated
+src/dotnet-install.ps1
 tools/install-powershell.ps1
 packages/
